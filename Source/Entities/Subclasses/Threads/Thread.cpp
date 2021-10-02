@@ -4,12 +4,29 @@
 #include <mutex>
 
 Thread::Thread() {
-    EntityReference<Thread> reference = this;
-    worker = std::thread([](EntityReference<Thread> reference) {
-        while (reference.Usages() > 0) {
-            reference->Update();
+    std::exception_ptr exceptionPtr = nullptr;
+
+    worker = std::thread([&]() {
+        try {
+            while (true) {
+                Update();
+            }
+        } catch (...) {
+            exceptionPtr = std::current_exception();
         }
-    }, reference);
+    });
+
+    if (exceptionPtr != nullptr) {
+        try {
+			std::rethrow_exception(exceptionPtr);
+		} catch(const std::exception& exception) {
+			std::cout << "Thread " << std::this_thread::get_id() << " caught exception from thread " << exception.what() << "\n";
+		}
+    }
+}
+
+void Thread::Join() {
+    worker.join();
 }
 
 std::vector<std::mutex> mutexes(1);

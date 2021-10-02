@@ -17,6 +17,8 @@ class Thread : public virtual Entity {
         virtual ~Thread() {}
 
         virtual void Update() {}
+
+        void Join();
     public:
         using MutexId = std::size_t;
         
