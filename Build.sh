@@ -1,0 +1,1 @@
+g++-11 -I ./ -I ./Library -I ./Source -std=c++20 $(find Source -name '*.cpp') -o App.elf $1
