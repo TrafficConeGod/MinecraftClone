@@ -1,24 +1,15 @@
-#include "Entity.h"
+#include "MainThread.h"
 #include "EntityReference.h"
 #include <iostream>
 
-class MyEntity : public virtual Entity {
-    private:
-        int value;
-    public:
-        static constexpr Entity::TypeId Type = 1;
-
-        MyEntity(int vValue) : Entity(), value{vValue} {}
-        virtual ~MyEntity() {}
-
-        static constexpr bool IsOfType(Entity::TypeId type) {
-            return type == Type || Entity::IsOfType(type);
-        }
-};
-
 int main() {
-    EntityReference<Entity> ent = new Entity();
-    EntityReference<MyEntity> myEnt = ent;
+    EntityReference<MainThread> mainThread = new MainThread();
+
+    while (mainThread.Usages() > 0) {
+        Thread::Capture(Thread::ConsoleOutput, [mainThread]() {
+            std::cout << mainThread.Usages() << "\n";
+        });
+    }
 
     return 0;
 }
