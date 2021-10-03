@@ -10,6 +10,10 @@ class Thread : public virtual Entity {
         std::thread worker;
 
         std::atomic<bool> active = true;
+    protected:
+        virtual void Start() {}
+        virtual void Update() {}
+        virtual void Stop() {}
     public:
         GIVE_TYPE_ID_1(1, Entity)
 
@@ -17,9 +21,6 @@ class Thread : public virtual Entity {
         explicit Thread();
         virtual ~Thread();
 
-        virtual void Start() {}
-        virtual void Update() {}
-        virtual void Stop() {}
         virtual void JoinSubThreads() {}
 
         void Join();

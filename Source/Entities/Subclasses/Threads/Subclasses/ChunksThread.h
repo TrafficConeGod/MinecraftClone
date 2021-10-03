@@ -17,14 +17,14 @@ class ChunksThread : public virtual Thread {
         std::vector<EntityReference<Chunk>> chunks;
 
         EntityReference<ChunksGeneratorThread> chunksGeneratorThread;
+    protected:
+        virtual void Update() override;
     public:
         GIVE_TYPE_ID_1(3, Thread)
 
         DELETE_ILLEGAL_CONSTRUCTORS(ChunksThread)
         explicit ChunksThread(const GraphicsNodeRequested& graphicsNodeRequested = GraphicsNodeRequested());
         virtual ~ChunksThread() {}
-
-        virtual void Update() override;
         virtual void JoinSubThreads() override;
 
         void CameraUpdate(const Vector3f& position);

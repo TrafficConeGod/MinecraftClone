@@ -2,8 +2,8 @@
 
 Chunk::Chunk(const Vector3u& vPosition, const std::array<Block, Blocks>& vBlocks, EntityReference<GraphicsNode> vNode) : position{vPosition}, node{vNode} {
     Vector3f nodePosition = position;
-    nodePosition = Vector3f(nodePosition.x + OffsetToCenter, nodePosition.y + OffsetToCenter, nodePosition.z + OffsetToCenter);
-    // node->Position(nodePosition);
+    nodePosition = Vector3f(nodePosition.x - OffsetToCenter, nodePosition.y - OffsetToCenter, nodePosition.z - OffsetToCenter);
+    node->Position(nodePosition);
     std::size_t index = 0;
     for (const auto& block : vBlocks) {
         SetBlock(index, block);

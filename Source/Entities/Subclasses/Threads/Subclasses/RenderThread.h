@@ -18,15 +18,15 @@ class RenderThread : public virtual Thread {
         GLuint texture;
         GLuint textureId;
         GLuint programId;
+    protected:
+        virtual void Start() override;
+        virtual void Update() override;
     public:
         GIVE_TYPE_ID_1(4, Thread)
 
         DELETE_ILLEGAL_CONSTRUCTORS(RenderThread)
         explicit RenderThread(const std::vector<EntityReference<GraphicsNode>>& nodes);
         virtual ~RenderThread() {}
-
-        virtual void Start() override;
-        virtual void Update() override;
 
         void AddNode(EntityReference<GraphicsNode> node);
         EntityReference<GraphicsNode> CreateNode(const GraphicsNode::RenderMesh& mesh);

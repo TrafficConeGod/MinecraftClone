@@ -14,12 +14,12 @@ class UserInterfaceThread : public virtual Thread {
 
         EntityReference<Camera> camera;
         std::vector<EntityReference<Element>> elements;
+    protected:
+        virtual void Update() override;
     public:
         GIVE_TYPE_ID_1(9, Thread)
 
         DELETE_ILLEGAL_CONSTRUCTORS(UserInterfaceThread)
         explicit UserInterfaceThread(CameraUpdated cameraUpdated = CameraUpdated());
         virtual ~UserInterfaceThread() {}
-
-        virtual void Update() override;
 };

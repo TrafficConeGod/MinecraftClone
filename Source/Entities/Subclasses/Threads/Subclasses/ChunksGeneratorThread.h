@@ -15,15 +15,15 @@ class ChunksGeneratorThread : public virtual Thread {
         Vector3f CameraPosition();
 
         Generated generated;
+    protected:
+        virtual void Start() override;
+        virtual void Update() override;
     public:
         GIVE_TYPE_ID_1(8, Thread)
 
         DELETE_ILLEGAL_CONSTRUCTORS(ChunksGeneratorThread)
         explicit ChunksGeneratorThread(const Generated& generated = Generated());
         virtual ~ChunksGeneratorThread() {}
-
-        virtual void Start() override;
-        virtual void Update() override;
 
         void CameraUpdate(const Vector3f& position);
 };
