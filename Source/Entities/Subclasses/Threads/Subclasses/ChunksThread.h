@@ -29,7 +29,7 @@ class ChunksThread : public virtual Thread {
 
         void CameraUpdate(const Vector3f& position);
 
-        void CreateChunk(const std::array<Chunk::Block, Chunk::BlocksSize>& blocks);
+        void CreateChunk(const Vector3u& position, const std::array<Chunk::Block, Chunk::Blocks>& blocks);
 
         void RequestedGraphicsNode(EntityReference<GraphicsNode> graphicsNodeRequested);
 };

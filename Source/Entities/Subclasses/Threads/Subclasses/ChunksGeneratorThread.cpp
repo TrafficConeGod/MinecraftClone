@@ -3,9 +3,9 @@
 ChunksGeneratorThread::ChunksGeneratorThread(const Generated& vGenerated) : generated{vGenerated} {}
 
 void ChunksGeneratorThread::Start() {
-    std::array<Chunk::Block, Chunk::BlocksSize> blocks;
+    std::array<Chunk::Block, Chunk::Blocks> blocks;
     blocks.at(100) = { Chunk::Block::Type::Stone };
-    generated.Fire(blocks);
+    generated.Fire(Vector3u(0, 0, 0), blocks);
 }
 
 void ChunksGeneratorThread::Update() {

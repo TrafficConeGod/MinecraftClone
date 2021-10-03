@@ -59,6 +59,10 @@ struct Vector3 {
     inline glm::vec3 GLM() const {
         return glm::vec3(x, y, z);
     }
+    template<typename T2>
+    operator Vector3<T2>() const {
+        return Vector3<T2>(x, y, z);
+    }
 };
 
 typedef Vector3<float> Vector3f;

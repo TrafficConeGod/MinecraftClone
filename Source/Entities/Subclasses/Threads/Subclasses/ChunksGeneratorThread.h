@@ -7,7 +7,7 @@
 
 class ChunksGeneratorThread : public virtual Thread {
     public:
-        using Generated = Event<const std::array<Chunk::Block, Chunk::BlocksSize>&>;
+        using Generated = Event<const Vector3u&, const std::array<Chunk::Block, Chunk::Blocks>&>;
     private:
         std::mutex cameraPositionMutex;
         Vector3f cameraPosition;
