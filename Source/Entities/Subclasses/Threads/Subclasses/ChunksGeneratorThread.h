@@ -13,7 +13,6 @@ class ChunksGeneratorThread : public virtual Thread {
         Vector3f cameraPosition;
 
         Vector3f CameraPosition();
-        void CameraPosition(Vector3f cameraPosition);
 
         Generated generated;
     public:

@@ -8,4 +8,6 @@ class Element : public virtual Entity {
         DELETE_ILLEGAL_CONSTRUCTORS(Element)
         explicit Element() {}
         virtual ~Element() {}
+
+        virtual void Update() {}
 };

@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <functional>
+#include <mutex>
 
 // events should be for child -> parent communication ONLY.
 template<typename... T>

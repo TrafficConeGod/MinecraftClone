@@ -10,13 +10,16 @@ class UserInterfaceThread : public virtual Thread {
     public:
         using CameraUpdated = Event<const Vector3f&>;
     private:
-        EntityReference<Camera> camera;
-        
         CameraUpdated cameraUpdated;
+
+        EntityReference<Camera> camera;
+        std::vector<EntityReference<Element>> elements;
     public:
         GIVE_TYPE_ID_1(9, Thread)
 
         DELETE_ILLEGAL_CONSTRUCTORS(UserInterfaceThread)
-        explicit UserInterfaceThread(const CameraUpdated& cameraUpdated = CameraUpdated());
+        explicit UserInterfaceThread(CameraUpdated cameraUpdated = CameraUpdated());
         virtual ~UserInterfaceThread() {}
+
+        virtual void Update() override;
 };
