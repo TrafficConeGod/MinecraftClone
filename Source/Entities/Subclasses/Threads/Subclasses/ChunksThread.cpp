@@ -1,6 +1,7 @@
 #include "ChunksThread.h"
+#include <iostream>
 
-ChunksThread::ChunksThread() {
+ChunksThread::ChunksThread() : Thread() {
     
 }
 

@@ -3,7 +3,7 @@
 #include <vector>
 #include <mutex>
 
-Thread::Thread() {
+Thread::Thread() : Entity() {
     std::exception_ptr exceptionPtr = nullptr;
 
     worker = std::thread([&]() {

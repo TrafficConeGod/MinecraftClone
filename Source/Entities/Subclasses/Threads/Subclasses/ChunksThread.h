@@ -2,6 +2,8 @@
 #include "Thread.h"
 
 class ChunksThread : public virtual Thread {
+    private:
+        int x = 204;
     public:
         GIVE_TYPE_ID_1(3, Thread)
 
