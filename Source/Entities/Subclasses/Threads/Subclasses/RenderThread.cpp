@@ -46,14 +46,14 @@ void RenderThread::Start() {
 
     glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-    programId = LoadShaders("res/vertex_shad.glsl", "res/frag_shad.glsl");
+    programId = LoadShaders("Resources/VertexShader.glsl", "Resources/FragmentShader.glsl");
 
     GLuint vertexArrayId;
     glGenVertexArrays(1, &vertexArrayId);
     glBindVertexArray(vertexArrayId);
 
 	matrixId = glGetUniformLocation(programId, "mvp");
-	texture = LoadBMP("res/grass.bmp");
+	texture = LoadDDS("Resources/Grass.dds");
 	textureId = glGetUniformLocation(programId, "texture_sampler");
 
     {
