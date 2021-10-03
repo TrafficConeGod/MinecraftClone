@@ -3,7 +3,9 @@
 #include "ChunksThread.h"
 
 AppController::AppController() : Entity() {
-    EntityReference<GraphicsNode> chunksNode = new GraphicsNode(1, 2, {
+    EntityReference<RenderThread> renderWorker = new RenderThread({});
+    workers.push_back(renderWorker);
+    auto chunksNode = renderWorker->CreateNode({
         {
             {
 				Vector3f(-1.0f,-1.0f,-1.0f),
@@ -129,8 +131,6 @@ AppController::AppController() : Entity() {
 			}
         }
     });
-
-    workers.push_back(new RenderThread({ chunksNode }));
     workers.push_back(new ChunksThread(chunksNode));
 
     for (auto& worker : workers) {

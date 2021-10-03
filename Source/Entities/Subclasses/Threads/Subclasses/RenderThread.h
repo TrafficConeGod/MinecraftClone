@@ -29,5 +29,6 @@ class RenderThread : public virtual Thread {
         virtual void Update() override;
 
         void AddNode(EntityReference<GraphicsNode> node);
+        EntityReference<GraphicsNode> CreateNode(const GraphicsNode::RenderMesh& mesh);
         EntityReference<GraphicsNode> RemoveNode(std::size_t index);
 };

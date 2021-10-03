@@ -15,6 +15,17 @@ void RenderThread::AddNode(EntityReference<GraphicsNode> node) {
     nodes.push_back(node);
 }
 
+GLuint currentVertexBufferId = 0;
+GLuint currentUvBufferId = 0;
+
+EntityReference<GraphicsNode> RenderThread::CreateNode(const GraphicsNode::RenderMesh& mesh) {
+	EntityReference<GraphicsNode> node = new GraphicsNode(currentVertexBufferId, currentUvBufferId, mesh);
+	AddNode(node);
+	currentVertexBufferId++;
+	currentUvBufferId++;
+	return node;
+}
+
 RenderThread::RenderThread(const std::vector<EntityReference<GraphicsNode>>& vNodes) : Thread(), nodes{vNodes}, clock{std::chrono::system_clock::now()} {}
 
 void RenderThread::Start() {
