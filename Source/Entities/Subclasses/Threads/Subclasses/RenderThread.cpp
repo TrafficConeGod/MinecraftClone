@@ -7,7 +7,6 @@
 #include <vector>
 #include <fstream>
 #include <cstdint>
-#include <chrono>
 #include <exception>
 
 void RenderThread::AddNode(EntityReference<GraphicsNode> node) {
@@ -26,7 +25,7 @@ EntityReference<GraphicsNode> RenderThread::CreateNode(const GraphicsNode::Rende
 	return node;
 }
 
-RenderThread::RenderThread(const std::vector<EntityReference<GraphicsNode>>& vNodes) : Thread(), nodes{vNodes}, clock{std::chrono::system_clock::now()} {}
+RenderThread::RenderThread(const std::vector<EntityReference<GraphicsNode>>& vNodes) : Thread(), nodes{vNodes} {}
 
 void RenderThread::Start() {
 	if (!glfwInit()) {
@@ -80,10 +79,6 @@ void RenderThread::Update() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glUseProgram(programId);
-
-	float delta = std::chrono::duration<float, std::ratio<1L, 1L>>(std::chrono::high_resolution_clock::now() - clock).count();
-
-	clock = std::chrono::high_resolution_clock::now();
 	
 	glm::mat4 proj = glm::perspective(glm::radians(45.0f), 16.0f / 9.0f, 0.1f, 100.0f);
 	glm::mat4 view = glm::lookAt(

@@ -3,14 +3,29 @@
 #include <vector>
 #include <mutex>
 #include <iostream>
+#include <chrono>
+
+static const float Delta = 1.f/60.f;
 
 Thread::Thread() : Entity() {
+	auto clock = std::chrono::high_resolution_clock::now();
+
     std::exception_ptr exceptionPtr = nullptr;
 
     worker = std::thread([&]() {
         try {
             Start();
             while (active) {
+                auto currentClock = std::chrono::high_resolution_clock::now();
+
+                float delta = std::chrono::duration<float, std::ratio<1L, 1L>>(std::chrono::high_resolution_clock::now() - clock).count();
+                std::cout << "tick\n";
+                if (delta < Delta) {
+                    float sleepTime = Delta - delta;
+                    std::this_thread::sleep_for(std::chrono::duration<float>(sleepTime));
+                }
+
+                clock = currentClock;
                 Update();
             }
             Stop();

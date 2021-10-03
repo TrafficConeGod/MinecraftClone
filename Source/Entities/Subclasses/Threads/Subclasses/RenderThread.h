@@ -11,8 +11,6 @@ class RenderThread : public virtual Thread {
         std::mutex nodesMutex;
         std::vector<EntityReference<GraphicsNode>> nodes;
 
-        std::chrono::_V2::system_clock::time_point clock;
-
         GLFWwindow* win;
         GLuint matrixId;
         GLuint texture;
