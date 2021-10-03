@@ -44,19 +44,19 @@ struct Vector3 {
     MK_ACROSS_OP(/)
     MK_SCALAR_OP(*)
     MK_SCALAR_OP(/)
-    T Magnitude() {
+    T Magnitude() const {
         T a = x * x;
         T b = y * y;
         T c = z * z;
         T d = (T)sqrt((double)(a + b + c));
         return d;
     }
-    Vector3<T> normalize() {
+    Vector3<T> Normalize() const {
         Vector3<T> vec(x, y, z);
         T magnitude = Magnitude();
         return vec / magnitude;
     }
-    inline glm::vec3 Glm() {
+    inline glm::vec3 GLM() const {
         return glm::vec3(x, y, z);
     }
 };
