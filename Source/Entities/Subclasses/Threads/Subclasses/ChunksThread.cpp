@@ -12,6 +12,10 @@ void ChunksThread::Update() {
     }
 }
 
+void ChunksThread::JoinSubThreads() {
+    chunksGeneratorThread->Join();
+}
+
 void ChunksThread::CameraUpdate(const Vector3f& position) {
     chunksGeneratorThread->CameraUpdate(position);
 }

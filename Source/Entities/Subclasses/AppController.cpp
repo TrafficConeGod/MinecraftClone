@@ -21,5 +21,6 @@ AppController::AppController() : Entity() {
 
     for (auto& worker : workers) {
         worker->Join();
+		worker->JoinSubThreads();
     }
 }

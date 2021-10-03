@@ -25,6 +25,7 @@ class ChunksThread : public virtual Thread {
         virtual ~ChunksThread() {}
 
         virtual void Update() override;
+        virtual void JoinSubThreads() override;
 
         void CameraUpdate(const Vector3f& position);
 

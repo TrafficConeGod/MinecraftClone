@@ -19,6 +19,7 @@ class Thread : public virtual Entity {
         virtual void Start() {}
         virtual void Update() {}
         virtual void Stop() {}
+        virtual void JoinSubThreads() {}
 
         void Join();
 };
