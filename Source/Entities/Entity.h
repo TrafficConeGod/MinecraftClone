@@ -3,12 +3,12 @@
 #include <iostream>
 
 #define GIVE_TYPE_ID_0(id) \
-static constexpr TypeId Type = id; \
-static constexpr bool IsOfType(TypeId type) { return type == Type; }
+static constexpr Entity::TypeId Type = id; \
+static constexpr bool IsOfType(Entity::TypeId type) { return type == Type; }
 
 #define GIVE_TYPE_ID_1(id, parent) \
-static constexpr TypeId Type = id; \
-static constexpr bool IsOfType(TypeId type) { return type == Type || parent::IsOfType(type); }
+static constexpr Entity::TypeId Type = id; \
+static constexpr bool IsOfType(Entity::TypeId type) { return type == Type || parent::IsOfType(type); }
 
 #define DELETE_ILLEGAL_CONSTRUCTORS(T) \
 T(const T&) = delete; \

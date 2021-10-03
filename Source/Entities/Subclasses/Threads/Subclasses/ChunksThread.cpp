@@ -1,12 +1,25 @@
 #include "ChunksThread.h"
 #include <iostream>
 
-ChunksThread::ChunksThread(EntityReference<GraphicsNode> vNode) : Thread(), node{vNode} {}
+ChunksThread::ChunksThread(const GraphicsNodeRequested& vGraphicsNodeRequested) : graphicsNodeRequested{vGraphicsNodeRequested}, chunksGeneratorThread{new ChunksGeneratorThread(ChunksGeneratorThread::Generated([&](const std::array<Chunk::Block, Chunk::BlocksSize>& blocks) {
+    CreateChunk(blocks);
+}))} {}
 
 void ChunksThread::Update() {
-    // handle rendering of chunks
-    node->UseMesh([](auto& mesh) {
-        auto& pos = mesh.triangles.at(2).vertices.at(2);
-        pos = Vector3f(pos.x, pos.y + 0.000001f, pos.z);
-    });
+    std::lock_guard lock(chunksMutex);
+    for (auto& chunk : chunks) {
+        chunk->Update();
+    }
+}
+
+void ChunksThread::CreateChunk(const std::array<Chunk::Block, Chunk::BlocksSize>& blocks) {
+    graphicsNodeRequested.Fire(0);
+    std::lock_guard lock(chunksMutex);
+    std::lock_guard lock2(requestedGraphicsNodeMutex);
+    chunks.push_back(new Chunk(blocks, requestedGraphicsNode));
+}
+
+void ChunksThread::RequestedGraphicsNode(EntityReference<GraphicsNode> requestedGraphicsNode) {
+    std::lock_guard lock(requestedGraphicsNodeMutex);
+    this->requestedGraphicsNode = requestedGraphicsNode;
 }
