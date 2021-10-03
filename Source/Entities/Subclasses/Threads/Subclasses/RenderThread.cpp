@@ -98,32 +98,34 @@ void RenderThread::Update() {
         for (auto& node : nodes) {
             node->GenerateBuffers();
 			
-			const auto& mesh = node->Mesh();
+			node->UseMeshConst([&](const auto& mesh) {
 
-            glm::mat4 model = glm::translate(glm::mat4(1.0f), node->Position().GLM());
-            glm::mat4 mvp = view_proj * model;
+				glm::mat4 model = glm::translate(glm::mat4(1.0f), node->Position().GLM());
+				glm::mat4 mvp = view_proj * model;
 
-			glUniformMatrix4fv(matrixId, 1, GL_FALSE, &mvp[0][0]);
+				glUniformMatrix4fv(matrixId, 1, GL_FALSE, &mvp[0][0]);
 
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, texture);
-			glUniform1i(textureId, 0);
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, texture);
+				glUniform1i(textureId, 0);
 
-			glEnableVertexAttribArray(0);
+				glEnableVertexAttribArray(0);
 
-			glBindBuffer(GL_ARRAY_BUFFER, node->VertexBuffer());
-			glBufferData(GL_ARRAY_BUFFER, mesh.triangles.size()*sizeof(float) * 3 * 3, (float*)mesh.triangles.data(), GL_STATIC_DRAW);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+				glBindBuffer(GL_ARRAY_BUFFER, node->VertexBuffer());
+				glBufferData(GL_ARRAY_BUFFER, mesh.triangles.size()*sizeof(float) * 3 * 3, (float*)mesh.triangles.data(), GL_STATIC_DRAW);
+				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-			glEnableVertexAttribArray(1);
-			glBindBuffer(GL_ARRAY_BUFFER, node->UVBuffer());
-			glBufferData(GL_ARRAY_BUFFER, mesh.triangles.size()*sizeof(float) * 3 * 2, (float*)mesh.uvTriangles.data(), GL_STATIC_DRAW);
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+				glEnableVertexAttribArray(1);
+				glBindBuffer(GL_ARRAY_BUFFER, node->UVBuffer());
+				glBufferData(GL_ARRAY_BUFFER, mesh.triangles.size()*sizeof(float) * 3 * 2, (float*)mesh.uvTriangles.data(), GL_STATIC_DRAW);
+				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-			glDrawArrays(GL_TRIANGLES, 0, mesh.triangles.size() * 3);
+				glDrawArrays(GL_TRIANGLES, 0, mesh.triangles.size() * 3);
 
-			glDisableVertexAttribArray(0);
-			glDisableVertexAttribArray(1);
+				glDisableVertexAttribArray(0);
+				glDisableVertexAttribArray(1);
+
+			});
         }
     }
 

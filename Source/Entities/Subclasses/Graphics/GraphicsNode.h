@@ -5,6 +5,9 @@
 #include <vector>
 #include <array>
 #include <GL/glew.h>
+#include <atomic>
+#include <mutex>
+#include <functional>
 
 class GraphicsNode : public virtual Entity {
     public:
@@ -21,11 +24,14 @@ class GraphicsNode : public virtual Entity {
             std::vector<UVTriangle> uvTriangles;
         };
     private:
-        bool buffersGenerated = 0;
-        GLuint vertexBuffer;
-        GLuint uvBuffer;
+        std::atomic<bool> buffersGenerated = 0;
+        std::atomic<GLuint> vertexBuffer;
+        std::atomic<GLuint> uvBuffer;
 
+        std::mutex positionMutex;
         Vector3f position;
+
+        std::mutex meshMutex;
         RenderMesh mesh;
     public:
         GIVE_TYPE_ID_1(5, Entity)
@@ -34,9 +40,9 @@ class GraphicsNode : public virtual Entity {
         explicit GraphicsNode(GLuint vertexBuffer, GLuint uvBuffer, const RenderMesh& mesh);
         virtual ~GraphicsNode() {}
         
-        RenderMesh& Mesh();
-        const RenderMesh& Mesh() const;
-        const Vector3f& Position() const;
+        void UseMesh(std::function<void(RenderMesh&)> context);
+        void UseMeshConst(std::function<void(const RenderMesh&)> context);
+        Vector3f Position() const;
         GLuint VertexBuffer() const;
         GLuint UVBuffer() const;
 
