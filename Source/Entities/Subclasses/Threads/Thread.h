@@ -7,12 +7,9 @@ class Thread : public virtual Entity {
     private:
         std::thread worker;
     public:
-        static constexpr Entity::TypeId Type = 1;
+        GIVE_TYPE_ID_1(1, Entity)
 
-        static constexpr bool IsOfType(Entity::TypeId type) {
-            return type == Type || Entity::IsOfType(type);
-        }
-
+        DELETE_ILLEGAL_CONSTRUCTORS(Thread)
         explicit Thread();
         virtual ~Thread() {}
 

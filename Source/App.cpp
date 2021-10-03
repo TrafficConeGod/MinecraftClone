@@ -1,11 +1,9 @@
-#include "MainThread.h"
+#include "AppController.h"
 #include "EntityReference.h"
 #include <iostream>
 
 int main() {
-    EntityReference<MainThread> mainThread = new MainThread();
-
-    mainThread->Join();
+    EntityReference<AppController> appController = new AppController();
 
     return 0;
 }
