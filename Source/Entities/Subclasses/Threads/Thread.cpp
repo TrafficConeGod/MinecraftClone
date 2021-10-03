@@ -8,9 +8,11 @@ Thread::Thread() : Entity() {
 
     worker = std::thread([&]() {
         try {
+            Start();
             while (active) {
                 Update();
             }
+            Stop();
         } catch (...) {
             exceptionPtr = std::current_exception();
         }

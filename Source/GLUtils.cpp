@@ -4,6 +4,7 @@
 #include <sstream>
 #include <vector>
 #include <string.h>
+#include <exception>
 
 // old code ported from another project, its awful i know
 // i am not going to rewrite this nor do i want to, im just gonna treat it as a black box
@@ -23,9 +24,9 @@ GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path)
 		vertex_shader_code = stream.str();
 		vertex_shader_stream.close();
 	} else {
-		printf("Impossible to open %s. Are you in the right directory ? Don't forget to read the FAQ !\n", vertex_file_path);
-		getchar();
-		return 0;
+		std::stringstream stream;
+		stream << "Impossible to open" << vertex_file_path << "Are you in the right directory ? Don't forget to read the FAQ !\n";
+		throw std::runtime_error(stream.str());
 	}
 
 	// Read the Fragment Shader code from the file
@@ -111,16 +112,13 @@ GLuint LoadBMP(const char* path) {
 
 	FILE* file = fopen(path, "rb");
 	if (!file){
-		puts("Image could not be opened");
-		return 0;
+		throw std::runtime_error("Image could not be opened");
 	}
 	if (fread(header, 1, 54, file) != 54) {
-		puts("Image is too small");
-		return 0;
+		throw std::runtime_error("Image is too small");
 	}
 	if (header[0] != 'B' || header[1] != 'M') {
-		puts("Not a valid BMP file");
-		return 0;
+		throw std::runtime_error("Not a valid BMP file");
 	}
 
 	data_pos = *(int*)&(header[0x0A]);
@@ -156,10 +154,10 @@ GLuint LoadDDS(const char* path){
  
 	/* try to open the file */ 
 	fp = fopen(path, "rb"); 
-	if (fp == NULL){
-		printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", path);
-		getchar(); 
-		return 0;
+	if (fp == NULL) {
+		std::stringstream stream;
+		stream << path << "could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n";
+		throw std::runtime_error(stream.str());
 	}
    
 	/* verify the type of file */ 

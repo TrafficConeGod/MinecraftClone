@@ -25,6 +25,7 @@ class RenderThread : public virtual Thread {
         explicit RenderThread(const std::vector<EntityReference<GraphicsNode>>& nodes);
         virtual ~RenderThread() {}
 
+        virtual void Start() override;
         virtual void Update() override;
 
         void AddNode(EntityReference<GraphicsNode> node);

@@ -16,7 +16,9 @@ class Thread : public virtual Entity {
         explicit Thread();
         virtual ~Thread();
 
+        virtual void Start() {}
         virtual void Update() {}
+        virtual void Stop() {}
 
         void Join();
 };

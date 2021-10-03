@@ -15,8 +15,10 @@ void RenderThread::AddNode(EntityReference<GraphicsNode> node) {
     nodes.push_back(node);
 }
 
-RenderThread::RenderThread(const std::vector<EntityReference<GraphicsNode>>& vNodes) : Thread(), nodes{vNodes}, clock{std::chrono::system_clock::now()} {
-    if (!glfwInit()) {
+RenderThread::RenderThread(const std::vector<EntityReference<GraphicsNode>>& vNodes) : Thread(), nodes{vNodes}, clock{std::chrono::system_clock::now()} {}
+
+void RenderThread::Start() {
+	if (!glfwInit()) {
         throw std::runtime_error("Failed to initialize GLFW");
     }
     glfwWindowHint(GLFW_SAMPLES, 4);
