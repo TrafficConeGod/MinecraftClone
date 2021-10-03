@@ -4,12 +4,13 @@ ChunksGeneratorThread::ChunksGeneratorThread(const Generated& vGenerated) : gene
 
 void ChunksGeneratorThread::Start() {
     std::array<Chunk::Block, Chunk::Blocks> blocks;
-    blocks.at(100) = { Chunk::Block::Type::Stone };
+    blocks.at(99).type = Chunk::Block::Type::Stone;
+    blocks.at(100).type = Chunk::Block::Type::Stone;
     generated.Fire(Vector3u(0, 0, 0), blocks);
 }
 
 void ChunksGeneratorThread::Update() {
-    std::cout << "generator update\n";
+    // std::cout << "generator update\n";
 }
 
 void ChunksGeneratorThread::CameraUpdate(const Vector3f& position) {

@@ -87,7 +87,7 @@ void RenderThread::Update() {
 	
 	glm::mat4 proj = glm::perspective(glm::radians(45.0f), 16.0f / 9.0f, 0.1f, 100.0f);
 	glm::mat4 view = glm::lookAt(
-		glm::vec3(4, 3, 3),
+		glm::vec3(10, 10, 10),
 		glm::vec3(0, 0, 0),
 		glm::vec3(sin(0), cos(0), 0)
 	);
