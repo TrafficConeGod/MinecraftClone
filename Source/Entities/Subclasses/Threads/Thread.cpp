@@ -8,7 +8,7 @@ Thread::Thread() : Entity() {
 
     worker = std::thread([&]() {
         try {
-            while (true) {
+            while (active) {
                 Update();
             }
         } catch (...) {
@@ -25,13 +25,11 @@ Thread::Thread() : Entity() {
     }
 }
 
-void Thread::Join() {
-    worker.join();
+Thread::~Thread() {
+    active = false;
+    Join();
 }
 
-std::vector<std::mutex> mutexes(1);
-
-void Thread::Capture(MutexId mutex, std::function<void()> context) {
-    std::lock_guard<std::mutex> lock(mutexes.at(mutex));
-    context();
+void Thread::Join() {
+    worker.join();
 }
