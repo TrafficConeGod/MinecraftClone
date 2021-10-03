@@ -22,6 +22,7 @@ class ChunksGeneratorThread : public virtual Thread {
         explicit ChunksGeneratorThread(const Generated& generated = Generated());
         virtual ~ChunksGeneratorThread() {}
 
+        virtual void Start() override;
         virtual void Update() override;
 
         void CameraUpdate(const Vector3f& position);

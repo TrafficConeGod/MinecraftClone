@@ -2,6 +2,12 @@
 
 ChunksGeneratorThread::ChunksGeneratorThread(const Generated& vGenerated) : generated{vGenerated} {}
 
+void ChunksGeneratorThread::Start() {
+    std::array<Chunk::Block, Chunk::BlocksSize> blocks;
+    blocks.at(100) = { Chunk::Block::Type::Stone };
+    generated.Fire(blocks);
+}
+
 void ChunksGeneratorThread::Update() {
     std::cout << "generator update\n";
 }

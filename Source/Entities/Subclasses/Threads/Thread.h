@@ -6,6 +6,7 @@
 
 class Thread : public virtual Entity {
     private:
+        bool joined = false;
         std::thread worker;
 
         std::atomic<bool> active = true;

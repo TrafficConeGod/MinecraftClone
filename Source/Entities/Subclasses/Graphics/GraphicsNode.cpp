@@ -7,6 +7,7 @@ GraphicsNode::GraphicsNode(GLuint vVertexBuffer, GLuint vUvBuffer, const RenderM
 void GraphicsNode::UseMesh(std::function<void(RenderMesh&)> context) { std::lock_guard<std::mutex> lock(meshMutex); context(mesh); }
 void GraphicsNode::UseMeshConst(std::function<void(const RenderMesh&)> context) { std::lock_guard<std::mutex> lock(meshMutex); context(mesh); }
 Vector3f GraphicsNode::Position() const { return position; }
+void GraphicsNode::Position(const Vector3f& vPosition) { std::lock_guard<std::mutex> lock(positionMutex); position = vPosition; }
 GLuint GraphicsNode::VertexBuffer() const { return vertexBuffer; }
 GLuint GraphicsNode::UVBuffer() const { return uvBuffer; }
 

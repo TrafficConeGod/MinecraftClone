@@ -15,7 +15,7 @@ class Chunk : public virtual Entity {
                 Grass,
                 Stone
             };
-            Type type;
+            Type type = Type::Air;
         };
         
         static constexpr std::size_t BlocksSize = 4096;

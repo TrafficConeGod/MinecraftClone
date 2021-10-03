@@ -2,6 +2,7 @@
 #include "EntityReference.h"
 #include <vector>
 #include <mutex>
+#include <iostream>
 
 Thread::Thread() : Entity() {
     std::exception_ptr exceptionPtr = nullptr;
@@ -28,10 +29,14 @@ Thread::Thread() : Entity() {
 }
 
 Thread::~Thread() {
+    if (!joined) {
+        std::cout << "Thread was destructed without being joined\n";
+    }
     active = false;
     Join();
 }
 
 void Thread::Join() {
+    joined = true;
     worker.join();
 }

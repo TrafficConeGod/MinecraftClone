@@ -43,6 +43,7 @@ class GraphicsNode : public virtual Entity {
         void UseMesh(std::function<void(RenderMesh&)> context);
         void UseMeshConst(std::function<void(const RenderMesh&)> context);
         Vector3f Position() const;
+        void Position(const Vector3f& position);
         GLuint VertexBuffer() const;
         GLuint UVBuffer() const;
 
