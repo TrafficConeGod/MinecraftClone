@@ -14,6 +14,8 @@ class Camera : public virtual Element {
 
         void Position(const Vector3f& position);
         void LookVector(const Vector3f& lookVector);
+
+        Vector2i lastCursorPosition;
     public:
         GIVE_TYPE_ID_1(11, Element)
         

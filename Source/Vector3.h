@@ -51,7 +51,7 @@ struct Vector3 {
         T d = (T)sqrt((double)(a + b + c));
         return d;
     }
-    Vector3<T> Normalize() const {
+    Vector3<T> Unit() const {
         Vector3<T> vec(x, y, z);
         T magnitude = Magnitude();
         return vec / magnitude;

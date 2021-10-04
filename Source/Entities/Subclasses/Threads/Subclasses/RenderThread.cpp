@@ -171,7 +171,7 @@ void RenderThread::Update() {
 		std::lock_guard lock(keysMutex);
 		for (auto& [key, status] : heldKeys) {
 			auto oldStatus = status;
-			status = (glfwGetKey(win, key) == GLFW_PRESS);
+			status = (glfwGetKey(win, key) == GLFW_PRESS) || (glfwGetMouseButton(win, key) == GLFW_PRESS);
 			if (status && !oldStatus) {
 				pressedKeys[key] = false;
 			} else if (status && oldStatus) {

@@ -5,7 +5,7 @@
 #include <iostream>
 #include <chrono>
 
-static constexpr float Delta = 1.f/60.f;
+static constexpr float Delta = 1.f/65.f;
 
 Thread::Thread() : Entity() {
 	auto clock = std::chrono::high_resolution_clock::now();
