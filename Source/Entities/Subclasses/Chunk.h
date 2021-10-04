@@ -38,7 +38,7 @@ class Chunk : public virtual Entity {
         explicit Chunk(const Vector3i& position, const std::array<Block, Blocks>& blocks, EntityReference<GraphicsNode> node);
         virtual ~Chunk() {}
 
-        void SetBlock(std::size_t index, const Block& block);
+        void SetBlock(std::size_t index, const Block& block, GraphicsNode::Mesh& mesh);
         void SetBlock(const Vector3u& position, const Block& block);
 
         void Update();

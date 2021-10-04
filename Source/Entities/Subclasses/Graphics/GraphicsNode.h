@@ -19,7 +19,7 @@ class GraphicsNode : public virtual Entity {
             std::array<Vector2f, 3> vertices;
         };
 
-        struct RenderMesh {
+        struct Mesh {
             std::vector<Triangle> triangles;
             std::vector<UVTriangle> uvTriangles;
         };
@@ -32,16 +32,16 @@ class GraphicsNode : public virtual Entity {
         Vector3f position;
 
         std::mutex meshMutex;
-        RenderMesh mesh;
+        Mesh mesh;
     public:
         GIVE_TYPE_ID_1(5, Entity)
         
         DELETE_ILLEGAL_CONSTRUCTORS(GraphicsNode)
-        explicit GraphicsNode(GLuint vertexBuffer, GLuint uvBuffer, const RenderMesh& mesh);
+        explicit GraphicsNode(GLuint vertexBuffer, GLuint uvBuffer, const Mesh& mesh);
         virtual ~GraphicsNode() {}
         
-        void UseMesh(std::function<void(RenderMesh&)> context);
-        void UseMeshConst(std::function<void(const RenderMesh&)> context);
+        void UseMesh(std::function<void(Mesh&)> context);
+        void UseMeshConst(std::function<void(const Mesh&)> context);
         Vector3f Position() const;
         void Position(const Vector3f& position);
         GLuint VertexBuffer() const;

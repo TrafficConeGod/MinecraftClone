@@ -45,7 +45,7 @@ class RenderThread : public virtual Thread {
         virtual ~RenderThread() {}
 
         void AddNode(EntityReference<GraphicsNode> node);
-        EntityReference<GraphicsNode> CreateNode(const GraphicsNode::RenderMesh& mesh);
+        EntityReference<GraphicsNode> CreateNode(const GraphicsNode::Mesh& mesh);
         EntityReference<GraphicsNode> RemoveNode(std::size_t index);
 
         void UpdateCamera(const Vector3f& position, const Vector3f& lookVector);

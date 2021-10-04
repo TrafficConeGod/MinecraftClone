@@ -14,7 +14,7 @@ void RenderThread::AddNode(EntityReference<GraphicsNode> node) {
     nodes.push_back(node);
 }
 
-EntityReference<GraphicsNode> RenderThread::CreateNode(const GraphicsNode::RenderMesh& mesh) {
+EntityReference<GraphicsNode> RenderThread::CreateNode(const GraphicsNode::Mesh& mesh) {
 	EntityReference<GraphicsNode> node = new GraphicsNode(currentVertexBufferId, currentUvBufferId, mesh);
 	AddNode(node);
 	std::lock_guard lock(bufferIdMutex);
