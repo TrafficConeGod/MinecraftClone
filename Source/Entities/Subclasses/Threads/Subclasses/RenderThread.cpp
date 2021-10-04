@@ -52,9 +52,10 @@ Vector2i RenderThread::CursorPosition() {
 	return cursorPosition;
 }
 
-void RenderThread::UpdateCamera(const Vector3f& position) {
-	std::lock_guard lock(cameraPositionMutex);
+void RenderThread::UpdateCamera(const Vector3f& position, const Vector3f& lookVector) {
+	std::lock_guard lock(cameraCoordMutex);
 	cameraPosition = position;
+	cameraLookVector = lookVector;
 }
 
 RenderThread::RenderThread(const std::vector<EntityReference<GraphicsNode>>& vNodes) : Thread(), nodes{vNodes} {}
@@ -114,14 +115,15 @@ void RenderThread::Update() {
 	
 	glm::mat4 proj = glm::perspective(glm::radians(45.0f), 16.0f / 9.0f, 0.1f, 100.0f);
 	Vector3f currentCameraPosition;
+	Vector3f currentCameraLookVector;
 	{
-		std::lock_guard lock(cameraPositionMutex);
+		std::lock_guard lock(cameraCoordMutex);
 		currentCameraPosition = cameraPosition;
+		currentCameraLookVector = cameraLookVector;
 	}
-	std::cout << currentCameraPosition << "\n";
 	glm::mat4 view = glm::lookAt(
 		currentCameraPosition.GLM(),
-		(currentCameraPosition + Vector3f(1, -1, 1)).GLM(),
+		(currentCameraPosition + currentCameraLookVector).GLM(),
 		glm::vec3(sin(0), cos(0), 0)
 	);
 	glm::mat4 view_proj = proj * view;

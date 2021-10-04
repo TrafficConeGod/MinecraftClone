@@ -15,8 +15,8 @@ AppController::AppController() : Entity() {
 		[&](auto key) { return renderThread->IsKeyHeld(key); },
 		[&]() { return renderThread->CursorPosition(); }
 	);
-	EntityReference<UserInterfaceThread> userInterfaceThread = new UserInterfaceThread(userInput, [&](const auto& position) {
-		renderThread->UpdateCamera(position);
+	EntityReference<UserInterfaceThread> userInterfaceThread = new UserInterfaceThread(userInput, [&](const auto& position, const auto& lookVector) {
+		renderThread->UpdateCamera(position, lookVector);
 		chunksThread->UpdateCamera(position);
 	});
 

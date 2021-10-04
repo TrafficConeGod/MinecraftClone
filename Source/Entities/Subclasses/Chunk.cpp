@@ -40,7 +40,6 @@ void Chunk::SetBlock(std::size_t index, const Block& block) {
                     blockMesh.hasIndex = true;
                     blockMesh.index = mesh.triangles.size();
                     Vector3f blockPosition = IndexToPosition(index);
-                    std::cout << blockPosition << "\n";
                     blockPosition = Vector3f(blockPosition.x + 0.5f, blockPosition.y + 0.5f, blockPosition.z + 0.5f);
                     mesh.triangles.push_back({
                         Vector3f(-0.5f + blockPosition.x,-0.5f + blockPosition.y,-0.5f + blockPosition.z),
