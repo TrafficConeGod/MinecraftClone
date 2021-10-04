@@ -4,6 +4,7 @@
 #include "Chunk.h"
 #include <functional>
 #include "ChunksGeneratorThread.h"
+#include <map>
 
 class ChunksThread : public virtual Thread {
     public:
@@ -12,9 +13,13 @@ class ChunksThread : public virtual Thread {
         CreateGraphicsNode createGraphicsNode;
 
         std::mutex chunksMutex;
-        std::vector<EntityReference<Chunk>> chunks;
+        std::map<uint, std::map<uint, std::map<int, EntityReference<Chunk>>>> chunks;
 
         EntityReference<ChunksGeneratorThread> chunksGeneratorThread;
+
+        bool HasChunk(const Vector3i& position);
+        void CreateChunk(const Vector3i& position, const std::array<Chunk::Block, Chunk::Blocks>& blocks);
+        void RemoveChunk(const Vector3i& position);
     protected:
         virtual void Update() override;
     public:
@@ -26,6 +31,4 @@ class ChunksThread : public virtual Thread {
         virtual void JoinSubThreads() override;
 
         void UpdateCamera(const Vector3f& position);
-
-        void CreateChunk(const Vector3i& position, const std::array<Chunk::Block, Chunk::Blocks>& blocks);
 };

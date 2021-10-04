@@ -1,12 +1,17 @@
 #include "ChunksThread.h"
 #include <iostream>
+#include <map>
 
-ChunksThread::ChunksThread(const CreateGraphicsNode& vCreateGraphicsNode) : createGraphicsNode{vCreateGraphicsNode}, chunksGeneratorThread{new ChunksGeneratorThread(std::bind(&ChunksThread::CreateChunk, this, std::placeholders::_1, std::placeholders::_2))} {}
+ChunksThread::ChunksThread(const CreateGraphicsNode& vCreateGraphicsNode) : createGraphicsNode{vCreateGraphicsNode}, chunksGeneratorThread{new ChunksGeneratorThread(std::bind(&ChunksThread::HasChunk, this, std::placeholders::_1), std::bind(&ChunksThread::CreateChunk, this, std::placeholders::_1, std::placeholders::_2), std::bind(&ChunksThread::RemoveChunk, this, std::placeholders::_1))} {}
 
 void ChunksThread::Update() {
     std::lock_guard lock(chunksMutex);
-    for (auto& chunk : chunks) {
-        chunk->Update();
+    for (auto& [x, map] : chunks) {
+        for (auto& [y, map2] : map) {
+            for (auto [z, chunk] : map2) {
+                chunk->Update();
+            }
+        }
     }
 }
 
@@ -18,8 +23,24 @@ void ChunksThread::UpdateCamera(const Vector3f& position) {
     chunksGeneratorThread->UpdateCamera(position);
 }
 
+bool ChunksThread::HasChunk(const Vector3i& position) {
+    std::lock_guard lock(chunksMutex);
+    return chunks.count(position.x) && chunks.at(position.x).count(position.y) && chunks.at(position.x).at(position.y).count(position.z);
+}
+
 void ChunksThread::CreateChunk(const Vector3i& position, const std::array<Chunk::Block, Chunk::Blocks>& blocks) {
     auto node = createGraphicsNode();
     std::lock_guard lock(chunksMutex);
-    chunks.push_back(new Chunk(position, blocks, node));
+    if (!chunks.count(position.x)) {
+        chunks[position.x] = {};
+    }
+    if (!chunks.at(position.x).count(position.y)) {
+        chunks.at(position.x)[position.y] = {};
+    }
+    chunks.at(position.x).at(position.y).insert(std::pair<uint, EntityReference<Chunk>>(position.z, new Chunk(position, blocks, node)));
+}
+
+void ChunksThread::RemoveChunk(const Vector3i& position) {
+    std::lock_guard lock(chunksMutex);
+    chunks.at(position.x).at(position.y).erase(position.z);
 }

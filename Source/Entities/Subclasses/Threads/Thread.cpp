@@ -5,7 +5,9 @@
 #include <iostream>
 #include <chrono>
 
-static constexpr float Delta = 1.f/65.f;
+static constexpr float Delta = 1.f/60.f;
+
+std::mutex clockMutex;
 
 Thread::Thread() : Entity() {
 	auto clock = std::chrono::high_resolution_clock::now();
@@ -16,7 +18,9 @@ Thread::Thread() : Entity() {
         try {
             Start();
             while (active) {
+                clockMutex.lock();
                 auto currentClock = std::chrono::high_resolution_clock::now();
+                clockMutex.unlock();
 
                 std::chrono::duration<float> delta = currentClock - clock;
                 if (delta.count() < Delta) {
