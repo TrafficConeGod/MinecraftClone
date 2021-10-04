@@ -27,5 +27,5 @@ class ChunksThread : public virtual Thread {
 
         void UpdateCamera(const Vector3f& position);
 
-        void CreateChunk(const Vector3u& position, const std::array<Chunk::Block, Chunk::Blocks>& blocks);
+        void CreateChunk(const Vector3i& position, const std::array<Chunk::Block, Chunk::Blocks>& blocks);
 };

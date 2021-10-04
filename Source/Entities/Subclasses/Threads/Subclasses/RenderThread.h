@@ -5,12 +5,12 @@
 #include <mutex>
 #include <chrono>
 #include <GLFW/glfw3.h>
-#include "UserInputEvents.h"
+#include "UserInput.h"
 #include <map>
 
 class RenderThread : public virtual Thread {
     private:
-        using KeyCode = UserInputEvents::KeyCode;
+        using KeyCode = UserInput::KeyCode;
     
         std::mutex nodesMutex;
         std::vector<EntityReference<GraphicsNode>> nodes;
@@ -19,6 +19,7 @@ class RenderThread : public virtual Thread {
         std::map<KeyCode, bool> pressedKeys;
         std::map<KeyCode, bool> releasedKeys;
         std::map<KeyCode, bool> heldKeys;
+        Vector2i cursorPosition;
 
         GLFWwindow* win;
         GLuint matrixId;
@@ -51,4 +52,5 @@ class RenderThread : public virtual Thread {
         bool IsKeyPressed(KeyCode key);
         bool IsKeyReleased(KeyCode key);
         bool IsKeyHeld(KeyCode key);
+        Vector2i CursorPosition();
 };

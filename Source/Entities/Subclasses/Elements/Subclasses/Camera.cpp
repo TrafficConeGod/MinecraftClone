@@ -12,25 +12,26 @@ void Camera::Position(const Vector3f& vPosition) {
     coordUpdate(position);
 }
 
-void Camera::Update(const UserInputEvents& userInputEvents) {
+void Camera::Update(const UserInput& userInput) {
     // wasdqe movement
+    std::cout << userInput.CursorPosition() << "\n";
     Vector3f inputVector;
-    if (userInputEvents.IsKeyHeld(GLFW_KEY_W)) {
+    if (userInput.IsKeyHeld(GLFW_KEY_W)) {
         inputVector += Vector3f(1, 0, 0);
     }
-    if (userInputEvents.IsKeyHeld(GLFW_KEY_S)) {
+    if (userInput.IsKeyHeld(GLFW_KEY_S)) {
         inputVector -= Vector3f(1, 0, 0);
     }
-    if (userInputEvents.IsKeyHeld(GLFW_KEY_E)) {
+    if (userInput.IsKeyHeld(GLFW_KEY_E)) {
         inputVector += Vector3f(0, 1, 0);
     }
-    if (userInputEvents.IsKeyHeld(GLFW_KEY_Q)) {
+    if (userInput.IsKeyHeld(GLFW_KEY_Q)) {
         inputVector -= Vector3f(0, 1, 0);
     }
-    if (userInputEvents.IsKeyHeld(GLFW_KEY_A)) {
+    if (userInput.IsKeyHeld(GLFW_KEY_A)) {
         inputVector += Vector3f(0, 0, 1);
     }
-    if (userInputEvents.IsKeyHeld(GLFW_KEY_D)) {
+    if (userInput.IsKeyHeld(GLFW_KEY_D)) {
         inputVector -= Vector3f(0, 0, 1);
     }
     Vector3f moveVector = inputVector * Speed;

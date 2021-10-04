@@ -28,6 +28,10 @@ struct Vector2 {
     inline glm::vec2 GLM() const {
         return glm::vec2(x, y);
     }
+    template<typename T2>
+    operator Vector2<T2>() const {
+        return Vector2<T2>(x, y);
+    }
 };
 
 using Vector2f = Vector2<float>;

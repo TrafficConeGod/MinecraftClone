@@ -4,8 +4,11 @@ ChunksGeneratorThread::ChunksGeneratorThread(const CreateChunk& vCreateChunk) : 
 
 void ChunksGeneratorThread::Start() {
     std::array<Chunk::Block, Chunk::Blocks> blocks;
-    blocks.at(99).type = Chunk::Block::Type::Stone;
-    blocks.at(100).type = Chunk::Block::Type::Stone;
+    for (uint x = 0; x < Chunk::Bounds; x++) {
+        for (uint z = 0; z < Chunk::Bounds; z++) {
+            blocks.at(Chunk::PositionToIndex(Vector3u(x, 0, z))).type = Chunk::Block::Type::Stone;
+        }
+    }
     createChunk(Vector3u(0, 0, 0), blocks);
 }
 

@@ -47,6 +47,11 @@ bool RenderThread::IsKeyHeld(KeyCode key) {
 	return heldKeys.at(key);
 }
 
+Vector2i RenderThread::CursorPosition() {
+	std::lock_guard lock(keysMutex);
+	return cursorPosition;
+}
+
 void RenderThread::UpdateCamera(const Vector3f& position) {
 	std::lock_guard lock(cameraPositionMutex);
 	cameraPosition = position;
@@ -116,7 +121,7 @@ void RenderThread::Update() {
 	std::cout << currentCameraPosition << "\n";
 	glm::mat4 view = glm::lookAt(
 		currentCameraPosition.GLM(),
-		(currentCameraPosition + Vector3f(1, 0, 0)).GLM(),
+		(currentCameraPosition + Vector3f(1, -1, 1)).GLM(),
 		glm::vec3(sin(0), cos(0), 0)
 	);
 	glm::mat4 view_proj = proj * view;
@@ -175,6 +180,9 @@ void RenderThread::Update() {
 				releasedKeys[key] = false;
 			}
 		}
+		Vector2<double> position;
+		glfwGetCursorPos(win, &position.x, &position.y);
+		cursorPosition = position;
 	}
 
 	// if (glfwWindowShouldClose(win)) {

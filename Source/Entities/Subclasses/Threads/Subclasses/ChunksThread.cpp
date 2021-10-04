@@ -18,7 +18,7 @@ void ChunksThread::UpdateCamera(const Vector3f& position) {
     chunksGeneratorThread->UpdateCamera(position);
 }
 
-void ChunksThread::CreateChunk(const Vector3u& position, const std::array<Chunk::Block, Chunk::Blocks>& blocks) {
+void ChunksThread::CreateChunk(const Vector3i& position, const std::array<Chunk::Block, Chunk::Blocks>& blocks) {
     auto node = createGraphicsNode();
     std::lock_guard lock(chunksMutex);
     chunks.push_back(new Chunk(position, blocks, node));

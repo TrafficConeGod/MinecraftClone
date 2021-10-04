@@ -8,7 +8,7 @@
 
 class UserInterfaceThread : public virtual Thread {
     private:
-        UserInputEvents userInputEvents;
+        UserInput userInput;
 
         Camera::CoordUpdate updateCamera;
 
@@ -20,6 +20,6 @@ class UserInterfaceThread : public virtual Thread {
         GIVE_TYPE_ID_1(9, Thread)
 
         DELETE_ILLEGAL_CONSTRUCTORS(UserInterfaceThread)
-        explicit UserInterfaceThread(const UserInputEvents& userInputEvents, const Camera::CoordUpdate& updateCamera);
+        explicit UserInterfaceThread(const UserInput& userInput, const Camera::CoordUpdate& updateCamera);
         virtual ~UserInterfaceThread() {}
 };

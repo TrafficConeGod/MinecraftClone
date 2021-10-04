@@ -1,6 +1,6 @@
 #pragma once
 #include "Entity.h"
-#include "UserInputEvents.h"
+#include "UserInput.h"
 
 class Element : public virtual Entity {
     public:
@@ -10,5 +10,5 @@ class Element : public virtual Entity {
         explicit Element() {}
         virtual ~Element() {}
 
-        virtual void Update(const UserInputEvents& userInputEvents) {}
+        virtual void Update(const UserInput& userInput) {}
 };

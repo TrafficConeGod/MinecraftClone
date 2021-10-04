@@ -7,7 +7,7 @@
 
 class ChunksGeneratorThread : public virtual Thread {
     public:
-        using CreateChunk = std::function<void(const Vector3u&, const std::array<Chunk::Block, Chunk::Blocks>&)>;
+        using CreateChunk = std::function<void(const Vector3i&, const std::array<Chunk::Block, Chunk::Blocks>&)>;
     private:
         std::mutex cameraPositionMutex;
         Vector3f cameraPosition;
