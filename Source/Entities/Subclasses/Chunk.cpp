@@ -30,16 +30,15 @@ void Chunk::SetBlock(std::size_t index, const Block& block) {
     BlockMesh& blockMesh = blockMeshes.at(index);
     switch (block.type) {
         case Block::Type::Air: {
-            if (blockMesh.hasIndex) {
+            if (blockMesh.index != 0) {
                 // TODO: Handle block removal
                 throw std::runtime_error("Block removal is not handled yet");
             }
         } break;
         default: {
-            if (!blockMesh.hasIndex) {
+            if (blockMesh.index == 0) {
                 node->UseMesh([&](auto& mesh) {
-                    blockMesh.hasIndex = true;
-                    blockMesh.index = mesh.triangles.size();
+                    blockMesh.index = mesh.triangles.size() + 1;
                     Vector3f blockPosition = IndexToPosition(index);
                     blockPosition = Vector3f(blockPosition.x + 0.5f, blockPosition.y + 0.5f, blockPosition.z + 0.5f);
                     // mesh.triangles.push_back({

@@ -13,7 +13,7 @@ class ChunksThread : public virtual Thread {
         CreateGraphicsNode createGraphicsNode;
 
         std::mutex chunksMutex;
-        std::map<uint, std::map<uint, std::map<int, EntityReference<Chunk>>>> chunks;
+        std::map<int, std::map<int, std::map<int, EntityReference<Chunk>>>> chunks;
 
         EntityReference<ChunksGeneratorThread> chunksGeneratorThread;
 

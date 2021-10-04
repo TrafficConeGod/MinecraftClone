@@ -51,6 +51,9 @@ struct Vector3 {
         T d = (T)sqrt((double)(a + b + c));
         return d;
     }
+    T ApproximateMagnitude() const {
+        return abs((x + y + z) / 3);
+    }
     Vector3<T> Unit() const {
         Vector3<T> vec(x, y, z);
         T magnitude = Magnitude();

@@ -10,7 +10,7 @@
 class Chunk : public virtual Entity {
     public:
         struct Block {
-            enum class Type {
+            enum class Type : u_char {
                 Air,
                 Grass,
                 Stone
@@ -19,8 +19,7 @@ class Chunk : public virtual Entity {
         };
         
         struct BlockMesh {
-            bool hasIndex = false;
-            std::size_t index = 0;
+            uint index = 0;
         };
         
         static constexpr std::size_t Bounds = 16;
