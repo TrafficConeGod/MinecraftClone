@@ -1,10 +1,8 @@
 #include "UserInterfaceThread.h"
 
-UserInterfaceThread::UserInterfaceThread(CameraUpdated vCameraUpdated) : cameraUpdated{vCameraUpdated}, camera{new Camera(
-    Camera::Updated([&](const Vector3f& position) {
-        vCameraUpdated.Fire(position);
-    })
-)} {
+UserInterfaceThread::UserInterfaceThread(const Camera::Update& vUpdateCamera) : updateCamera{vUpdateCamera}, camera{new Camera([&](const Vector3f& position) {
+    vUpdateCamera(position);
+})} {
     elements.push_back(camera);
 }
 

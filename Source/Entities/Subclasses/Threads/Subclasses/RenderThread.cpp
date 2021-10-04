@@ -14,12 +14,14 @@ void RenderThread::AddNode(EntityReference<GraphicsNode> node) {
     nodes.push_back(node);
 }
 
+std::mutex bufferIdMutex;
 GLuint currentVertexBufferId = 0;
 GLuint currentUvBufferId = 0;
 
 EntityReference<GraphicsNode> RenderThread::CreateNode(const GraphicsNode::RenderMesh& mesh) {
 	EntityReference<GraphicsNode> node = new GraphicsNode(currentVertexBufferId, currentUvBufferId, mesh);
 	AddNode(node);
+	std::lock_guard lock(bufferIdMutex);
 	currentVertexBufferId++;
 	currentUvBufferId++;
 	return node;

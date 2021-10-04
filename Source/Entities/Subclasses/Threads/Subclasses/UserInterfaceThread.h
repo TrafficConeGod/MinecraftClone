@@ -3,14 +3,12 @@
 #include "EntityReference.h"
 #include "Camera.h"
 #include "Element.h"
-#include "Event.h"
+#include <functional>
 #include <vector>
 
 class UserInterfaceThread : public virtual Thread {
-    public:
-        using CameraUpdated = Event<const Vector3f&>;
     private:
-        CameraUpdated cameraUpdated;
+        Camera::Update updateCamera;
 
         EntityReference<Camera> camera;
         std::vector<EntityReference<Element>> elements;
@@ -20,6 +18,6 @@ class UserInterfaceThread : public virtual Thread {
         GIVE_TYPE_ID_1(9, Thread)
 
         DELETE_ILLEGAL_CONSTRUCTORS(UserInterfaceThread)
-        explicit UserInterfaceThread(CameraUpdated cameraUpdated = CameraUpdated());
+        explicit UserInterfaceThread(const Camera::Update& updateCamera);
         virtual ~UserInterfaceThread() {}
 };

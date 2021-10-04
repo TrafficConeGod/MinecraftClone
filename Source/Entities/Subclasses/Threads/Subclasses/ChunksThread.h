@@ -2,16 +2,14 @@
 #include "Thread.h"
 #include "EntityReference.h"
 #include "Chunk.h"
-#include "Event.h"
+#include <functional>
 #include "ChunksGeneratorThread.h"
 
 class ChunksThread : public virtual Thread {
     public:
-        using GraphicsNodeRequested = Event<char>;
+        using CreateGraphicsNode = std::function<EntityReference<GraphicsNode>()>;
     private:
-        GraphicsNodeRequested graphicsNodeRequested;
-        std::mutex requestedGraphicsNodeMutex;
-        EntityReference<GraphicsNode> requestedGraphicsNode = nullptr;
+        CreateGraphicsNode createGraphicsNode;
 
         std::mutex chunksMutex;
         std::vector<EntityReference<Chunk>> chunks;
@@ -23,13 +21,11 @@ class ChunksThread : public virtual Thread {
         GIVE_TYPE_ID_1(3, Thread)
 
         DELETE_ILLEGAL_CONSTRUCTORS(ChunksThread)
-        explicit ChunksThread(const GraphicsNodeRequested& graphicsNodeRequested = GraphicsNodeRequested());
+        explicit ChunksThread(const CreateGraphicsNode& createGraphicsNode);
         virtual ~ChunksThread() {}
         virtual void JoinSubThreads() override;
 
-        void CameraUpdate(const Vector3f& position);
+        void UpdateCamera(const Vector3f& position);
 
         void CreateChunk(const Vector3u& position, const std::array<Chunk::Block, Chunk::Blocks>& blocks);
-
-        void RequestedGraphicsNode(EntityReference<GraphicsNode> graphicsNodeRequested);
 };
