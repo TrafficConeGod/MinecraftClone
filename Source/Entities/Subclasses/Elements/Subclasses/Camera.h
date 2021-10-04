@@ -5,9 +5,9 @@
 
 class Camera : public virtual Element {
     public:
-        using Update = std::function<void(const Vector3f&)>;
+        using CoordUpdate = std::function<void(const Vector3f&)>;
     private:
-        Update update;
+        CoordUpdate coordUpdate;
 
         Vector3f position;
 
@@ -16,7 +16,8 @@ class Camera : public virtual Element {
         GIVE_TYPE_ID_1(11, Element)
         
         DELETE_ILLEGAL_CONSTRUCTORS(Camera)
-        explicit Camera(const Update& update);
+        explicit Camera(const CoordUpdate& coordUpdate);
         virtual ~Camera() {}
-        
+
+        virtual void Update(const UserInputEvents& userInputEvents) override;
 };

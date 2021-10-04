@@ -8,7 +8,9 @@
 
 class UserInterfaceThread : public virtual Thread {
     private:
-        Camera::Update updateCamera;
+        UserInputEvents userInputEvents;
+
+        Camera::CoordUpdate updateCamera;
 
         EntityReference<Camera> camera;
         std::vector<EntityReference<Element>> elements;
@@ -18,6 +20,6 @@ class UserInterfaceThread : public virtual Thread {
         GIVE_TYPE_ID_1(9, Thread)
 
         DELETE_ILLEGAL_CONSTRUCTORS(UserInterfaceThread)
-        explicit UserInterfaceThread(const Camera::Update& updateCamera);
+        explicit UserInterfaceThread(const UserInputEvents& userInputEvents, const Camera::CoordUpdate& updateCamera);
         virtual ~UserInterfaceThread() {}
 };

@@ -14,10 +14,6 @@ void RenderThread::AddNode(EntityReference<GraphicsNode> node) {
     nodes.push_back(node);
 }
 
-std::mutex bufferIdMutex;
-GLuint currentVertexBufferId = 0;
-GLuint currentUvBufferId = 0;
-
 EntityReference<GraphicsNode> RenderThread::CreateNode(const GraphicsNode::RenderMesh& mesh) {
 	EntityReference<GraphicsNode> node = new GraphicsNode(currentVertexBufferId, currentUvBufferId, mesh);
 	AddNode(node);
@@ -25,6 +21,30 @@ EntityReference<GraphicsNode> RenderThread::CreateNode(const GraphicsNode::Rende
 	currentVertexBufferId++;
 	currentUvBufferId++;
 	return node;
+}
+
+bool RenderThread::IsKeyPressed(KeyCode key) {
+	std::lock_guard lock(keysMutex);
+	if (!pressedKeys.count(key)) {
+		pressedKeys[key] = false;
+	}
+	return pressedKeys.at(key);
+}
+
+bool RenderThread::IsKeyReleased(KeyCode key) {
+	std::lock_guard lock(keysMutex);
+	if (!releasedKeys.count(key)) {
+		releasedKeys[key] = false;
+	}
+	return releasedKeys.at(key);
+}
+
+bool RenderThread::IsKeyHeld(KeyCode key) {
+	std::lock_guard lock(keysMutex);
+	if (!heldKeys.count(key)) {
+		heldKeys[key] = false;
+	}
+	return heldKeys.at(key);
 }
 
 RenderThread::RenderThread(const std::vector<EntityReference<GraphicsNode>>& vNodes) : Thread(), nodes{vNodes} {}
@@ -128,6 +148,23 @@ void RenderThread::Update() {
 
 	glfwSwapBuffers(win);
 	glfwPollEvents();
+
+	{
+		std::lock_guard lock(keysMutex);
+		for (auto& [key, status] : heldKeys) {
+			auto oldStatus = status;
+			status = (glfwGetKey(win, key) == GLFW_PRESS);
+			if (status && !oldStatus) {
+				pressedKeys[key] = false;
+			} else if (status && oldStatus) {
+				pressedKeys[key] = false;
+			} else if (!status && oldStatus) {
+				releasedKeys[key] = true;
+			} else if (!status && !oldStatus) {
+				releasedKeys[key] = false;
+			}
+		}
+	}
 
 	// if (glfwWindowShouldClose(win)) {
 	// 	scene.destroy();

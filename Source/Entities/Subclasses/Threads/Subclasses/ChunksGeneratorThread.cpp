@@ -14,6 +14,6 @@ void ChunksGeneratorThread::Update() {
 }
 
 void ChunksGeneratorThread::UpdateCamera(const Vector3f& position) {
-    std::lock_guard<std::mutex> lock(cameraPositionMutex);
+    std::lock_guard lock(cameraPositionMutex);
     cameraPosition = position;
 }
