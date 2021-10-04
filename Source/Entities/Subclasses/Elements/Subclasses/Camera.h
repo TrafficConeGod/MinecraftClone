@@ -16,7 +16,7 @@ class Camera : public virtual Element {
         GIVE_TYPE_ID_1(11, Element)
         
         DELETE_ILLEGAL_CONSTRUCTORS(Camera)
-        explicit Camera(const CoordUpdate& coordUpdate);
+        explicit Camera(const CoordUpdate& coordUpdate, const Vector3f& position);
         virtual ~Camera() {}
 
         virtual void Update(const UserInputEvents& userInputEvents) override;

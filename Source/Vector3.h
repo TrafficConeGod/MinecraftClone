@@ -65,6 +65,6 @@ struct Vector3 {
     }
 };
 
-typedef Vector3<float> Vector3f;
-typedef Vector3<uint> Vector3u;
-typedef Vector3<int> Vector3i;
+using Vector3f = Vector3<float>;
+using Vector3u = Vector3<uint>;
+using Vector3i = Vector3<int>;

@@ -30,6 +30,6 @@ struct Vector2 {
     }
 };
 
-typedef Vector2<float> Vector2f;
-typedef Vector2<uint> Vector2u;
-typedef Vector2<int> Vector2i;
+using Vector2f = Vector2<float>;
+using Vector2u = Vector2<uint>;
+using Vector2i = Vector2<int>;

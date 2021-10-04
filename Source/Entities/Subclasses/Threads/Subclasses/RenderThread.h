@@ -29,6 +29,9 @@ class RenderThread : public virtual Thread {
         std::mutex bufferIdMutex;
         GLuint currentVertexBufferId = 0;
         GLuint currentUvBufferId = 0;
+
+        std::mutex cameraPositionMutex;
+        Vector3f cameraPosition;
     protected:
         virtual void Start() override;
         virtual void Update() override;
@@ -42,6 +45,8 @@ class RenderThread : public virtual Thread {
         void AddNode(EntityReference<GraphicsNode> node);
         EntityReference<GraphicsNode> CreateNode(const GraphicsNode::RenderMesh& mesh);
         EntityReference<GraphicsNode> RemoveNode(std::size_t index);
+
+        void UpdateCamera(const Vector3f& position);
 
         bool IsKeyPressed(KeyCode key);
         bool IsKeyReleased(KeyCode key);
