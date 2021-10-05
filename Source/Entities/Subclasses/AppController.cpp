@@ -6,7 +6,11 @@
 #include "ChunkGraphicsNode.h"
 
 AppController::AppController() : Entity() {
-    EntityReference<RenderThread> renderThread = new RenderThread({});
+    EntityReference<RenderThread> renderThread = new RenderThread([&]() {
+		for (auto& worker : workers) {
+			worker->RequestStop();
+		}
+	}, {});
 	EntityReference<ChunksThread> chunksThread = new ChunksThread([&]() {
 		return renderThread->AddNode(new ChunkGraphicsNode(renderThread->VertexBufferId(), renderThread->UVBufferId(), {}));
 	});
@@ -23,6 +27,7 @@ AppController::AppController() : Entity() {
 
     workers.push_back(renderThread);
     workers.push_back(chunksThread);
+    workers.push_back(userInterfaceThread);
 
     for (auto& worker : workers) {
         worker->Join();

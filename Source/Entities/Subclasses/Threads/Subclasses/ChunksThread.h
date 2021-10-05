@@ -22,13 +22,14 @@ class ChunksThread : public virtual Thread {
         void RemoveChunk(const Vector3i& position);
     protected:
         virtual void Update(float delta) override;
+        virtual void JoinSubThreads() override;
+        virtual void RequestSubThreadsStop() override;
     public:
         GIVE_TYPE_ID_1(3, Thread)
 
         DELETE_ILLEGAL_CONSTRUCTORS(ChunksThread)
         explicit ChunksThread(const CreateGraphicsNode& createGraphicsNode);
         virtual ~ChunksThread() {}
-        virtual void JoinSubThreads() override;
 
         void UpdateCamera(const Vector3f& position);
 };

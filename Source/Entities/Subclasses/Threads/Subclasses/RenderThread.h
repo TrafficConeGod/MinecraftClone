@@ -9,8 +9,12 @@
 #include <map>
 
 class RenderThread : public virtual Thread {
+    public:
+        using StopApplication = std::function<void()>;
     private:
         using KeyCode = UserInput::KeyCode;
+
+        StopApplication stopApplication;
     
         std::mutex nodesMutex;
         std::vector<EntityReference<GraphicsNode>> nodes;
@@ -41,7 +45,7 @@ class RenderThread : public virtual Thread {
         GIVE_TYPE_ID_1(4, Thread)
 
         DELETE_ILLEGAL_CONSTRUCTORS(RenderThread)
-        explicit RenderThread(const std::vector<EntityReference<GraphicsNode>>& nodes);
+        explicit RenderThread(const StopApplication& stopApplication, const std::vector<EntityReference<GraphicsNode>>& nodes);
         virtual ~RenderThread() {}
 
         EntityReference<GraphicsNode> AddNode(EntityReference<GraphicsNode> node);

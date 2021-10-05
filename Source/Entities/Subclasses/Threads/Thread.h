@@ -14,6 +14,8 @@ class Thread : public virtual Entity {
         virtual void Start() {}
         virtual void Update(float delta) {}
         virtual void Stop() {}
+
+        virtual void RequestSubThreadsStop() {}
     public:
         GIVE_TYPE_ID_1(1, Entity)
 
@@ -24,4 +26,5 @@ class Thread : public virtual Entity {
         virtual void JoinSubThreads() {}
 
         void Join();
+        void RequestStop();
 };

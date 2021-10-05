@@ -60,7 +60,7 @@ void RenderThread::UpdateCamera(const Vector3f& position, const Vector3f& lookVe
 	cameraLookVector = lookVector;
 }
 
-RenderThread::RenderThread(const std::vector<EntityReference<GraphicsNode>>& vNodes) : Thread(), nodes{vNodes} {}
+RenderThread::RenderThread(const StopApplication& vStopApplication, const std::vector<EntityReference<GraphicsNode>>& vNodes) : stopApplication{vStopApplication}, nodes{vNodes} {}
 
 void RenderThread::Start() {
 	if (!glfwInit()) {
@@ -153,8 +153,7 @@ void RenderThread::Update(float delta) {
 		cursorPosition = position;
 	}
 
-	// if (glfwWindowShouldClose(win)) {
-	// 	scene.destroy();
-	// 	break;
-	// }
+	if (glfwWindowShouldClose(win)) {
+		stopApplication();
+	}
 }

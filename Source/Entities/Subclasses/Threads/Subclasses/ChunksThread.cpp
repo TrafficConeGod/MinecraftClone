@@ -19,6 +19,10 @@ void ChunksThread::JoinSubThreads() {
     chunksGeneratorThread->Join();
 }
 
+void ChunksThread::RequestSubThreadsStop() {
+    chunksGeneratorThread->RequestStop();
+}
+
 void ChunksThread::UpdateCamera(const Vector3f& position) {
     chunksGeneratorThread->UpdateCamera(position);
 }

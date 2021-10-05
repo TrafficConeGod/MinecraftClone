@@ -23,13 +23,15 @@ Thread::Thread() : Entity() {
                 clockMutex.unlock();
 
                 std::chrono::duration<float> delta = currentClock - clock;
+                float deltaTime = delta.count();
                 if (delta.count() < Delta) {
+                    deltaTime = 1/60;
                     float sleepTime = Delta - delta.count();
                     std::this_thread::sleep_for(std::chrono::duration<float>(sleepTime));
                 }
 
                 clock = currentClock;
-                Update(delta.count());
+                Update(deltaTime);
             }
             Stop();
         } catch (...) {
@@ -57,4 +59,9 @@ Thread::~Thread() {
 void Thread::Join() {
     joined = true;
     worker.join();
+}
+
+void Thread::RequestStop() {
+    active = false;
+    RequestSubThreadsStop();
 }
