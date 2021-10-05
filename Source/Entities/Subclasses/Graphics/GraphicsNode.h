@@ -44,8 +44,6 @@ class GraphicsNode : public virtual Entity {
         void UseMeshConst(std::function<void(const Mesh&)> context);
         Vector3f Position() const;
         void Position(const Vector3f& position);
-        GLuint VertexBuffer() const;
-        GLuint UVBuffer() const;
 
-        void GenerateBuffers();
+        void Render(const glm::mat4& viewProjection, GLuint matrixId, GLuint textureId, GLuint texture);
 };
