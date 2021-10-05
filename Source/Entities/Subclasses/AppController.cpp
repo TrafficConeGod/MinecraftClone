@@ -6,14 +6,12 @@
 
 AppController::AppController() : Entity() {
     EntityReference<RenderThread> renderThread = new RenderThread({});
-	EntityReference<ChunksThread> chunksThread = new ChunksThread([&]() {
-		return renderThread->CreateNode({});
-	});
+	EntityReference<ChunksThread> chunksThread = new ChunksThread(std::bind(&RenderThread::CreateNode, (RenderThread*)renderThread, GraphicsNode::Mesh{}));
 	UserInput userInput(
-		[&](auto key) { return renderThread->IsKeyPressed(key); },
-		[&](auto key) { return renderThread->IsKeyReleased(key); },
-		[&](auto key) { return renderThread->IsKeyHeld(key); },
-		[&]() { return renderThread->CursorPosition(); }
+		std::bind(&RenderThread::IsKeyPressed, (RenderThread*)renderThread, std::placeholders::_1),
+		std::bind(&RenderThread::IsKeyReleased, (RenderThread*)renderThread, std::placeholders::_1),
+		std::bind(&RenderThread::IsKeyHeld, (RenderThread*)renderThread, std::placeholders::_1),
+		std::bind(&RenderThread::CursorPosition, (RenderThread*)renderThread)
 	);
 	EntityReference<UserInterfaceThread> userInterfaceThread = new UserInterfaceThread(userInput, [&](const auto& position, const auto& lookVector) {
 		renderThread->UpdateCamera(position, lookVector);
