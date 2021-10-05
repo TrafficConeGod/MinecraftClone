@@ -2,9 +2,9 @@
 #include <GLFW/glfw3.h>
 
 static constexpr float Speed = 10.f;
-static constexpr float RotateSpeed = 3.f;
-static constexpr uint WindowSizeX = 1280;
-static constexpr uint WindowSizeY = 720;
+static constexpr float RotateSpeed = 10.f;
+static constexpr int WindowSizeX = 1280;
+static constexpr int WindowSizeY = 720;
 
 Camera::Camera(const CoordUpdate& vCoordUpdate, const Vector3f& vPosition, const Vector3f& vLookVector) : coordUpdate{vCoordUpdate} {
     Position(vPosition);
@@ -26,13 +26,7 @@ void Camera::Update(const UserInput& userInput, float delta) {
         Vector2i cursorPosition = userInput.CursorPosition();
         if (cursorPosition.x >= 0 && cursorPosition.y >= 0 && cursorPosition.x < WindowSizeX && cursorPosition.y < WindowSizeY) {
             Vector2f inputVector = lastCursorPosition - cursorPosition;
-            if (inputVector.Magnitude() > 0) {
-                inputVector = inputVector.Unit();
-                Vector3f moveVector(inputVector.x, 0, inputVector.y);
-                moveVector *= RotateSpeed;
-                moveVector *= delta;
-                LookVector(lookVector + moveVector);
-            }
+            inputVector /= Vector2f(WindowSizeX, WindowSizeY);
             lastCursorPosition = cursorPosition;
         }
     }
