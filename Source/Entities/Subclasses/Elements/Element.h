@@ -10,5 +10,5 @@ class Element : public virtual Entity {
         explicit Element() {}
         virtual ~Element() {}
 
-        virtual void Update(const UserInput& userInput) {}
+        virtual void Update(const UserInput& userInput, float delta) {}
 };

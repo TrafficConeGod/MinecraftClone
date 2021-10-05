@@ -1,8 +1,8 @@
 #include "Camera.h"
 #include <GLFW/glfw3.h>
 
-static constexpr float Speed = 0.1f;
-static constexpr float RotateSpeed = 0.07f;
+static constexpr float Speed = 10.f;
+static constexpr float RotateSpeed = 3.f;
 static constexpr uint WindowSizeX = 1280;
 static constexpr uint WindowSizeY = 720;
 
@@ -21,7 +21,7 @@ void Camera::LookVector(const Vector3f& vLookVector) {
     coordUpdate(position, lookVector);
 }
 
-void Camera::Update(const UserInput& userInput) {
+void Camera::Update(const UserInput& userInput, float delta) {
     if (userInput.IsKeyHeld(GLFW_MOUSE_BUTTON_2)) {
         Vector2i cursorPosition = userInput.CursorPosition();
         if (cursorPosition.x >= 0 && cursorPosition.y >= 0 && cursorPosition.x < WindowSizeX && cursorPosition.y < WindowSizeY) {
@@ -30,6 +30,7 @@ void Camera::Update(const UserInput& userInput) {
                 inputVector = inputVector.Unit();
                 Vector3f moveVector(inputVector.x, 0, inputVector.y);
                 moveVector *= RotateSpeed;
+                moveVector *= delta;
                 LookVector(lookVector + moveVector);
             }
             lastCursorPosition = cursorPosition;
@@ -68,6 +69,7 @@ void Camera::Update(const UserInput& userInput) {
         Vector3f moveVector = (flatLookVector * inputVector.z) + (perpendicularLookVector * inputVector.x) + (verticalLookVector * inputVector.y);
         moveVector = moveVector.Unit();
         moveVector *= Speed;
+        moveVector *= delta;
         Position(position + moveVector);
     }
 }

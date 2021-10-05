@@ -21,7 +21,7 @@ class ChunksThread : public virtual Thread {
         void CreateChunk(const Vector3i& position, const std::array<Chunk::Block, Chunk::Blocks>& blocks);
         void RemoveChunk(const Vector3i& position);
     protected:
-        virtual void Update() override;
+        virtual void Update(float delta) override;
     public:
         GIVE_TYPE_ID_1(3, Thread)
 

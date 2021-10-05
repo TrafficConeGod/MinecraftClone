@@ -36,7 +36,7 @@ class RenderThread : public virtual Thread {
         Vector3f cameraLookVector;
     protected:
         virtual void Start() override;
-        virtual void Update() override;
+        virtual void Update(float delta) override;
     public:
         GIVE_TYPE_ID_1(4, Thread)
 

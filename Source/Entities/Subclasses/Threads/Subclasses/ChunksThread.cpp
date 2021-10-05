@@ -4,7 +4,7 @@
 
 ChunksThread::ChunksThread(const CreateGraphicsNode& vCreateGraphicsNode) : createGraphicsNode{vCreateGraphicsNode}, chunksGeneratorThread{new ChunksGeneratorThread(std::bind(&ChunksThread::HasChunk, this, std::placeholders::_1), std::bind(&ChunksThread::CreateChunk, this, std::placeholders::_1, std::placeholders::_2), std::bind(&ChunksThread::RemoveChunk, this, std::placeholders::_1))} {}
 
-void ChunksThread::Update() {
+void ChunksThread::Update(float delta) {
     std::lock_guard lock(chunksMutex);
     for (auto& [x, map] : chunks) {
         for (auto& [y, map2] : map) {

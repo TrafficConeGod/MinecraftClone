@@ -29,7 +29,7 @@ Thread::Thread() : Entity() {
                 }
 
                 clock = currentClock;
-                Update();
+                Update(delta.count());
             }
             Stop();
         } catch (...) {

@@ -15,7 +15,7 @@ class UserInterfaceThread : public virtual Thread {
         EntityReference<Camera> camera;
         std::vector<EntityReference<Element>> elements;
     protected:
-        virtual void Update() override;
+        virtual void Update(float delta) override;
     public:
         GIVE_TYPE_ID_1(9, Thread)
 

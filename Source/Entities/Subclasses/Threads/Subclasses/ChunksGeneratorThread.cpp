@@ -7,7 +7,7 @@ void ChunksGeneratorThread::Start() {
     
 }
 
-void ChunksGeneratorThread::Update() {
+void ChunksGeneratorThread::Update(float delta) {
     Vector3i currentGeneratorPosition;
     {
         std::lock_guard lock(cameraPositionMutex);

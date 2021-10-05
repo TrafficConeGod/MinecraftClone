@@ -12,7 +12,7 @@ class Thread : public virtual Entity {
         std::atomic<bool> active = true;
     protected:
         virtual void Start() {}
-        virtual void Update() {}
+        virtual void Update(float delta) {}
         virtual void Stop() {}
     public:
         GIVE_TYPE_ID_1(1, Entity)

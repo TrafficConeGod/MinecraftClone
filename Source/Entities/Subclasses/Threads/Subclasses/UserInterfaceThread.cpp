@@ -4,8 +4,8 @@ UserInterfaceThread::UserInterfaceThread(const UserInput& vUserInput, const Came
     elements.push_back(camera);
 }
 
-void UserInterfaceThread::Update() {
+void UserInterfaceThread::Update(float delta) {
     for (auto& element : elements) {
-        element->Update(userInput);
+        element->Update(userInput, delta);
     }
 }

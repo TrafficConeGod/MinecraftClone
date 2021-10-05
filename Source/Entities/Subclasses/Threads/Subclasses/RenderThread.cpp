@@ -107,7 +107,7 @@ void RenderThread::Start() {
     }
 }
 
-void RenderThread::Update() {
+void RenderThread::Update(float delta) {
     // opengl rendering time lets gooooo
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
