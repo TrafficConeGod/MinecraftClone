@@ -26,11 +26,14 @@ class Chunk : public virtual Entity {
         static constexpr float OffsetToCenter = 8.5;
         static constexpr std::size_t Blocks = 4096;
     private:
+        EntityReference<GraphicsNode> node;
         Vector3i position;
         std::array<Block, Blocks> blocks;
         std::array<BlockMesh, Blocks> blockMeshes;
         std::vector<EntityReference<BlockEntity>> blockEntities;
-        EntityReference<GraphicsNode> node;
+
+        void GenerateMesh(GraphicsNode::Mesh& mesh);
+        void RegenerateMeshAt(GraphicsNode::Mesh& mesh, const Vector3u& position);
     public:
         GIVE_TYPE_ID_1(6, Entity)
 
@@ -38,7 +41,6 @@ class Chunk : public virtual Entity {
         explicit Chunk(const Vector3i& position, const std::array<Block, Blocks>& blocks, EntityReference<GraphicsNode> node);
         virtual ~Chunk() {}
 
-        void SetBlock(std::size_t index, const Block& block, GraphicsNode::Mesh& mesh);
         void SetBlock(const Vector3u& position, const Block& block);
 
         void Update();

@@ -1,4 +1,5 @@
 #include "ChunksGeneratorThread.h"
+#include <random>
 
 ChunksGeneratorThread::ChunksGeneratorThread(const HasChunk& vHasChunk, const CreateChunk& vCreateChunk, const RemoveChunk& vRemoveChunk) : hasChunk{vHasChunk}, createChunk{vCreateChunk}, removeChunk{vRemoveChunk} {}
 
@@ -14,22 +15,23 @@ void ChunksGeneratorThread::Update() {
     }
     currentGeneratorPosition /= Chunk::Bounds;
     for (int x = (currentGeneratorPosition.x - chunkGenerationRadius); x < (currentGeneratorPosition.x + chunkGenerationRadius); x++) {
-        for (int y = (currentGeneratorPosition.y - chunkGenerationRadius); y < (currentGeneratorPosition.y + chunkGenerationRadius); y++) {
-            for (int z = (currentGeneratorPosition.z - chunkGenerationRadius); z < (currentGeneratorPosition.z + chunkGenerationRadius); z++) {
-                Vector3i generatingPosition(x, y, z);
-                if (!hasChunk(generatingPosition)) {
-                    GenerateChunk(generatingPosition);
-                }
+        for (int z = (currentGeneratorPosition.z - chunkGenerationRadius); z < (currentGeneratorPosition.z + chunkGenerationRadius); z++) {
+            Vector3i generatingPosition(x, currentGeneratorPosition.y, z);
+            if (!hasChunk(generatingPosition)) {
+                GenerateChunk(generatingPosition);
             }
         }
     }
 }
 
 void ChunksGeneratorThread::GenerateChunk(const Vector3i& position) {
+    std::srand(std::time(NULL));
     std::array<Chunk::Block, Chunk::Blocks> blocks;
     for (uint x = 0; x < Chunk::Bounds; x++) {
         for (uint z = 0; z < Chunk::Bounds; z++) {
-            blocks.at(Chunk::PositionToIndex(Vector3u(x, 0, z))).type = Chunk::Block::Type::Stone;
+            if (std::rand() % 2) {
+                blocks.at(Chunk::PositionToIndex(Vector3u(x, 0, z))).type = Chunk::Block::Type::Stone;
+            }
         }
     }
     createChunk(position, blocks);
