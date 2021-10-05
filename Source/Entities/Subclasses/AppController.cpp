@@ -3,10 +3,13 @@
 #include "ChunksThread.h"
 #include "UserInterfaceThread.h"
 #include "UserInput.h"
+#include "ChunkGraphicsNode.h"
 
 AppController::AppController() : Entity() {
     EntityReference<RenderThread> renderThread = new RenderThread({});
-	EntityReference<ChunksThread> chunksThread = new ChunksThread(std::bind(&RenderThread::CreateNode, (RenderThread*)renderThread, GraphicsNode::Mesh{}));
+	EntityReference<ChunksThread> chunksThread = new ChunksThread([&]() {
+		return renderThread->AddNode(new ChunkGraphicsNode(renderThread->VertexBufferId(), renderThread->UVBufferId(), {}));
+	});
 	UserInput userInput(
 		std::bind(&RenderThread::IsKeyPressed, (RenderThread*)renderThread, std::placeholders::_1),
 		std::bind(&RenderThread::IsKeyReleased, (RenderThread*)renderThread, std::placeholders::_1),

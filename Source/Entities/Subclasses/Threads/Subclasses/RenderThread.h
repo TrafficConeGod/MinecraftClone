@@ -44,8 +44,7 @@ class RenderThread : public virtual Thread {
         explicit RenderThread(const std::vector<EntityReference<GraphicsNode>>& nodes);
         virtual ~RenderThread() {}
 
-        void AddNode(EntityReference<GraphicsNode> node);
-        EntityReference<GraphicsNode> CreateNode(const GraphicsNode::Mesh& mesh);
+        EntityReference<GraphicsNode> AddNode(EntityReference<GraphicsNode> node);
         EntityReference<GraphicsNode> RemoveNode(std::size_t index);
 
         void UpdateCamera(const Vector3f& position, const Vector3f& lookVector);
@@ -54,4 +53,7 @@ class RenderThread : public virtual Thread {
         bool IsKeyReleased(KeyCode key);
         bool IsKeyHeld(KeyCode key);
         Vector2i CursorPosition();
+
+        GLuint VertexBufferId();
+        GLuint UVBufferId();
 };

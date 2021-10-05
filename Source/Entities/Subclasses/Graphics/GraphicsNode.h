@@ -23,8 +23,7 @@ class GraphicsNode : public virtual Entity {
             std::vector<Triangle> triangles;
             std::vector<UVTriangle> uvTriangles;
         };
-    private:
-        std::atomic<bool> buffersGenerated = 0;
+    protected:
         std::atomic<GLuint> vertexBuffer;
         std::atomic<GLuint> uvBuffer;
 
@@ -45,5 +44,5 @@ class GraphicsNode : public virtual Entity {
         Vector3f Position() const;
         void Position(const Vector3f& position);
 
-        void Render(const glm::mat4& viewProjection, GLuint matrixId, GLuint textureId, GLuint texture);
+        virtual void Render(const glm::mat4& viewProjection, GLuint matrixId, GLuint textureId, GLuint texture) {}
 };
