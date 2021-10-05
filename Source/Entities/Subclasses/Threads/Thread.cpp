@@ -51,9 +51,9 @@ Thread::Thread() : Entity() {
 Thread::~Thread() {
     if (!joined) {
         std::cout << "Thread was destructed without being joined\n";
+        active = false;
+        Join();
     }
-    active = false;
-    Join();
 }
 
 void Thread::Join() {
