@@ -26,10 +26,6 @@ class RenderThread : public virtual Thread {
         Vector2i cursorPosition;
 
         GLFWwindow* win;
-        GLuint matrixId;
-        GLuint texture;
-        GLuint textureId;
-        GLuint programId;
 
         std::mutex bufferIdMutex;
         GLuint currentBufferId = 0;

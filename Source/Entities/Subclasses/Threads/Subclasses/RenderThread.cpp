@@ -1,5 +1,6 @@
 #include "RenderThread.h"
 #include "GLUtils.h"
+#include "ChunkGraphicsNode.h"
 
 #include <iostream>
 #include <fstream>
@@ -88,22 +89,16 @@ void RenderThread::Start() {
 
     glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-    programId = LoadShaders("Resources/VertexShader.glsl", "Resources/FragmentShader.glsl");
-
     GLuint vertexArrayId;
     glGenVertexArrays(1, &vertexArrayId);
     glBindVertexArray(vertexArrayId);
 
-	matrixId = glGetUniformLocation(programId, "mvp");
-	texture = LoadDDS("Resources/Grass.dds");
-	textureId = glGetUniformLocation(programId, "texture_sampler");
+	ChunkGraphicsNode::Initialize();
 }
 
 void RenderThread::Update(float delta) {
     // opengl rendering time lets gooooo
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glUseProgram(programId);
 	
 	glm::mat4 proj = glm::perspective(glm::radians(45.0f), 16.0f / 9.0f, 0.1f, 100.0f);
 	Vector3f currentCameraPosition;
@@ -123,7 +118,7 @@ void RenderThread::Update(float delta) {
 	{
         std::lock_guard lock(nodesMutex);
         for (auto& node : nodes) {
-			node->Render(viewProjection, matrixId, textureId, texture);
+			node->Render(viewProjection);
         }
     }
 

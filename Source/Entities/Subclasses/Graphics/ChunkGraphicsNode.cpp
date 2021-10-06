@@ -1,15 +1,24 @@
 #include "ChunkGraphicsNode.h"
-#include <GLFW/glfw3.h>
+#include "GLUtils.h"
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <string>
+GLuint programId;
+GLuint matrixId;
+GLuint texture;
+GLuint textureId;
+
+void ChunkGraphicsNode::Initialize() {
+    programId = LoadShaders("Resources/VertexShader.glsl", "Resources/FragmentShader.glsl");
+    matrixId = glGetUniformLocation(programId, "mvp");
+    texture = LoadDDS("Resources/Grass.dds");
+    textureId = glGetUniformLocation(programId, "textureSampler");
+}
 
 ChunkGraphicsNode::ChunkGraphicsNode(const Vector3f& vPosition, GLuint vVertexBuffer, GLuint vUvBuffer, const Mesh& vMesh) : GraphicsNode(vPosition), vertexBuffer{vVertexBuffer}, uvBuffer{vUvBuffer}, mesh{vMesh} {}
 
 void ChunkGraphicsNode::UseMesh(std::function<void(Mesh&)> context) { std::lock_guard lock(meshMutex); context(mesh); }
 
-void ChunkGraphicsNode::Render(const glm::mat4& viewProjection, GLuint matrixId, GLuint textureId, GLuint texture) {
+void ChunkGraphicsNode::Render(const glm::mat4& viewProjection) {
+    glUseProgram(programId);
     // generate buffers
     if (!buffersGenerated) {
         buffersGenerated = true;

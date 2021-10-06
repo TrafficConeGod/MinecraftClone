@@ -23,5 +23,5 @@ class GraphicsNode : public virtual Entity {
         Vector3f Position() const;
         void Position(const Vector3f& position);
 
-        virtual void Render(const glm::mat4& viewProjection, GLuint matrixId, GLuint textureId, GLuint texture) {}
+        virtual void Render(const glm::mat4& viewProjection) {}
 };

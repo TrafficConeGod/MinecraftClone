@@ -23,6 +23,8 @@ class ChunkGraphicsNode : public virtual GraphicsNode {
         std::mutex meshMutex;
         Mesh mesh;
     public:
+        static void Initialize();
+
         GIVE_TYPE_ID_1(12, GraphicsNode)
 
         DELETE_ILLEGAL_CONSTRUCTORS(ChunkGraphicsNode)
@@ -32,5 +34,5 @@ class ChunkGraphicsNode : public virtual GraphicsNode {
         void UseMesh(std::function<void(Mesh&)> context);
         void UseMeshConst(std::function<void(const Mesh&)> context);
 
-        virtual void Render(const glm::mat4& viewProjection, GLuint matrixId, GLuint textureId, GLuint texture) override;
+        virtual void Render(const glm::mat4& viewProjection) override;
 };
