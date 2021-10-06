@@ -1,6 +1,6 @@
 #include "Chunk.h"
 
-Chunk::Chunk(const Vector3i& vPosition, const std::array<Block, Blocks>& vBlocks, EntityReference<GraphicsNode> vNode) : node{vNode}, position{vPosition}, blocks{vBlocks} {
+Chunk::Chunk(const Vector3i& vPosition, const std::array<Block, Blocks>& vBlocks, EntityReference<ChunkGraphicsNode> vNode) : node{vNode}, position{vPosition}, blocks{vBlocks} {
     Vector3f nodePosition = position;
     nodePosition *= Bounds;
     nodePosition = Vector3f(nodePosition.x - OffsetToCenter, nodePosition.y - OffsetToCenter, nodePosition.z - OffsetToCenter);
@@ -31,7 +31,7 @@ void Chunk::Update() {
     }
 }
 
-void Chunk::GenerateMesh(GraphicsNode::Mesh& mesh) {
+void Chunk::GenerateMesh(Mesh& mesh) {
     // temporary code
     Vector3u blockPosition(0, 0, 0);
     mesh.triangles.push_back({
@@ -157,6 +157,6 @@ void Chunk::GenerateMesh(GraphicsNode::Mesh& mesh) {
     });
 }
 
-void Chunk::RegenerateMeshAt(GraphicsNode::Mesh& mesh, const Vector3u& position) {
+void Chunk::RegenerateMeshAt(Mesh& mesh, const Vector3u& position) {
     
 }

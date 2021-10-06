@@ -9,21 +9,18 @@
 #include <cstdint>
 #include <exception>
 
-EntityReference<GraphicsNode> RenderThread::AddNode(EntityReference<GraphicsNode> node) {
+void RenderThread::AddNode(EntityReference<GraphicsNode> node) {
     {
 		std::lock_guard lock(nodesMutex);
     	nodes.push_back(node);
 	}
 	{
 		std::lock_guard lock(bufferIdMutex);
-		currentVertexBufferId++;
-		currentUvBufferId++;
+		currentBufferId++;
 	}
-	return node;
 }
 
-GLuint RenderThread::VertexBufferId() { return currentVertexBufferId; }
-GLuint RenderThread::UVBufferId() { return currentUvBufferId; }
+GLuint RenderThread::BufferId() { return currentBufferId; }
 
 bool RenderThread::IsKeyPressed(KeyCode key) {
 	std::lock_guard lock(keysMutex);

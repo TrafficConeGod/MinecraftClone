@@ -5,6 +5,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <string>
 
+ChunkGraphicsNode::ChunkGraphicsNode(const Vector3f& vPosition, GLuint vVertexBuffer, GLuint vUvBuffer, const Mesh& vMesh) : GraphicsNode(vPosition), vertexBuffer{vVertexBuffer}, uvBuffer{vUvBuffer}, mesh{vMesh} {}
+
+void ChunkGraphicsNode::UseMesh(std::function<void(Mesh&)> context) { std::lock_guard lock(meshMutex); context(mesh); }
+
 void ChunkGraphicsNode::Render(const glm::mat4& viewProjection, GLuint matrixId, GLuint textureId, GLuint texture) {
     // generate buffers
     if (!buffersGenerated) {

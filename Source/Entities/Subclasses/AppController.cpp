@@ -12,7 +12,9 @@ AppController::AppController() : Entity() {
 		}
 	}, {});
 	EntityReference<ChunksThread> chunksThread = new ChunksThread([&]() {
-		return renderThread->AddNode(new ChunkGraphicsNode(renderThread->VertexBufferId(), renderThread->UVBufferId(), {}));
+		EntityReference<ChunkGraphicsNode> node = new ChunkGraphicsNode(Vector3f(0, 0, 0), renderThread->BufferId(), renderThread->BufferId(), {});
+		renderThread->AddNode(node);
+		return node;
 	});
 	UserInput userInput(
 		std::bind(&RenderThread::IsKeyPressed, (RenderThread*)renderThread, std::placeholders::_1),

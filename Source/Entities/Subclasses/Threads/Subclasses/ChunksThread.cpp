@@ -2,7 +2,7 @@
 #include <iostream>
 #include <map>
 
-ChunksThread::ChunksThread(const CreateGraphicsNode& vCreateGraphicsNode) : createGraphicsNode{vCreateGraphicsNode}, chunksGeneratorThread{new ChunksGeneratorThread(std::bind(&ChunksThread::HasChunk, this, std::placeholders::_1), std::bind(&ChunksThread::CreateChunk, this, std::placeholders::_1, std::placeholders::_2), std::bind(&ChunksThread::RemoveChunk, this, std::placeholders::_1))} {}
+ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNode) : createChunkGraphicsNode{vCreateChunkGraphicsNode}, chunksGeneratorThread{new ChunksGeneratorThread(std::bind(&ChunksThread::HasChunk, this, std::placeholders::_1), std::bind(&ChunksThread::CreateChunk, this, std::placeholders::_1, std::placeholders::_2), std::bind(&ChunksThread::RemoveChunk, this, std::placeholders::_1))} {}
 
 void ChunksThread::Update(float delta) {
     std::lock_guard lock(chunksMutex);
@@ -33,7 +33,7 @@ bool ChunksThread::HasChunk(const Vector3i& position) {
 }
 
 void ChunksThread::CreateChunk(const Vector3i& position, const std::array<Chunk::Block, Chunk::Blocks>& blocks) {
-    auto node = createGraphicsNode();
+    auto node = createChunkGraphicsNode();
     std::lock_guard lock(chunksMutex);
     if (!chunks.count(position.x)) {
         chunks[position.x] = {};

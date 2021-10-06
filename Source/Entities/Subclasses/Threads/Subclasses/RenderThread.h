@@ -32,8 +32,7 @@ class RenderThread : public virtual Thread {
         GLuint programId;
 
         std::mutex bufferIdMutex;
-        GLuint currentVertexBufferId = 0;
-        GLuint currentUvBufferId = 0;
+        GLuint currentBufferId = 0;
 
         std::mutex cameraCoordMutex;
         Vector3f cameraPosition;
@@ -48,7 +47,7 @@ class RenderThread : public virtual Thread {
         explicit RenderThread(const StopApplication& stopApplication, const std::vector<EntityReference<GraphicsNode>>& nodes);
         virtual ~RenderThread() {}
 
-        EntityReference<GraphicsNode> AddNode(EntityReference<GraphicsNode> node);
+        void AddNode(EntityReference<GraphicsNode> node);
         EntityReference<GraphicsNode> RemoveNode(std::size_t index);
 
         void UpdateCamera(const Vector3f& position, const Vector3f& lookVector);
@@ -58,6 +57,5 @@ class RenderThread : public virtual Thread {
         bool IsKeyHeld(KeyCode key);
         Vector2i CursorPosition();
 
-        GLuint VertexBufferId();
-        GLuint UVBufferId();
+        GLuint BufferId();
 };
