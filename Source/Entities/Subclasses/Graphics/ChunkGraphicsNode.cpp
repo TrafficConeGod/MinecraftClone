@@ -1,6 +1,11 @@
 #include "ChunkGraphicsNode.h"
 #include "GLUtils.h"
 
+ChunkGraphicsNode::Mesh::Vertex ChunkGraphicsNode::Mesh::CreateVertex(u_char x, u_char y, u_char z) {
+    // return (x << 0x1c) + (y << 0x18) + (z << 0x14);
+    return ChunkGraphicsNode::Mesh::Vertex(x, y, z);
+}
+
 GLuint programId;
 GLuint matrixId;
 GLuint texture;
@@ -41,7 +46,7 @@ void ChunkGraphicsNode::Render(const glm::mat4& viewProjection) {
     glEnableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, mesh.triangles.size()*sizeof(float) * 3 * 3, (float*)mesh.triangles.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mesh.triangles.size()*sizeof(Mesh::Vertex) * 3, (float*)mesh.triangles.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
     glEnableVertexAttribArray(1);
