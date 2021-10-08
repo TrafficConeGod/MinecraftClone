@@ -37,7 +37,7 @@ void Camera::Update(const UserInput& userInput, float delta) {
                 double pitch = -(std::asin(-lookVector.y));
                 double yaw = M_PI - std::atan2(lookVector.x, lookVector.z);
 
-                pitch += moveVector.y;
+                pitch -= moveVector.y;
                 yaw += moveVector.x;
 
                 double xzLength = std::cos(pitch);
