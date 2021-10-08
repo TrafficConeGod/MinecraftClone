@@ -72,5 +72,6 @@ struct Vector3 {
 };
 
 using Vector3f = Vector3<float>;
+using Vector3d = Vector3<double>;
 using Vector3u = Vector3<uint>;
 using Vector3i = Vector3<int>;

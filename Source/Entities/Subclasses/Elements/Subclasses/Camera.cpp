@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 
 static constexpr float Speed = 10.f;
-static constexpr float RotateSpeed = 10.f;
+static constexpr float RotateSpeed = 7.f;
 static constexpr int WindowSizeX = 1280;
 static constexpr int WindowSizeY = 720;
 
@@ -29,15 +29,21 @@ void Camera::Update(const UserInput& userInput, float delta) {
             inputVector /= Vector2f(WindowSizeX, WindowSizeY);
 
             if (lookVector.Magnitude() > 0) {
-                Vector3f moveVector(inputVector.x, 0, inputVector.y);
-                moveVector *= RotateSpeed;
+                Vector2f moveVector = inputVector * RotateSpeed;
 
-                // v = moveVector
-                // n = lookVector
-                auto distance = moveVector.Dot(lookVector);
-                auto projected = moveVector - (lookVector * distance);
+                // https://stackoverflow.com/questions/2782647/how-to-get-yaw-pitch-and-roll-from-a-3d-vector
+                // https://stackoverflow.com/questions/10569659/camera-pitch-yaw-to-direction-vector
 
-                LookVector(lookVector + projected);
+                double pitch = -(std::asin(-lookVector.y));
+                double yaw = M_PI - std::atan2(lookVector.x, lookVector.z);
+
+                pitch += moveVector.y;
+                yaw += moveVector.x;
+
+                double xzLength = std::cos(pitch);
+                Vector3f newLookVector(xzLength * std::cos(yaw), std::sin(pitch), xzLength * std::sin(-yaw));
+    
+                LookVector(newLookVector);
             }
         }
     }
