@@ -35,14 +35,110 @@ void Chunk::GenerateMesh(Mesh& mesh) {
     // temporary code
     Vector3u blockPosition(0, 0, 0);
     mesh.triangles.push_back({
-        mesh.CreateVertex(1 +blockPosition.x, blockPosition.y, 1 +blockPosition.z),
-        mesh.CreateVertex(1 +blockPosition.x, blockPosition.y,blockPosition.z),
-        mesh.CreateVertex(blockPosition.x, blockPosition.y,blockPosition.z),
+        mesh.CreateVertex(blockPosition.x,blockPosition.y,blockPosition.z),
+        mesh.CreateVertex(blockPosition.x,blockPosition.y, 1.f + blockPosition.z),
+        mesh.CreateVertex(blockPosition.x, 1.f + blockPosition.y, 1.f + blockPosition.z),
     });
     mesh.triangles.push_back({
-        mesh.CreateVertex(1 +blockPosition.x, blockPosition.y, 1 +blockPosition.z),
-        mesh.CreateVertex(blockPosition.x, blockPosition.y,blockPosition.z),
-        mesh.CreateVertex(blockPosition.x, blockPosition.y, 1 +blockPosition.z),
+        mesh.CreateVertex(1.f + blockPosition.x, 1.f + blockPosition.y,blockPosition.z),
+        mesh.CreateVertex(blockPosition.x,blockPosition.y,blockPosition.z),
+        mesh.CreateVertex(blockPosition.x, 1.f + blockPosition.y,blockPosition.z),
+    });
+    mesh.triangles.push_back({
+        mesh.CreateVertex(1.f + blockPosition.x,blockPosition.y, 1.f + blockPosition.z),
+        mesh.CreateVertex(blockPosition.x,blockPosition.y,blockPosition.z),
+        mesh.CreateVertex(1.f + blockPosition.x,blockPosition.y,blockPosition.z),
+    });
+    mesh.triangles.push_back({
+        mesh.CreateVertex(1.f + blockPosition.x, 1.f + blockPosition.y,blockPosition.z),
+        mesh.CreateVertex(1.f + blockPosition.x,blockPosition.y,blockPosition.z),
+        mesh.CreateVertex(blockPosition.x,blockPosition.y,blockPosition.z),
+    });
+    mesh.triangles.push_back({
+        mesh.CreateVertex(blockPosition.x,blockPosition.y,blockPosition.z),
+        mesh.CreateVertex(blockPosition.x, 1.f + blockPosition.y, 1.f + blockPosition.z),
+        mesh.CreateVertex(blockPosition.x, 1.f + blockPosition.y,blockPosition.z),
+    });
+    mesh.triangles.push_back({
+        mesh.CreateVertex(1.f + blockPosition.x,blockPosition.y, 1.f + blockPosition.z),
+        mesh.CreateVertex(blockPosition.x,blockPosition.y, 1.f + blockPosition.z),
+        mesh.CreateVertex(blockPosition.x,blockPosition.y,blockPosition.z),
+    });
+    mesh.triangles.push_back({
+        mesh.CreateVertex(blockPosition.x, 1.f + blockPosition.y, 1.f + blockPosition.z),
+        mesh.CreateVertex(blockPosition.x,blockPosition.y, 1.f + blockPosition.z),
+        mesh.CreateVertex(1.f + blockPosition.x,blockPosition.y, 1.f + blockPosition.z),
+    });
+    mesh.triangles.push_back({
+        mesh.CreateVertex(1.f + blockPosition.x, 1.f + blockPosition.y, 1.f + blockPosition.z),
+        mesh.CreateVertex(1.f + blockPosition.x,blockPosition.y,blockPosition.z),
+        mesh.CreateVertex(1.f + blockPosition.x, 1.f + blockPosition.y,blockPosition.z),
+    });
+    mesh.triangles.push_back({
+        mesh.CreateVertex(1.f + blockPosition.x,blockPosition.y,blockPosition.z),
+        mesh.CreateVertex(1.f + blockPosition.x, 1.f + blockPosition.y, 1.f + blockPosition.z),
+        mesh.CreateVertex(1.f + blockPosition.x,blockPosition.y, 1.f + blockPosition.z),
+    });
+    mesh.triangles.push_back({
+        mesh.CreateVertex(1.f + blockPosition.x, 1.f + blockPosition.y, 1.f + blockPosition.z),
+        mesh.CreateVertex(1.f + blockPosition.x, 1.f + blockPosition.y,blockPosition.z),
+        mesh.CreateVertex(blockPosition.x, 1.f + blockPosition.y,blockPosition.z),
+    });
+    mesh.triangles.push_back({
+        mesh.CreateVertex(1.f + blockPosition.x, 1.f + blockPosition.y, 1.f + blockPosition.z),
+        mesh.CreateVertex(blockPosition.x, 1.f + blockPosition.y,blockPosition.z),
+        mesh.CreateVertex(blockPosition.x, 1.f + blockPosition.y, 1.f + blockPosition.z),
+    });
+    mesh.triangles.push_back({
+        mesh.CreateVertex(1.f + blockPosition.x, 1.f + blockPosition.y, 1.f + blockPosition.z),
+        mesh.CreateVertex(blockPosition.x, 1.f + blockPosition.y, 1.f + blockPosition.z),
+        mesh.CreateVertex(1.f + blockPosition.x,blockPosition.y, 1.f + blockPosition.z)
+    });
+    
+    mesh.uvTriangles.push_back({
+        Vector2f(0.000059f, 1.0f-0.000004f),
+        Vector2f(0.000103f, 1.0f-0.336048f),
+        Vector2f(0.335973f, 1.0f-0.335903f),
+    });
+    mesh.uvTriangles.push_back({
+        Vector2f(1.000023f, 1.0f-0.000013f),
+        Vector2f(0.667979f, 1.0f-0.335851f),
+        Vector2f(0.999958f, 1.0f-0.336064f),
+    });
+    mesh.uvTriangles.push_back({
+        Vector2f(0.667979f, 1.0f-0.335851f),
+        Vector2f(0.336024f, 1.0f-0.671877f),
+        Vector2f(0.667969f, 1.0f-0.671889f),
+    });
+    mesh.uvTriangles.push_back({
+        Vector2f(1.000023f, 1.0f-0.000013f),
+        Vector2f(0.668104f, 1.0f-0.000013f),
+        Vector2f(0.667979f, 1.0f-0.335851f),
+    });
+    mesh.uvTriangles.push_back({
+        Vector2f(0.000059f, 1.0f-0.000004f),
+        Vector2f(0.335973f, 1.0f-0.335903f),
+        Vector2f(0.336098f, 1.0f-0.000071f),
+    });
+    mesh.uvTriangles.push_back({
+        Vector2f(0.667979f, 1.0f-0.335851f),
+        Vector2f(0.335973f, 1.0f-0.335903f),
+        Vector2f(0.336024f, 1.0f-0.671877f),
+    });
+    mesh.uvTriangles.push_back({
+        Vector2f(1.000004f, 1.0f-0.671847f),
+        Vector2f(0.999958f, 1.0f-0.336064f),
+        Vector2f(0.667979f, 1.0f-0.335851f),
+    });
+    mesh.uvTriangles.push_back({
+        Vector2f(0.668104f, 1.0f-0.000013f),
+        Vector2f(0.335973f, 1.0f-0.335903f),
+        Vector2f(0.667979f, 1.0f-0.335851f),
+    });
+    mesh.uvTriangles.push_back({
+        Vector2f(0.335973f, 1.0f-0.335903f),
+        Vector2f(0.668104f, 1.0f-0.000013f),
+        Vector2f(0.336098f, 1.0f-0.000071f),
     });
     mesh.uvTriangles.push_back({
         Vector2f(0.000103f, 1.0f-0.336048f),
@@ -53,6 +149,11 @@ void Chunk::GenerateMesh(Mesh& mesh) {
         Vector2f(0.000103f, 1.0f-0.336048f),
         Vector2f(0.336024f, 1.0f-0.671877f),
         Vector2f(0.335973f, 1.0f-0.335903f),
+    });
+    mesh.uvTriangles.push_back({
+        Vector2f(0.667969f, 1.0f-0.671889f),
+        Vector2f(1.000004f, 1.0f-0.671847f),
+        Vector2f(0.667979f, 1.0f-0.335851f)
     });
 }
 

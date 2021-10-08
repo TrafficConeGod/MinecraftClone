@@ -59,6 +59,9 @@ struct Vector3 {
         T magnitude = Magnitude();
         return vec / magnitude;
     }
+    T Dot(const Vector3<T> vector) const {
+        return (x * vector.x) + (y * vector.y) + (z * vector.z);
+    }
     inline glm::vec3 GLM() const {
         return glm::vec3(x, y, z);
     }

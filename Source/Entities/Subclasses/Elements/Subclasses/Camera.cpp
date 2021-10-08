@@ -22,14 +22,26 @@ void Camera::LookVector(const Vector3f& vLookVector) {
 }
 
 void Camera::Update(const UserInput& userInput, float delta) {
+    Vector2i cursorPosition = userInput.CursorPosition();
     if (userInput.IsKeyHeld(GLFW_MOUSE_BUTTON_2)) {
-        Vector2i cursorPosition = userInput.CursorPosition();
         if (cursorPosition.x >= 0 && cursorPosition.y >= 0 && cursorPosition.x < WindowSizeX && cursorPosition.y < WindowSizeY) {
             Vector2f inputVector = lastCursorPosition - cursorPosition;
             inputVector /= Vector2f(WindowSizeX, WindowSizeY);
-            lastCursorPosition = cursorPosition;
+
+            if (lookVector.Magnitude() > 0) {
+                Vector3f moveVector(inputVector.x, 0, inputVector.y);
+                moveVector *= RotateSpeed;
+
+                // v = moveVector
+                // n = lookVector
+                auto distance = moveVector.Dot(lookVector);
+                auto projected = moveVector - (lookVector * distance);
+
+                LookVector(lookVector + projected);
+            }
         }
     }
+    lastCursorPosition = cursorPosition;
 
     // wasdqe movement
     Vector3f inputVector;
@@ -62,8 +74,7 @@ void Camera::Update(const UserInput& userInput, float delta) {
 
         Vector3f moveVector = (flatLookVector * inputVector.z) + (perpendicularLookVector * inputVector.x) + (verticalLookVector * inputVector.y);
         moveVector = moveVector.Unit();
-        moveVector *= Speed;
-        moveVector *= delta;
+        moveVector *= Speed * delta;
         Position(position + moveVector);
     }
 }
