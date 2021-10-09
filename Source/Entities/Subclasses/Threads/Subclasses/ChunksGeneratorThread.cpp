@@ -26,11 +26,11 @@ void ChunksGeneratorThread::Update(float delta) {
 
 void ChunksGeneratorThread::GenerateChunk(const Vector3i& position) {
     std::srand(std::time(NULL));
-    std::array<Chunk::Block, Chunk::Blocks> blocks;
+    std::array<Block, Chunk::Blocks> blocks;
     for (uint x = 0; x < Chunk::Bounds; x++) {
         for (uint z = 0; z < Chunk::Bounds; z++) {
             if (std::rand() % 2) {
-                blocks.at(Chunk::PositionToIndex(Vector3u(x, 0, z))).type = Chunk::Block::Type::Stone;
+                blocks.at(Chunk::PositionToIndex(Vector3u(x, 0, z))).type = Block::Type::Grass;
             }
         }
     }

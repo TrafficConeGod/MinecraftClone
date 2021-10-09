@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "EntityReference.h"
 #include "ChunkGraphicsNode.h"
+#include "BlockHandler.h"
 #include "Vector3.h"
 #include "BlockEntity.h"
 #include <array>
@@ -10,15 +11,6 @@
 class Chunk : public virtual Entity {
     public:
         using Mesh = ChunkGraphicsNode::Mesh;
-
-        struct Block {
-            enum class Type : u_char {
-                Air,
-                Grass,
-                Stone
-            };
-            Type type = Type::Air;
-        };
         
         struct BlockMesh {
             uint index = 0;
@@ -33,14 +25,17 @@ class Chunk : public virtual Entity {
         std::array<Block, Blocks> blocks;
         std::array<BlockMesh, Blocks> blockMeshes;
         std::vector<EntityReference<BlockEntity>> blockEntities;
+        const std::array<EntityReference<BlockHandler>, BlockHandlers>& blockHandlers;
 
         void GenerateMesh(Mesh& mesh);
         void RegenerateMeshAt(Mesh& mesh, const Vector3u& position);
+
+        EntityReference<BlockHandler> BlockHandlerFor(Block::Type type);
     public:
         GIVE_TYPE_ID_1(6, Entity)
 
         DELETE_ILLEGAL_CONSTRUCTORS(Chunk)
-        explicit Chunk(const Vector3i& position, const std::array<Block, Blocks>& blocks, EntityReference<ChunkGraphicsNode> node);
+        explicit Chunk(const Vector3i& position, const std::array<Block, Blocks>& blocks, const std::array<EntityReference<BlockHandler>, BlockHandlers>& blockHandlers, EntityReference<ChunkGraphicsNode> node);
         virtual ~Chunk() {}
 
         void SetBlock(const Vector3u& position, const Block& block);

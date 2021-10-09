@@ -5,6 +5,8 @@
 #include <functional>
 #include "ChunksGeneratorThread.h"
 #include <map>
+#include <array>
+#include "BlockHandler.h"
 
 class ChunksThread : public virtual Thread {
     public:
@@ -17,8 +19,10 @@ class ChunksThread : public virtual Thread {
 
         EntityReference<ChunksGeneratorThread> chunksGeneratorThread;
 
+        std::array<EntityReference<BlockHandler>, BlockHandlers> blockHandlers;
+
         bool HasChunk(const Vector3i& position);
-        void CreateChunk(const Vector3i& position, const std::array<Chunk::Block, Chunk::Blocks>& blocks);
+        void CreateChunk(const Vector3i& position, const std::array<Block, Chunk::Blocks>& blocks);
         void RemoveChunk(const Vector3i& position);
     protected:
         virtual void Update(float delta) override;

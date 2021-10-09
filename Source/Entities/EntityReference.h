@@ -21,6 +21,7 @@ class EntityReference {
         const E& Value() const { return *pointer; }
 
         E* operator->() { return pointer.get(); }
+        const E* operator->() const { return pointer.get(); }
         operator E*() { return pointer.get(); }
 
         std::shared_ptr<E> Pointer() { return pointer; }

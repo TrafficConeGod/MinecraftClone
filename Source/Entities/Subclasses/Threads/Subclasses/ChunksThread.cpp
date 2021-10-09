@@ -1,8 +1,13 @@
 #include "ChunksThread.h"
 #include <iostream>
 #include <map>
+#include "BlankBlockHandler.h"
+#include "GenericBlockHandler.h"
 
-ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNode) : createChunkGraphicsNode{vCreateChunkGraphicsNode}, chunksGeneratorThread{new ChunksGeneratorThread(std::bind(&ChunksThread::HasChunk, this, std::placeholders::_1), std::bind(&ChunksThread::CreateChunk, this, std::placeholders::_1, std::placeholders::_2), std::bind(&ChunksThread::RemoveChunk, this, std::placeholders::_1))} {}
+ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNode) : createChunkGraphicsNode{vCreateChunkGraphicsNode}, chunksGeneratorThread{new ChunksGeneratorThread(std::bind(&ChunksThread::HasChunk, this, std::placeholders::_1), std::bind(&ChunksThread::CreateChunk, this, std::placeholders::_1, std::placeholders::_2), std::bind(&ChunksThread::RemoveChunk, this, std::placeholders::_1))}, blockHandlers{{
+    new BlankBlockHandler(),
+    new GenericBlockHandler(Block::Type::Grass)
+}} {}
 
 void ChunksThread::Update(float delta) {
     std::lock_guard lock(chunksMutex);
@@ -32,7 +37,7 @@ bool ChunksThread::HasChunk(const Vector3i& position) {
     return chunks.count(position.x) && chunks.at(position.x).count(position.y) && chunks.at(position.x).at(position.y).count(position.z);
 }
 
-void ChunksThread::CreateChunk(const Vector3i& position, const std::array<Chunk::Block, Chunk::Blocks>& blocks) {
+void ChunksThread::CreateChunk(const Vector3i& position, const std::array<Block, Chunk::Blocks>& blocks) {
     auto node = createChunkGraphicsNode();
     std::lock_guard lock(chunksMutex);
     if (!chunks.count(position.x)) {
@@ -41,7 +46,7 @@ void ChunksThread::CreateChunk(const Vector3i& position, const std::array<Chunk:
     if (!chunks.at(position.x).count(position.y)) {
         chunks.at(position.x)[position.y] = {};
     }
-    chunks.at(position.x).at(position.y).insert(std::pair<uint, EntityReference<Chunk>>(position.z, new Chunk(position, blocks, node)));
+    chunks.at(position.x).at(position.y).insert(std::pair<uint, EntityReference<Chunk>>(position.z, new Chunk(position, blocks, blockHandlers, node)));
 }
 
 void ChunksThread::RemoveChunk(const Vector3i& position) {
