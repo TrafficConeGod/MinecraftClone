@@ -43,6 +43,9 @@ void ChunkGraphicsNode::Render(const glm::mat4& viewProjection) {
     glBindTexture(GL_TEXTURE_2D, texture);
     glUniform1i(textureId, 0);
 
+    // glEnable(GL_BLEND);
+    // glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
     glEnableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -58,4 +61,6 @@ void ChunkGraphicsNode::Render(const glm::mat4& viewProjection) {
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
+
+    // glDisable(GL_BLEND);
 }

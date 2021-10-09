@@ -136,15 +136,21 @@ GLuint LoadBMP(const char* imagepath){
 		fclose(file);
 		return 0;
 	}
+	
+	// std::cout << *(int*)&(header[0x1E]) << "\n";
+	// std::cout << (int)(*(char*)&(header[0x1C])) << "\n";
+
 	// Make sure this is a 24bpp file
-	if ( *(int*)&(header[0x1E])!=0  )         {printf("Not a correct BMP file\n");    fclose(file); return 0;}
-	if ( *(int*)&(header[0x1C])!=24 )         {printf("Not a correct BMP file\n");    fclose(file); return 0;}
+	if ( *(int*)&(header[0x1E])!=3  )         {printf("Not a correct BMP file\n");    fclose(file); return 0;}
+	if ( *(char*)&(header[0x1C])!=32 )         {printf("Not a correct BMP file\n");    fclose(file); return 0;}
 
 	// Read the information about the image
 	dataPos    = *(int*)&(header[0x0A]);
 	imageSize  = *(int*)&(header[0x22]);
 	width      = *(int*)&(header[0x12]);
 	height     = *(int*)&(header[0x16]);
+
+	// std::cout << dataPos << " " << imageSize << " " << width << " " << height << "\n";
 
 	// Some BMP files are misformatted, guess missing information
 	if (imageSize==0)    imageSize=width*height*3; // 3 : one byte for each Red, Green and Blue component
@@ -167,7 +173,7 @@ GLuint LoadBMP(const char* imagepath){
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
 	// Give the image to OpenGL
-	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
 
 	// OpenGL has now copied the data. Free our own version
 	delete [] data;
