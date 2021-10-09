@@ -2,7 +2,7 @@
 
 GenericBlockHandler::GenericBlockHandler(Block::Type vType) : type{vType} {}
 
-bool GenericBlockHandler::IsTransparent(const Block&) const {
+bool GenericBlockHandler::IsTransparent(const Block&, const Block&) const {
     return false;
 }
 

@@ -9,5 +9,5 @@ class BlankBlockHandler : public virtual BlockHandler {
         explicit BlankBlockHandler() {}
         virtual ~BlankBlockHandler() {}
 
-        virtual bool IsTransparent(const Block& block) const override;
+        virtual bool IsTransparent(const Block&, const Block&) const override;
 };

@@ -11,6 +11,6 @@ class GenericBlockHandler : public virtual BlockHandler {
         explicit GenericBlockHandler(Block::Type type);
         virtual ~GenericBlockHandler() {}
 
-        virtual bool IsTransparent(const Block& block) const override;
+        virtual bool IsTransparent(const Block&, const Block&) const override;
         virtual void GenerateFaceMesh(ChunkGraphicsNode::Mesh& mesh, const Vector3u& position, const Block& block, Block::Face face) const override;
 };

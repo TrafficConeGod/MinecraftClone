@@ -43,9 +43,11 @@ void Chunk::Update() {
         const auto& checkBlock = blocks.at(checkIndex); \
         const auto checkBlockHandler = BlockHandlerFor(checkBlock.type); \
         \
-        if (checkBlockHandler->IsTransparent(checkBlock)) { \
+        if (checkBlockHandler->IsTransparent(checkBlock, block)) { \
             blockHandler->GenerateFaceMesh(mesh, position, block, face); \
         } \
+    } else { \
+        blockHandler->GenerateFaceMesh(mesh, position, block, face); \
     } \
 }
 
