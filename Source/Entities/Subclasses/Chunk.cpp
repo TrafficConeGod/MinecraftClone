@@ -36,12 +36,35 @@ void Chunk::Update() {
     }
 }
 
+#define CHECK_FACE(direction, face) \
+{ \
+    int checkIndex = PositionToIndex((Vector3i)position + direction); \
+    if (checkIndex >= 0 && checkIndex < (int)Blocks) { \
+        const auto& checkBlock = blocks.at(checkIndex); \
+        const auto checkBlockHandler = BlockHandlerFor(checkBlock.type); \
+        \
+        if (checkBlockHandler->IsTransparent(checkBlock)) { \
+            blockHandler->GenerateFaceMesh(mesh, position, block, face); \
+        } \
+    } \
+}
+
 void Chunk::GenerateMesh(Mesh& mesh) {
     // temporary code
     std::size_t index = 0;
     for (const auto& block : blocks) {
         const auto blockHandler = BlockHandlerFor(block.type);
-        blockHandler->GenerateFaceMesh(mesh, IndexToPosition(index), block, Block::Face::Top);
+
+        Vector3u position = IndexToPosition(index);
+        
+        CHECK_FACE(Vector3i(1, 0, 0), Block::Face::Front)
+        CHECK_FACE(Vector3i(-1, 0, 0), Block::Face::Back)
+        CHECK_FACE(Vector3i(0, 1, 0), Block::Face::Top)
+        CHECK_FACE(Vector3i(0, -1, 0), Block::Face::Bottom)
+        CHECK_FACE(Vector3i(0, 0, 1), Block::Face::Right)
+        CHECK_FACE(Vector3i(0, 0, -1), Block::Face::Left)
+
+        blockHandler->GenerateFaceMesh(mesh, position, block, Block::Face::Top);
         index++;
     }
 }
