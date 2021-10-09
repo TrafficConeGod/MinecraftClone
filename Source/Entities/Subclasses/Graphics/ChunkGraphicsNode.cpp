@@ -6,6 +6,13 @@ ChunkGraphicsNode::Mesh::Vertex ChunkGraphicsNode::Mesh::CreateVertex(u_char x, 
     return ChunkGraphicsNode::Mesh::Vertex(x, y, z);
 }
 
+ChunkGraphicsNode::Mesh::UVVertex ChunkGraphicsNode::Mesh::CreateUVVertex(u_char x, u_char y) {
+    x *= 16;
+    y *= 16;
+    x += 21; // i need to do this for some reason
+    return ChunkGraphicsNode::Mesh::UVVertex(((float)x) / 256.f, 1.f - (((float)y) / 256.f));
+}
+
 GLuint programId;
 GLuint matrixId;
 GLuint texture;
@@ -45,6 +52,7 @@ void ChunkGraphicsNode::Render(const glm::mat4& viewProjection) {
 
     // glEnable(GL_BLEND);
     // glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    // glDisable(GL_CULL_FACE);
 
     glEnableVertexAttribArray(0);
 
@@ -63,4 +71,5 @@ void ChunkGraphicsNode::Render(const glm::mat4& viewProjection) {
     glDisableVertexAttribArray(1);
 
     // glDisable(GL_BLEND);
+    // glEnable(GL_CULL_FACE);
 }
