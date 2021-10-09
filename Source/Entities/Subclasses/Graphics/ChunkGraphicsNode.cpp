@@ -14,7 +14,7 @@ GLuint textureId;
 void ChunkGraphicsNode::Initialize() {
     programId = LoadShaders("Resources/VertexShader.glsl", "Resources/FragmentShader.glsl");
     matrixId = glGetUniformLocation(programId, "mvp");
-    texture = LoadDDS("Resources/Grass.dds");
+    texture = LoadBMP("Resources/Atlas.bmp");
     textureId = glGetUniformLocation(programId, "textureSampler");
 }
 
