@@ -17,6 +17,13 @@ class ChunksThread : public virtual Thread {
         std::mutex chunksMutex;
         std::map<int, std::map<int, std::map<int, EntityReference<Chunk>>>> chunks;
 
+        struct QueuedChunk {
+            Vector3i position;
+            std::array<Block, Chunk::Blocks> blocks;
+        };
+        std::mutex queuedChunksMutex;
+        std::map<int, std::map<int, std::map<int, QueuedChunk>>> queuedChunks;
+
         EntityReference<ChunksGeneratorThread> chunksGeneratorThread;
 
         std::array<EntityReference<BlockHandler>, Block::Types> blockHandlers;
@@ -32,7 +39,7 @@ class ChunksThread : public virtual Thread {
         GIVE_TYPE_ID_1(3, Thread)
 
         DELETE_ILLEGAL_CONSTRUCTORS(ChunksThread)
-        explicit ChunksThread(const CreateChunkGraphicsNode& createChunkGraphicsNode);
+        explicit ChunksThread(const CreateChunkGraphicsNode& createChunkGraphicsNode, ChunksGeneratorThread::Seed seed);
         virtual ~ChunksThread() {}
 
         void UpdateCamera(const Vector3f& position);

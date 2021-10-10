@@ -15,7 +15,7 @@ AppController::AppController() : Entity() {
 		EntityReference<ChunkGraphicsNode> node = new ChunkGraphicsNode(Vector3f(0, 0, 0), renderThread->BufferId(), renderThread->BufferId(), {});
 		renderThread->AddNode(node);
 		return node;
-	});
+	}, 100);
 	UserInput userInput(
 		std::bind(&RenderThread::IsKeyPressed, (RenderThread*)renderThread, std::placeholders::_1),
 		std::bind(&RenderThread::IsKeyReleased, (RenderThread*)renderThread, std::placeholders::_1),

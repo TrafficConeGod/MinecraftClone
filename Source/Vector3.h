@@ -69,6 +69,13 @@ struct Vector3 {
     operator Vector3<T2>() const {
         return Vector3<T2>(x, y, z);
     }
+
+    bool operator ==(const Vector3<T>& vec) {
+        return x == vec.x && y == vec.y && z == vec.z;
+    }
+    bool operator !=(const Vector3<T>& vec) {
+        return !(*this == vec);
+    }
 };
 
 using Vector3f = Vector3<float>;

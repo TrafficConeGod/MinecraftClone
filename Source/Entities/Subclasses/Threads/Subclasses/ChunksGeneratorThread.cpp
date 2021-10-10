@@ -1,7 +1,7 @@
 #include "ChunksGeneratorThread.h"
 #include <random>
 
-ChunksGeneratorThread::ChunksGeneratorThread(const HasChunk& vHasChunk, const CreateChunk& vCreateChunk, const RemoveChunk& vRemoveChunk) : hasChunk{vHasChunk}, createChunk{vCreateChunk}, removeChunk{vRemoveChunk} {}
+ChunksGeneratorThread::ChunksGeneratorThread(const HasChunk& vHasChunk, const CreateChunk& vCreateChunk, const RemoveChunk& vRemoveChunk, Seed vSeed) : hasChunk{vHasChunk}, createChunk{vCreateChunk}, removeChunk{vRemoveChunk}, seed{vSeed} {}
 
 void ChunksGeneratorThread::Start() {
     

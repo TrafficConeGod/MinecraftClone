@@ -7,6 +7,7 @@
 
 class ChunksGeneratorThread : public virtual Thread {
     public:
+        using Seed = uint;
         using HasChunk = std::function<bool(const Vector3i&)>;
         using CreateChunk = std::function<void(const Vector3i&, const std::array<Block, Chunk::Blocks>&)>;
         using RemoveChunk = std::function<void(const Vector3i&)>;
@@ -20,6 +21,8 @@ class ChunksGeneratorThread : public virtual Thread {
         CreateChunk createChunk;
         RemoveChunk removeChunk;
 
+        Seed seed;
+
         int chunkGenerationRadius = 5;
 
         void GenerateChunk(const Vector3i& position);
@@ -30,7 +33,7 @@ class ChunksGeneratorThread : public virtual Thread {
         GIVE_TYPE_ID_1(8, Thread)
 
         DELETE_ILLEGAL_CONSTRUCTORS(ChunksGeneratorThread)
-        explicit ChunksGeneratorThread(const HasChunk& hasChunk, const CreateChunk& createChunk, const RemoveChunk& removeChunk);
+        explicit ChunksGeneratorThread(const HasChunk& hasChunk, const CreateChunk& createChunk, const RemoveChunk& removeChunk, Seed seed);
         virtual ~ChunksGeneratorThread() {}
 
         void UpdateCamera(const Vector3f& position);
