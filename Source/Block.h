@@ -11,6 +11,8 @@ struct Block {
         Right,
     };
 
+
+    static constexpr uint Types = 3;
     enum class Type : u_char {
         Air,
         Grass,

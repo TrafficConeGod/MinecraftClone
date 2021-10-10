@@ -3,8 +3,6 @@
 #include "ChunkGraphicsNode.h"
 #include "Block.h"
 
-static constexpr uint BlockHandlers = 2;
-
 class BlockHandler : public virtual Entity {
     public:
         GIVE_TYPE_ID_1(13, Entity)

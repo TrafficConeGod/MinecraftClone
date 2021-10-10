@@ -19,7 +19,7 @@ class ChunksThread : public virtual Thread {
 
         EntityReference<ChunksGeneratorThread> chunksGeneratorThread;
 
-        std::array<EntityReference<BlockHandler>, BlockHandlers> blockHandlers;
+        std::array<EntityReference<BlockHandler>, Block::Types> blockHandlers;
 
         bool HasChunk(const Vector3i& position);
         void CreateChunk(const Vector3i& position, const std::array<Block, Chunk::Blocks>& blocks);

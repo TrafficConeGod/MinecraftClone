@@ -25,7 +25,7 @@ class Chunk : public virtual Entity {
         std::array<Block, Blocks> blocks;
         std::array<BlockMesh, Blocks> blockMeshes;
         std::vector<EntityReference<BlockEntity>> blockEntities;
-        const std::array<EntityReference<BlockHandler>, BlockHandlers>& blockHandlers;
+        const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers;
 
         void GenerateMesh(Mesh& mesh);
         void RegenerateMeshAt(Mesh& mesh, const Vector3u& position);
@@ -35,7 +35,7 @@ class Chunk : public virtual Entity {
         GIVE_TYPE_ID_1(6, Entity)
 
         DELETE_ILLEGAL_CONSTRUCTORS(Chunk)
-        explicit Chunk(const Vector3i& position, const std::array<Block, Blocks>& blocks, const std::array<EntityReference<BlockHandler>, BlockHandlers>& blockHandlers, EntityReference<ChunkGraphicsNode> node);
+        explicit Chunk(const Vector3i& position, const std::array<Block, Blocks>& blocks, const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers, EntityReference<ChunkGraphicsNode> node);
         virtual ~Chunk() {}
 
         void SetBlock(const Vector3u& position, const Block& block);
