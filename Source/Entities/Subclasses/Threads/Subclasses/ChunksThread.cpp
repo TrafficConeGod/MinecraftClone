@@ -2,11 +2,11 @@
 #include <iostream>
 #include <map>
 #include "BlankBlockHandler.h"
-#include "GenericBlockHandler.h"
+#include "MonoTexturedCubeBlockHandler.h"
 
 ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNode) : createChunkGraphicsNode{vCreateChunkGraphicsNode}, chunksGeneratorThread{new ChunksGeneratorThread(std::bind(&ChunksThread::HasChunk, this, std::placeholders::_1), std::bind(&ChunksThread::CreateChunk, this, std::placeholders::_1, std::placeholders::_2), std::bind(&ChunksThread::RemoveChunk, this, std::placeholders::_1))}, blockHandlers{{
     new BlankBlockHandler(),
-    new GenericBlockHandler(Block::Type::Grass)
+    new MonoTexturedCubeBlockHandler(0)
 }} {}
 
 void ChunksThread::Update(float delta) {

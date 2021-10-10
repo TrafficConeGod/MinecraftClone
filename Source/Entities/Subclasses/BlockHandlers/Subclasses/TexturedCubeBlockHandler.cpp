@@ -1,14 +1,20 @@
-#include "GenericBlockHandler.h"
+#include "TexturedCubeBlockHandler.h"
+#include <exception>
 
-GenericBlockHandler::GenericBlockHandler(Block::Type vType) : type{vType} {}
+uint TexturedCubeBlockHandler::TextureIdFor(Block::Face face) const {
+    throw std::runtime_error("Cannot call non described virtual function TextureIdFor");
+}
 
-bool GenericBlockHandler::IsTransparent(const Block&, const Block&) const {
+bool TexturedCubeBlockHandler::IsTransparent(const Block&, const Block&) const {
     return false;
 }
 
-void GenericBlockHandler::GenerateFaceMesh(ChunkGraphicsNode::Mesh& mesh, const Vector3u& position, const Block& block, Block::Face face) const {
-    uint id = (uint)type;
-    Vector2u texturePosition(id, 0);
+Vector2u TextureIdToPosition(uint id) {
+    return Vector2u(id, 0);
+}
+
+void TexturedCubeBlockHandler::GenerateFaceMesh(ChunkGraphicsNode::Mesh& mesh, const Vector3u& position, const Block& block, Block::Face face) const {
+    Vector2u texturePosition = TextureIdToPosition(TextureIdFor(face));
 
     switch (face) {
         case Block::Face::Front: {
