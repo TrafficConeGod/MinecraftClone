@@ -16,7 +16,7 @@ class Chunk : public virtual Entity {
             uint index = 0;
         };
         
-        static constexpr std::size_t Bounds = 16;
+        static constexpr int Bounds = 16;
         static constexpr float OffsetToCenter = 8.5;
         static constexpr std::size_t Blocks = 4096;
     private:
@@ -31,6 +31,8 @@ class Chunk : public virtual Entity {
         void RegenerateMeshAt(Mesh& mesh, const Vector3u& position);
 
         EntityReference<BlockHandler> BlockHandlerFor(Block::Type type);
+
+        bool GenerateFaceMesh(const Vector3i& direction, Block::Face face, const EntityReference<BlockHandler> blockHandler, Mesh& mesh, const Vector3u& position, const Block& block);
     public:
         GIVE_TYPE_ID_1(6, Entity)
 
@@ -42,6 +44,6 @@ class Chunk : public virtual Entity {
 
         void Update();
 
-        static std::size_t PositionToIndex(const Vector3u& position);
+        static std::size_t PositionToIndex(const Vector3i& position);
         static Vector3u IndexToPosition(std::size_t index);
 };

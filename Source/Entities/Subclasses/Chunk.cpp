@@ -8,7 +8,7 @@ Chunk::Chunk(const Vector3i& vPosition, const std::array<Block, Blocks>& vBlocks
     node->UseMesh(std::bind(&Chunk::GenerateMesh, this, std::placeholders::_1));
 }
 
-std::size_t Chunk::PositionToIndex(const Vector3u& position) {
+std::size_t Chunk::PositionToIndex(const Vector3i& position) {
     return position.x + (position.y * Bounds) + (position.z * Bounds * Bounds);
 }
 
@@ -36,19 +36,23 @@ void Chunk::Update() {
     }
 }
 
-#define CHECK_FACE(direction, face) \
-{ \
-    int checkIndex = PositionToIndex((Vector3i)position + direction); \
-    if (checkIndex >= 0 && checkIndex < (int)Blocks) { \
-        const auto& checkBlock = blocks.at(checkIndex); \
-        const auto checkBlockHandler = BlockHandlerFor(checkBlock.type); \
-        \
-        if (checkBlockHandler->IsTransparent(checkBlock, block)) { \
-            blockHandler->GenerateFaceMesh(mesh, position, block, face); \
-        } \
-    } else { \
-        blockHandler->GenerateFaceMesh(mesh, position, block, face); \
-    } \
+bool Chunk::GenerateFaceMesh(const Vector3i& direction, Block::Face face, const EntityReference<BlockHandler> blockHandler, Mesh& mesh, const Vector3u& position, const Block& block) {
+    auto checkPosition = (Vector3i)position + direction;
+    if (checkPosition.x >= 0 && checkPosition.y >= 0 && checkPosition.z >= 0 && checkPosition.x < Bounds && checkPosition.y < Bounds && checkPosition.z < Bounds) {
+
+        int checkIndex = PositionToIndex(checkPosition);
+        const auto& checkBlock = blocks.at(checkIndex);
+        const auto checkBlockHandler = BlockHandlerFor(checkBlock.type);
+       
+        if (checkBlockHandler->IsTransparent(checkBlock, block)) {
+            blockHandler->GenerateFaceMesh(mesh, position, block, face);
+            return true;
+        }
+        return false;
+    } else {
+        blockHandler->GenerateFaceMesh(mesh, position, block, face);
+        return true;
+    }
 }
 
 void Chunk::GenerateMesh(Mesh& mesh) {
@@ -56,17 +60,15 @@ void Chunk::GenerateMesh(Mesh& mesh) {
     std::size_t index = 0;
     for (const auto& block : blocks) {
         const auto blockHandler = BlockHandlerFor(block.type);
-
         Vector3u position = IndexToPosition(index);
         
-        CHECK_FACE(Vector3i(1, 0, 0), Block::Face::Front)
-        CHECK_FACE(Vector3i(-1, 0, 0), Block::Face::Back)
-        CHECK_FACE(Vector3i(0, 1, 0), Block::Face::Top)
-        CHECK_FACE(Vector3i(0, -1, 0), Block::Face::Bottom)
-        CHECK_FACE(Vector3i(0, 0, 1), Block::Face::Right)
-        CHECK_FACE(Vector3i(0, 0, -1), Block::Face::Left)
+        GenerateFaceMesh(Vector3i(1, 0, 0), Block::Face::Front, blockHandler, mesh, position, block);
+        GenerateFaceMesh(Vector3i(-1, 0, 0), Block::Face::Back, blockHandler, mesh, position, block);
+        GenerateFaceMesh(Vector3i(0, 1, 0), Block::Face::Top, blockHandler, mesh, position, block);
+        GenerateFaceMesh(Vector3i(0, -1, 0), Block::Face::Bottom, blockHandler, mesh, position, block);
+        GenerateFaceMesh(Vector3i(0, 0, 1), Block::Face::Right, blockHandler, mesh, position, block);
+        GenerateFaceMesh(Vector3i(0, 0, -1), Block::Face::Left, blockHandler, mesh, position, block);
 
-        blockHandler->GenerateFaceMesh(mesh, position, block, Block::Face::Top);
         index++;
     }
 }
