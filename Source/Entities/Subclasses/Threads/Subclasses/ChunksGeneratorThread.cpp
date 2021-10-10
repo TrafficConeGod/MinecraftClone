@@ -30,8 +30,9 @@ void ChunksGeneratorThread::GenerateChunk(const Vector3i& position) {
     for (uint x = 0; x < Chunk::Bounds; x++) {
         for (uint z = 0; z < Chunk::Bounds; z++) {
             if (std::rand() % 2) {
-                blocks.at(Chunk::PositionToIndex(Vector3u(x, 0, z))).type = Block::Type::Grass;
+                blocks.at(Chunk::PositionToIndex(Vector3u(x, 1, z))).type = Block::Type::Grass;
             }
+            blocks.at(Chunk::PositionToIndex(Vector3u(x, 0, z))).type = Block::Type::Stone;
         }
     }
     createChunk(position, blocks);

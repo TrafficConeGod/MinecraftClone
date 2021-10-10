@@ -30,14 +30,14 @@ void TexturedCubeBlockHandler::GenerateFaceMesh(ChunkGraphicsNode::Mesh& mesh, c
             });
             
             mesh.uvTriangles.push_back({ 
-                mesh.CreateUVVertex(texturePosition.x + 1, texturePosition.y + 1),
-                mesh.CreateUVVertex(texturePosition.x + 1, texturePosition.y),
                 mesh.CreateUVVertex(texturePosition.x, texturePosition.y),
-            });
-            mesh.uvTriangles.push_back({ 
                 mesh.CreateUVVertex(texturePosition.x, texturePosition.y + 1),
                 mesh.CreateUVVertex(texturePosition.x + 1, texturePosition.y + 1),
+            });
+            mesh.uvTriangles.push_back({ 
+                mesh.CreateUVVertex(texturePosition.x + 1, texturePosition.y),
                 mesh.CreateUVVertex(texturePosition.x, texturePosition.y),
+                mesh.CreateUVVertex(texturePosition.x + 1, texturePosition.y + 1),
             });
         } break;
         case Block::Face::Back: {
@@ -53,14 +53,14 @@ void TexturedCubeBlockHandler::GenerateFaceMesh(ChunkGraphicsNode::Mesh& mesh, c
             });
             
             mesh.uvTriangles.push_back({ 
-                mesh.CreateUVVertex(texturePosition.x, texturePosition.y),
-                mesh.CreateUVVertex(texturePosition.x + 1, texturePosition.y),
+                mesh.CreateUVVertex(texturePosition.x, texturePosition.y + 1),
                 mesh.CreateUVVertex(texturePosition.x + 1, texturePosition.y + 1),
+                mesh.CreateUVVertex(texturePosition.x + 1, texturePosition.y),
             });
             mesh.uvTriangles.push_back({ 
-                mesh.CreateUVVertex(texturePosition.x, texturePosition.y),
-                mesh.CreateUVVertex(texturePosition.x + 1, texturePosition.y + 1),
                 mesh.CreateUVVertex(texturePosition.x, texturePosition.y + 1),
+                mesh.CreateUVVertex(texturePosition.x + 1, texturePosition.y),
+                mesh.CreateUVVertex(texturePosition.x, texturePosition.y),
             });
         } break;
         case Block::Face::Top: {
@@ -122,14 +122,14 @@ void TexturedCubeBlockHandler::GenerateFaceMesh(ChunkGraphicsNode::Mesh& mesh, c
             });
             
             mesh.uvTriangles.push_back({ 
-                mesh.CreateUVVertex(texturePosition.x + 1, texturePosition.y + 1),
-                mesh.CreateUVVertex(texturePosition.x, texturePosition.y + 1),
+                mesh.CreateUVVertex(texturePosition.x + 1, texturePosition.y),
                 mesh.CreateUVVertex(texturePosition.x, texturePosition.y),
+                mesh.CreateUVVertex(texturePosition.x, texturePosition.y + 1),
             });
             mesh.uvTriangles.push_back({ 
-                mesh.CreateUVVertex(texturePosition.x + 1, texturePosition.y),
                 mesh.CreateUVVertex(texturePosition.x + 1, texturePosition.y + 1),
-                mesh.CreateUVVertex(texturePosition.x, texturePosition.y),
+                mesh.CreateUVVertex(texturePosition.x + 1, texturePosition.y),
+                mesh.CreateUVVertex(texturePosition.x, texturePosition.y + 1),
             });
         } break;
         case Block::Face::Left: {
@@ -145,14 +145,14 @@ void TexturedCubeBlockHandler::GenerateFaceMesh(ChunkGraphicsNode::Mesh& mesh, c
             });
             
             mesh.uvTriangles.push_back({ 
-                mesh.CreateUVVertex(texturePosition.x, texturePosition.y),
                 mesh.CreateUVVertex(texturePosition.x, texturePosition.y + 1),
-                mesh.CreateUVVertex(texturePosition.x + 1, texturePosition.y + 1),
+                mesh.CreateUVVertex(texturePosition.x, texturePosition.y),
+                mesh.CreateUVVertex(texturePosition.x + 1, texturePosition.y),
             });
             mesh.uvTriangles.push_back({ 
-                mesh.CreateUVVertex(texturePosition.x, texturePosition.y),
-                mesh.CreateUVVertex(texturePosition.x + 1, texturePosition.y + 1),
+                mesh.CreateUVVertex(texturePosition.x, texturePosition.y + 1),
                 mesh.CreateUVVertex(texturePosition.x + 1, texturePosition.y),
+                mesh.CreateUVVertex(texturePosition.x + 1, texturePosition.y + 1),
             });
         } break;
         default: {

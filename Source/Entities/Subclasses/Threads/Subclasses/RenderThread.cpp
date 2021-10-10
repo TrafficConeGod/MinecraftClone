@@ -87,7 +87,7 @@ void RenderThread::Start() {
 	glDepthFunc(GL_LESS); 
 	glEnable(GL_CULL_FACE);
 
-    glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+    glClearColor(44.f/256.f, 157.f/256.f, 222.f/256.f, 0.0f);
 
     GLuint vertexArrayId;
     glGenVertexArrays(1, &vertexArrayId);
