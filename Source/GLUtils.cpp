@@ -6,8 +6,7 @@
 #include <string.h>
 #include <exception>
 
-// old code ported from another project, its awful i know
-// i am not going to rewrite this nor do i want to, im just gonna treat it as a black box
+// https://github.com/opengl-tutorials/ogl
 
 GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path) {
 

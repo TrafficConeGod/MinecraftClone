@@ -1,5 +1,6 @@
 #include "ChunksGeneratorThread.h"
 #include <random>
+#include "PerlinNoise.hpp"
 
 ChunksGeneratorThread::ChunksGeneratorThread(const HasChunk& vHasChunk, const CreateChunk& vCreateChunk, const RemoveChunk& vRemoveChunk, Seed vSeed) : hasChunk{vHasChunk}, createChunk{vCreateChunk}, removeChunk{vRemoveChunk}, seed{vSeed} {}
 
@@ -25,14 +26,23 @@ void ChunksGeneratorThread::Update(float delta) {
 }
 
 void ChunksGeneratorThread::GenerateChunk(const Vector3i& position) {
-    std::srand(std::time(NULL));
+    const siv::PerlinNoise perlin(seed);
     std::array<Block, Chunk::Blocks> blocks;
     for (uint x = 0; x < Chunk::Bounds; x++) {
-        for (uint z = 0; z < Chunk::Bounds; z++) {
-            if (std::rand() % 2) {
-                blocks.at(Chunk::PositionToIndex(Vector3u(x, 1, z))).type = Block::Type::Grass;
+        for (uint y = 0; y < Chunk::Bounds; y++) {
+            for (uint z = 0; z < Chunk::Bounds; z++) {
+                Vector3u localPosition(x, y, z);
+                auto worldPosition = Chunk::ChunkPositionToWorldPosition(position, localPosition);
+                auto height = perlin.accumulatedOctaveNoise2D_0_1(worldPosition.x / 16.f, worldPosition.z / 16.f, 8);
+
+                int yPos = height * MaxGenerationHeight;
+
+                if (worldPosition.y == yPos) {
+                    blocks.at(Chunk::PositionToIndex(localPosition)).type = Block::Type::Grass;
+                } else if (worldPosition.y < yPos) {
+                    blocks.at(Chunk::PositionToIndex(localPosition)).type = Block::Type::Stone;
+                }
             }
-            blocks.at(Chunk::PositionToIndex(Vector3u(x, 0, z))).type = Block::Type::Stone;
         }
     }
     createChunk(position, blocks);

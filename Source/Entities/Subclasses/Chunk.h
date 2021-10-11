@@ -44,6 +44,7 @@ class Chunk : public virtual Entity {
 
         void Update();
 
+        static Vector3i ChunkPositionToWorldPosition(const Vector3i& chunkPosition, const Vector3i& localPosition);
         static std::size_t PositionToIndex(const Vector3i& position);
         static Vector3u IndexToPosition(std::size_t index);
 };

@@ -23,7 +23,7 @@ void Camera::LookVector(const Vector3f& vLookVector) {
 
 void Camera::Update(const UserInput& userInput, float delta) {
     Vector2i cursorPosition = userInput.CursorPosition();
-    if (userInput.IsKeyHeld(GLFW_MOUSE_BUTTON_2)) {
+    // if (userInput.IsKeyHeld(GLFW_MOUSE_BUTTON_2)) {
         if (cursorPosition.x >= 0 && cursorPosition.y >= 0 && cursorPosition.x < WindowSizeX && cursorPosition.y < WindowSizeY) {
             Vector2f inputVector = lastCursorPosition - cursorPosition;
             inputVector /= Vector2f(WindowSizeX, WindowSizeY);
@@ -46,7 +46,7 @@ void Camera::Update(const UserInput& userInput, float delta) {
                 LookVector(newLookVector);
             }
         }
-    }
+    // }
     lastCursorPosition = cursorPosition;
 
     // wasdqe movement

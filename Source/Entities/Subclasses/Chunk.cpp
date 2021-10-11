@@ -8,6 +8,10 @@ Chunk::Chunk(const Vector3i& vPosition, const std::array<Block, Blocks>& vBlocks
     node->UseMesh(std::bind(&Chunk::GenerateMesh, this, std::placeholders::_1));
 }
 
+Vector3i Chunk::ChunkPositionToWorldPosition(const Vector3i& chunkPosition, const Vector3i& localPosition) {
+    return ((chunkPosition * Bounds) + localPosition);
+}
+
 std::size_t Chunk::PositionToIndex(const Vector3i& position) {
     return position.x + (position.y * Bounds) + (position.z * Bounds * Bounds);
 }

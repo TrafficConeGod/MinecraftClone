@@ -25,6 +25,8 @@ class ChunksGeneratorThread : public virtual Thread {
 
         int chunkGenerationRadius = 5;
 
+        static constexpr std::size_t MaxGenerationHeight = 10;
+
         void GenerateChunk(const Vector3i& position);
     protected:
         virtual void Start() override;
