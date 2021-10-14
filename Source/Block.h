@@ -5,6 +5,10 @@
 #include <array>
 
 struct Block {
+    using TextureId = uint;
+    
+    static Vector2f TexturePositionToUVCoordinate(const Vector2u& texturePosition);
+
     static constexpr uint Faces = 7;
     enum class Face : u_char {
         None,

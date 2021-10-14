@@ -3,7 +3,7 @@
 
 class TexturedCubeBlockHandler : public virtual BlockHandler {
     protected:
-        virtual uint TextureIdFor(Block::Face face) const;
+        virtual Block::TextureId TextureIdFor(Block::Face face) const;
     public:
         GIVE_TYPE_ID_1(15, BlockHandler)
 

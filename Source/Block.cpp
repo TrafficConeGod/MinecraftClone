@@ -1,5 +1,13 @@
 #include "Block.h"
 
+Vector2f Block::TexturePositionToUVCoordinate(const Vector2u& texturePosition) {
+    Vector2f pixel = texturePosition;
+    pixel.x *= 16;
+    pixel.y *= 16;
+    pixel.x += 21; // i need to do this for some reason
+    return Vector2f(pixel.x / 256.f, 1.f - (pixel.y / 256.f));
+}
+
 Block::FaceMesh::FaceMesh(const std::vector<FaceTriangle>& vTriangles) : triangles{vTriangles} {}
 
 void Block::Mesh::FaceMeshPointer(Face face, const MeshPointer& meshPointer) {}
@@ -17,9 +25,9 @@ void Block::Mesh::AddTrianglesTo(ChunkGraphicsNode::Mesh& chunkMesh, const Vecto
 
         // TODO: Implement proper UV
         chunkMesh.uvTriangles.push_back({{
-            Vector2f(0, 0),
-            Vector2f(0, 0.0625),
-            Vector2f(0.0625, 0.0625),
+            TexturePositionToUVCoordinate(Vector2u(0, 0)),
+            TexturePositionToUVCoordinate(Vector2u(1, 0)),
+            TexturePositionToUVCoordinate(Vector2u(1, 1)),
         }});
     }
 }

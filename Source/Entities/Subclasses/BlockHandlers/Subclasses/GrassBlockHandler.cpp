@@ -1,6 +1,6 @@
 #include "GrassBlockHandler.h"
 
-uint GrassBlockHandler::TextureIdFor(Block::Face face) const {
+Block::TextureId GrassBlockHandler::TextureIdFor(Block::Face face) const {
     switch (face) {
         case Block::Face::Top: return 0;
         case Block::Face::Bottom: return 2;
