@@ -12,10 +12,6 @@ class Chunk : public virtual Entity {
     public:
         using Mesh = ChunkGraphicsNode::Mesh;
         
-        struct BlockMesh {
-            uint index = 0;
-        };
-        
         static constexpr int Bounds = 16;
         static constexpr float OffsetToCenter = 8.5;
         static constexpr std::size_t Blocks = 4096;
@@ -23,7 +19,7 @@ class Chunk : public virtual Entity {
         EntityReference<ChunkGraphicsNode> node;
         Vector3i position;
         std::array<Block, Blocks> blocks;
-        std::array<BlockMesh, Blocks> blockMeshes;
+        std::array<Block::Mesh, Blocks> blockMeshes;
         std::vector<EntityReference<BlockEntity>> blockEntities;
         const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers;
 
@@ -32,7 +28,7 @@ class Chunk : public virtual Entity {
 
         EntityReference<BlockHandler> BlockHandlerFor(Block::Type type);
 
-        bool GenerateFaceMesh(const Vector3i& direction, Block::Face face, const EntityReference<BlockHandler> blockHandler, Mesh& mesh, const Vector3u& position, const Block& block);
+        bool GenerateFaceMesh(const Vector3i& direction, Block::Face face, const EntityReference<BlockHandler> blockHandler, Mesh& chunkMesh, const Vector3u& position, const Block& block);
     public:
         GIVE_TYPE_ID_1(6, Entity)
 

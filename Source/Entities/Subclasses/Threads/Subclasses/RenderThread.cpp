@@ -85,7 +85,6 @@ void RenderThread::Start() {
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS); 
-	glEnable(GL_CULL_FACE);
 
     glClearColor(44.f/256.f, 157.f/256.f, 222.f/256.f, 0.0f);
 

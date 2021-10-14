@@ -40,21 +40,22 @@ void Chunk::Update() {
     }
 }
 
-bool Chunk::GenerateFaceMesh(const Vector3i& direction, Block::Face face, const EntityReference<BlockHandler> blockHandler, Mesh& mesh, const Vector3u& position, const Block& block) {
+bool Chunk::GenerateFaceMesh(const Vector3i& direction, Block::Face face, const EntityReference<BlockHandler> blockHandler, Mesh& chunkMesh, const Vector3u& position, const Block& block) {
+    auto& blockMesh = blockMeshes.at(PositionToIndex(position));
     auto checkPosition = (Vector3i)position + direction;
     if (checkPosition.x >= 0 && checkPosition.y >= 0 && checkPosition.z >= 0 && checkPosition.x < Bounds && checkPosition.y < Bounds && checkPosition.z < Bounds) {
 
         int checkIndex = PositionToIndex(checkPosition);
         const auto& checkBlock = blocks.at(checkIndex);
         const auto checkBlockHandler = BlockHandlerFor(checkBlock.type);
-       
+
         if (checkBlockHandler->IsTransparent(checkBlock, block)) {
-            blockHandler->GenerateFaceMesh(mesh, position, block, face);
+            blockHandler->GenerateFaceMesh(chunkMesh, blockMesh, position, block, face);
             return true;
         }
         return false;
     } else {
-        blockHandler->GenerateFaceMesh(mesh, position, block, face);
+        blockHandler->GenerateFaceMesh(chunkMesh, blockMesh, position, block, face);
         return true;
     }
 }

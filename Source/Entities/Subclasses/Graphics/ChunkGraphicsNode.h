@@ -4,22 +4,17 @@
 class ChunkGraphicsNode : public virtual GraphicsNode {
     public:
         struct Mesh {
-            using Vertex = Vector3f;
-            using UVVertex = Vector2f;
 
             struct Triangle {
-                std::array<Vertex, 3> vertices;
+                std::array<Vector3f, 3> vertices;
             };
 
             struct UVTriangle {
-                std::array<UVVertex, 3> vertices;
+                std::array<Vector2f, 3> vertices;
             };
 
             std::vector<Triangle> triangles;
             std::vector<UVTriangle> uvTriangles;
-
-            static Vertex CreateVertex(u_char x, u_char y, u_char z);
-            static UVVertex CreateUVVertex(u_char x, u_char y);
         };
     private:
         bool buffersGenerated = false;
