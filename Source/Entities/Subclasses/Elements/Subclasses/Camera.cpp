@@ -72,13 +72,11 @@ void Camera::Update(const UserInput& userInput, float delta) {
     if (inputVector.Magnitude() != 0) {
         inputVector = inputVector.Unit();
 
-        Vector3f flatLookVector = lookVector * Vector3f(1, 0, 1);
         Vector3f regularLookVector = lookVector;
-        flatLookVector = flatLookVector.Unit();
-        Vector3f perpendicularLookVector(-flatLookVector.z, 0, flatLookVector.x);
+        Vector3f perpendicularLookVector(-lookVector.z, 0, lookVector.x);
         Vector3f verticalLookVector(0, -regularLookVector.y, 0);
 
-        Vector3f moveVector = (flatLookVector * inputVector.z) + (perpendicularLookVector * inputVector.x) + (verticalLookVector * inputVector.y);
+        Vector3f moveVector = (lookVector * inputVector.z) + (perpendicularLookVector * inputVector.x) + (verticalLookVector * inputVector.y);
         moveVector = moveVector.Unit();
         moveVector *= Speed * delta;
         Position(position + moveVector);
