@@ -47,16 +47,18 @@ struct Block {
     };
 
     class Mesh {
-        private:
-            struct MeshPointer {
-                std::size_t index = 0;
-                u_char triangles = 0;
+        public:
+            struct FaceReference {
+                using TriangleReference = ChunkGraphicsNode::Mesh::TriangleReference;
+
+                TriangleReference triangleReference;
+                std::size_t trianglesCount;
             };
+        private:
+            std::array<std::shared_ptr<FaceReference>, Faces> faceReferences;
 
-            std::array<MeshPointer, Faces> faceMeshPointers;
-
-            void FaceMeshPointer(Face face, const MeshPointer& meshPointer);
-            MeshPointer FaceMeshPointer(Face face) const;
+            void FaceReferenceFor(Face face, std::shared_ptr<FaceReference> faceReference);
+            FaceReference FaceReferenceFor(Face face) const;
         public:
             void AddTrianglesTo(ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, Face face, const FaceMesh& faceMesh, TextureId textureId);
 

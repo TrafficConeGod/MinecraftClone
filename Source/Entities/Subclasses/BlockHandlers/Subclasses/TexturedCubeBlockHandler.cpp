@@ -117,7 +117,7 @@ const Block::FaceMesh bottomFaceMesh({
     },
 });
 
-const Block::FaceMesh leftFaceMesh({
+const Block::FaceMesh rightFaceMesh({
     {
         {
             Vector3f(1, 1, 1),
@@ -125,9 +125,9 @@ const Block::FaceMesh leftFaceMesh({
             Vector3f(0, 0, 1),
         },
         {
-            Vector2f(0, 0),
             Vector2f(1, 0),
-            Vector2f(1, 1),
+            Vector2f(0, 0),
+            Vector2f(0, 1),
         }
     },
     {
@@ -137,36 +137,36 @@ const Block::FaceMesh leftFaceMesh({
             Vector3f(0, 0, 1),
         },
         {
-            Vector2f(0, 0),
-            Vector2f(0, 1),
+            Vector2f(1, 0),
             Vector2f(1, 1),
+            Vector2f(0, 1),
         }
     },
 });
 
-const Block::FaceMesh rightFaceMesh({
+const Block::FaceMesh leftFaceMesh({
     {
         {
-            Vector3f(0, 1, 1),
+            Vector3f(1, 1, 0),
             Vector3f(0, 1, 0),
             Vector3f(0, 0, 0),
         },
         {
-            Vector2f(1, 0),
             Vector2f(0, 0),
-            Vector2f(0, 1),
+            Vector2f(1, 0),
+            Vector2f(1, 1),
         }
     },
     {
         {
-            Vector3f(0, 1, 1),
-            Vector3f(0, 0, 1),
+            Vector3f(1, 1, 0),
+            Vector3f(1, 0, 0),
             Vector3f(0, 0, 0),
         },
         {
-            Vector2f(1, 0),
-            Vector2f(1, 1),
+            Vector2f(0, 0),
             Vector2f(0, 1),
+            Vector2f(1, 1),
         }
     },
 });
