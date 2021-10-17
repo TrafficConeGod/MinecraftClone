@@ -23,7 +23,7 @@ class ChunksGeneratorThread : public virtual Thread {
 
         Seed seed;
 
-        int chunkGenerationRadius = 5;
+        int chunkGenerationRadius = 10;
 
         static constexpr std::size_t MaxGenerationHeight = 10;
 

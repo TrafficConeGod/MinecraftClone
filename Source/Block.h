@@ -6,8 +6,9 @@
 
 struct Block {
     using TextureId = uint;
-    
-    static Vector2f TexturePositionToUVCoordinate(const Vector2u& texturePosition);
+
+    static Vector2f TexturePositionToUVCoordinate(const Vector2f& texturePosition);
+    static Vector2f TextureIdToTexturePosition(TextureId textureId);
 
     static constexpr uint Faces = 7;
     enum class Face : u_char {
@@ -36,6 +37,7 @@ struct Block {
 
     struct FaceTriangle {
         std::array<Vector3f, 3> vertices;
+        std::array<Vector2f, 3> uvVertices;
     };
 
     struct FaceMesh {
@@ -56,7 +58,7 @@ struct Block {
             void FaceMeshPointer(Face face, const MeshPointer& meshPointer);
             MeshPointer FaceMeshPointer(Face face) const;
         public:
-            void AddTrianglesTo(ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, Face face, const FaceMesh& faceMesh);
+            void AddTrianglesTo(ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, Face face, const FaceMesh& faceMesh, TextureId textureId);
 
             bool HasFace(Face face) const;
     };

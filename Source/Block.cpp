@@ -1,6 +1,6 @@
 #include "Block.h"
 
-Vector2f Block::TexturePositionToUVCoordinate(const Vector2u& texturePosition) {
+Vector2f Block::TexturePositionToUVCoordinate(const Vector2f& texturePosition) {
     Vector2f pixel = texturePosition;
     pixel.x *= 16;
     pixel.y *= 16;
@@ -12,7 +12,7 @@ Block::FaceMesh::FaceMesh(const std::vector<FaceTriangle>& vTriangles) : triangl
 
 void Block::Mesh::FaceMeshPointer(Face face, const MeshPointer& meshPointer) {}
 
-void Block::Mesh::AddTrianglesTo(ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, Face face, const FaceMesh& faceMesh) {
+void Block::Mesh::AddTrianglesTo(ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, Face face, const FaceMesh& faceMesh, TextureId textureId) {
     FaceMeshPointer(face, MeshPointer{ chunkMesh.triangles.size() - 1, (u_char)faceMesh.triangles.size() });
     
     auto floatPosition = (Vector3f)position;
