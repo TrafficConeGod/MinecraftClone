@@ -33,7 +33,7 @@ class ChunkGraphicsNode : public virtual GraphicsNode {
         virtual ~ChunkGraphicsNode() {}
 
         void UseMesh(std::function<void(Mesh&)> context);
-        void UseMeshConst(std::function<void(const Mesh&)> context);
+        void UseMeshConst(std::function<void(const Mesh&)> context) const;
 
         virtual void Render(const glm::mat4& viewProjection) override;
 };

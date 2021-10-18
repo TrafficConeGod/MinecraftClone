@@ -21,7 +21,7 @@ void RenderThread::AddNode(EntityReference<GraphicsNode> node) {
 	}
 }
 
-GLuint RenderThread::BufferId() { return currentBufferId; }
+GLuint RenderThread::BufferId() const { return currentBufferId; }
 
 bool RenderThread::IsKeyPressed(KeyCode key) {
 	std::lock_guard lock(keysMutex);
@@ -47,7 +47,7 @@ bool RenderThread::IsKeyHeld(KeyCode key) {
 	return heldKeys.at(key);
 }
 
-Vector2i RenderThread::CursorPosition() {
+Vector2i RenderThread::CursorPosition() const {
 	std::lock_guard lock(keysMutex);
 	return cursorPosition;
 }

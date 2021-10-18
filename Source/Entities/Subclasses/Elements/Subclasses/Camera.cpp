@@ -21,7 +21,8 @@ void Camera::LookVector(const Vector3f& vLookVector) {
     coordUpdate(position, lookVector);
 }
 
-void Camera::Update(const UserInput& userInput, float delta) {
+void Camera::Update(const UpdateInfo& updateInfo) {
+    const auto& userInput = updateInfo.userInput;
     Vector2i cursorPosition = userInput.CursorPosition();
     if (userInput.IsKeyHeld(GLFW_MOUSE_BUTTON_2)) {
         if (cursorPosition.x >= 0 && cursorPosition.y >= 0 && cursorPosition.x < WindowSizeX && cursorPosition.y < WindowSizeY) {
@@ -78,7 +79,7 @@ void Camera::Update(const UserInput& userInput, float delta) {
 
         Vector3f moveVector = (lookVector * inputVector.z) + (perpendicularLookVector * inputVector.x) + (verticalLookVector * inputVector.y);
         moveVector = moveVector.Unit();
-        moveVector *= Speed * delta;
+        moveVector *= Speed * updateInfo.delta;
         Position(position + moveVector);
     }
 }

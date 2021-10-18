@@ -44,6 +44,7 @@ struct Vector3 {
     MK_ACROSS_OP(/)
     MK_SCALAR_OP(*)
     MK_SCALAR_OP(/)
+    MK_SCALAR_OP(%)
     T Magnitude() const {
         T a = x * x;
         T b = y * y;

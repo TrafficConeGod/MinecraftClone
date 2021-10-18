@@ -1,6 +1,7 @@
 #pragma once
 #include "Entity.h"
 #include "UserInput.h"
+#include "Vector3.h"
 
 class Element : public virtual Entity {
     public:
@@ -10,5 +11,11 @@ class Element : public virtual Entity {
         explicit Element() {}
         virtual ~Element() {}
 
-        virtual void Update(const UserInput& userInput, float delta) {}
+        struct UpdateInfo {
+            const UserInput& userInput;
+            float delta;
+            const Vector3f& cameraPosition;
+            const Vector3f& cameraLookVector;
+        };
+        virtual void Update(const UpdateInfo& updateInfo) {}
 };

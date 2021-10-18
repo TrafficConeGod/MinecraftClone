@@ -25,6 +25,9 @@ AppController::AppController() : Entity() {
 	EntityReference<UserInterfaceThread> userInterfaceThread = new UserInterfaceThread(userInput, [&](const auto& position, const auto& lookVector) {
 		renderThread->UpdateCamera(position, lookVector);
 		chunksThread->UpdateCamera(position);
+	}, [&](const auto& position, const auto& lookVector) {
+		// TODO: Use actors here
+		chunksThread->SignalMouseClick(position, lookVector);
 	});
 
     workers.push_back(renderThread);

@@ -32,7 +32,7 @@ void ChunksGeneratorThread::GenerateChunk(const Vector3i& position) {
         for (uint y = 0; y < Chunk::Bounds; y++) {
             for (uint z = 0; z < Chunk::Bounds; z++) {
                 Vector3u localPosition(x, y, z);
-                auto worldPosition = Chunk::ChunkPositionToWorldPosition(position, localPosition);
+                auto worldPosition = Chunk::LocalChunkPositionToWorldPosition(position, localPosition);
                 auto height = perlin.accumulatedOctaveNoise2D_0_1(worldPosition.x / 16.f, worldPosition.z / 16.f, 8);
 
                 int yPos = height * MaxGenerationHeight;

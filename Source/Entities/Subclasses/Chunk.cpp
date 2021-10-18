@@ -8,8 +8,16 @@ Chunk::Chunk(const Vector3i& vPosition, const std::array<Block, Blocks>& vBlocks
     node->UseMesh(std::bind(&Chunk::GenerateMesh, this, std::placeholders::_1));
 }
 
-Vector3i Chunk::ChunkPositionToWorldPosition(const Vector3i& chunkPosition, const Vector3i& localPosition) {
-    return ((chunkPosition * Bounds) + localPosition);
+Vector3i Chunk::LocalChunkPositionToWorldPosition(const Vector3i& chunkPosition, const Vector3u& localPosition) {
+    return ((chunkPosition * Bounds) + (Vector3i)localPosition);
+}
+
+Vector3i Chunk::WorldPositionToChunkPosition(const Vector3i& worldPosition) {
+    return worldPosition / Bounds;
+}
+
+Vector3u Chunk::WorldPositionToLocalChunkPosition(const Vector3i& worldPosition) {
+    return worldPosition % Bounds;
 }
 
 std::size_t Chunk::PositionToIndex(const Vector3i& position) {
@@ -30,16 +38,28 @@ EntityReference<BlockHandler> Chunk::BlockHandlerFor(Block::Type type) {
     return blockHandlers.at(index);
 }
 
-void Chunk::SetBlock(const Vector3u& position, const Block& block) {
+const Block& Chunk::BlockAt(const Vector3u& position) const {
+    return blocks.at(PositionToIndex(position));
+}
+
+const Block& Chunk::BlockAt(std::size_t index) const {
+    return blocks.at(index);
+}
+
+void Chunk::BlockAt(const Vector3u& position, const Block& block) {
     blocks.at(PositionToIndex(position)) = block;
-    node->UseMesh([&](auto& mesh) {
-        mesh.triangles.clear();
-        mesh.uvTriangles.clear();
-        GenerateMesh(mesh);
-    });
+    blockUpdated = true;
 }
 
 void Chunk::Update() {
+    if (blockUpdated) {
+        blockUpdated = false;
+        node->UseMesh([&](auto& mesh) {
+            mesh.triangles.clear();
+            mesh.uvTriangles.clear();
+            GenerateMesh(mesh);
+        });
+    }
     for (auto& blockEntity : blockEntities) {
         blockEntity->Update();
     }
@@ -50,7 +70,7 @@ bool Chunk::GenerateFaceMesh(const Vector3i& direction, Block::Face face, const 
     if (checkPosition.x >= 0 && checkPosition.y >= 0 && checkPosition.z >= 0 && checkPosition.x < Bounds && checkPosition.y < Bounds && checkPosition.z < Bounds) {
 
         int checkIndex = PositionToIndex(checkPosition);
-        const auto& checkBlock = blocks.at(checkIndex);
+        const auto& checkBlock = BlockAt(checkIndex);
         const auto checkBlockHandler = BlockHandlerFor(checkBlock.type);
 
         if (checkBlockHandler->IsTransparent(checkBlock, block)) {

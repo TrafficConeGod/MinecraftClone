@@ -23,5 +23,5 @@ class Camera : public virtual Element {
         explicit Camera(const CoordUpdate& coordUpdate, const Vector3f& position, const Vector3f& lookVector);
         virtual ~Camera() {}
 
-        virtual void Update(const UserInput& userInput, float delta) override;
+        virtual void Update(const UpdateInfo& updateInfo) override;
 };

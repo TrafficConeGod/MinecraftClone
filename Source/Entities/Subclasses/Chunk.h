@@ -22,6 +22,8 @@ class Chunk : public virtual Entity {
         std::vector<EntityReference<BlockEntity>> blockEntities;
         const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers;
 
+        std::atomic<bool> blockUpdated = false;
+
         void GenerateMesh(Mesh& mesh);
 
         EntityReference<BlockHandler> BlockHandlerFor(Block::Type type);
@@ -34,11 +36,15 @@ class Chunk : public virtual Entity {
         explicit Chunk(const Vector3i& position, const std::array<Block, Blocks>& blocks, const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers, EntityReference<ChunkGraphicsNode> node);
         virtual ~Chunk() {}
 
-        void SetBlock(const Vector3u& position, const Block& block);
+        const Block& BlockAt(const Vector3u& position) const;
+        const Block& BlockAt(std::size_t index) const;
+        void BlockAt(const Vector3u& position, const Block& block);
 
         void Update();
 
-        static Vector3i ChunkPositionToWorldPosition(const Vector3i& chunkPosition, const Vector3i& localPosition);
+        static Vector3i LocalChunkPositionToWorldPosition(const Vector3i& chunkPosition, const Vector3u& localPosition);
+        static Vector3i WorldPositionToChunkPosition(const Vector3i& worldPosition);
+        static Vector3u WorldPositionToLocalChunkPosition(const Vector3i& worldPosition);
         static std::size_t PositionToIndex(const Vector3i& position);
         static Vector3u IndexToPosition(std::size_t index);
 };

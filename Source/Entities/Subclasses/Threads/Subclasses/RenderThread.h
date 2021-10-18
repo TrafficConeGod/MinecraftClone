@@ -19,7 +19,7 @@ class RenderThread : public virtual Thread {
         std::mutex nodesMutex;
         std::vector<EntityReference<GraphicsNode>> nodes;
 
-        std::mutex keysMutex;
+        mutable std::mutex keysMutex;
         std::map<KeyCode, bool> pressedKeys;
         std::map<KeyCode, bool> releasedKeys;
         std::map<KeyCode, bool> heldKeys;
@@ -51,7 +51,6 @@ class RenderThread : public virtual Thread {
         bool IsKeyPressed(KeyCode key);
         bool IsKeyReleased(KeyCode key);
         bool IsKeyHeld(KeyCode key);
-        Vector2i CursorPosition();
-
-        GLuint BufferId();
+        Vector2i CursorPosition() const;
+        GLuint BufferId() const;
 };
