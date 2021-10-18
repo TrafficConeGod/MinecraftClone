@@ -171,26 +171,26 @@ const Block::FaceMesh leftFaceMesh({
     },
 });
 
-void TexturedCubeBlockHandler::GenerateFaceMesh(ChunkGraphicsNode::Mesh& chunkMesh, Block::Mesh& blockMesh, const Vector3u& position, const Block& block, Block::Face face) const {
+void TexturedCubeBlockHandler::GenerateFaceMesh(ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, const Block& block, Block::Face face) const {
     auto textureId = TextureIdFor(face);
     switch (face) {
         case Block::Face::Front: {
-            blockMesh.CreateFace(face, chunkMesh, position, frontFaceMesh, textureId);
+            Block::CreateFace(chunkMesh, position, frontFaceMesh, textureId);
         } break;
         case Block::Face::Back: {
-            blockMesh.CreateFace(face, chunkMesh, position, backFaceMesh, textureId);
+            Block::CreateFace(chunkMesh, position, backFaceMesh, textureId);
         } break;
         case Block::Face::Top: {
-            blockMesh.CreateFace(face, chunkMesh, position, topFaceMesh, textureId);
+            Block::CreateFace(chunkMesh, position, topFaceMesh, textureId);
         } break;
         case Block::Face::Bottom: {
-            blockMesh.CreateFace(face, chunkMesh, position, bottomFaceMesh, textureId);
+            Block::CreateFace(chunkMesh, position, bottomFaceMesh, textureId);
         } break;
         case Block::Face::Left: {
-            blockMesh.CreateFace(face, chunkMesh, position, leftFaceMesh, textureId);
+            Block::CreateFace(chunkMesh, position, leftFaceMesh, textureId);
         } break;
         case Block::Face::Right: {
-            blockMesh.CreateFace(face, chunkMesh, position, rightFaceMesh, textureId);
+            Block::CreateFace(chunkMesh, position, rightFaceMesh, textureId);
         } break;
         default: break;
     }

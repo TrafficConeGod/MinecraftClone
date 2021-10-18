@@ -19,12 +19,10 @@ class Chunk : public virtual Entity {
         EntityReference<ChunkGraphicsNode> node;
         Vector3i position;
         std::array<Block, Blocks> blocks;
-        std::array<Block::Mesh, Blocks> blockMeshes;
         std::vector<EntityReference<BlockEntity>> blockEntities;
         const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers;
 
         void GenerateMesh(Mesh& mesh);
-        void RegenerateMeshAt(Mesh& mesh, const Vector3u& position);
 
         EntityReference<BlockHandler> BlockHandlerFor(Block::Type type);
 

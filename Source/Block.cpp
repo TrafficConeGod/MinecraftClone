@@ -14,44 +14,20 @@ Vector2f Block::TextureIdToTexturePosition(TextureId textureId) {
 
 Block::FaceMesh::FaceMesh(const std::vector<FaceTriangle>& vTriangles) : triangles{vTriangles} {}
 
-void Block::Mesh::FaceReferenceFor(Face face, std::shared_ptr<FaceReference> faceReference) {
-    faceReferences.at(FaceIdFor(face)) = faceReference;
-}
-
-Block::Mesh::FaceReference Block::Mesh::FaceReferenceFor(Face face) {
-    return *faceReferences.at(FaceIdFor(face));
-}
-
-void Block::Mesh::CreateFace(Face face, ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, const FaceMesh& faceMesh, TextureId textureId) {
-    FaceReferenceFor(face, std::shared_ptr<FaceReference>(new FaceReference{ chunkMesh.triangles.Data().size() - 1, (u_char)faceMesh.triangles.size() }));
-
+void Block::CreateFace(ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, const FaceMesh& faceMesh, TextureId textureId) {
     auto floatPosition = (Vector3f)position;
     auto texturePosition = TextureIdToTexturePosition(textureId);
     for (const auto& triangle : faceMesh.triangles) {
-        chunkMesh.triangles.PushBack({{
+        chunkMesh.triangles.push_back({{
             (triangle.vertices.at(0) + floatPosition),
             (triangle.vertices.at(1) + floatPosition),
             (triangle.vertices.at(2) + floatPosition),
         }});
 
-        // TODO: Implement proper UV
-        chunkMesh.uvTriangles.PushBack({{
+        chunkMesh.uvTriangles.push_back({{
             TexturePositionToUVCoordinate(texturePosition + triangle.uvVertices.at(0)),
             TexturePositionToUVCoordinate(texturePosition + triangle.uvVertices.at(1)),
             TexturePositionToUVCoordinate(texturePosition + triangle.uvVertices.at(2)),
         }});
     }
-}
-
-void Block::Mesh::DeleteFace(Face face, ChunkGraphicsNode::Mesh& chunkMesh) {
-    if (!HasFace(face)) {
-        throw std::runtime_error("Missing face");
-    }
-    auto faceReference = FaceReferenceFor(face);
-    chunkMesh.triangles.Erase(faceReference.triangleReference.Index(), faceReference.trianglesCount);
-    chunkMesh.uvTriangles.Erase(faceReference.triangleReference.Index(), faceReference.trianglesCount);
-}
-
-bool Block::Mesh::HasFace(Face face) const {
-    return faceReferences.at(FaceIdFor(face)).get() != nullptr;
 }

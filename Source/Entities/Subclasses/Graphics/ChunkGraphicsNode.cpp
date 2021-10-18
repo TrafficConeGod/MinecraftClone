@@ -40,18 +40,16 @@ void ChunkGraphicsNode::Render(const glm::mat4& viewProjection) {
 
     glEnableVertexAttribArray(0);
 
-    const auto& triangles = mesh.triangles.Data();
-
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, triangles.size()*sizeof(Vector3f) * 3, (float*)triangles.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mesh.triangles.size()*sizeof(Vector3f) * 3, (float*)mesh.triangles.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
-    glBufferData(GL_ARRAY_BUFFER, triangles.size()*sizeof(float) * 3 * 2, (float*)mesh.uvTriangles.Data().data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mesh.triangles.size()*sizeof(float) * 3 * 2, (float*)mesh.uvTriangles.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-    glDrawArrays(GL_TRIANGLES, 0, triangles.size() * 3);
+    glDrawArrays(GL_TRIANGLES, 0, mesh.triangles.size() * 3);
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

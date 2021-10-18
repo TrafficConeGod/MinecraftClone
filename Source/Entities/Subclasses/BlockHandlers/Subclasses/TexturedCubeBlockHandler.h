@@ -12,5 +12,5 @@ class TexturedCubeBlockHandler : public virtual BlockHandler {
         virtual ~TexturedCubeBlockHandler() {}
 
         virtual bool IsTransparent(const Block&, const Block&) const override;
-        virtual void GenerateFaceMesh(ChunkGraphicsNode::Mesh& chunkMesh, Block::Mesh& blockMesh, const Vector3u& position, const Block& block, Block::Face face) const override;
+        virtual void GenerateFaceMesh(ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, const Block& block, Block::Face face) const override;
 };

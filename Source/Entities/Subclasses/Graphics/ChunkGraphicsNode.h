@@ -1,6 +1,5 @@
 #pragma once
 #include "GraphicsNode.h"
-#include "ReferencingVector.h"
 
 class ChunkGraphicsNode : public virtual GraphicsNode {
     public:
@@ -14,10 +13,8 @@ class ChunkGraphicsNode : public virtual GraphicsNode {
                 std::array<Vector2f, 3> vertices;
             };
 
-            using TriangleReference = ReferencingVector<Triangle>::Reference;
-
-            ReferencingVector<Triangle> triangles;
-            ReferencingVector<UVTriangle> uvTriangles;
+            std::vector<Triangle> triangles;
+            std::vector<UVTriangle> uvTriangles;
         };
     private:
         bool buffersGenerated = false;

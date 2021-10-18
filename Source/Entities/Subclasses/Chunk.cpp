@@ -32,7 +32,11 @@ EntityReference<BlockHandler> Chunk::BlockHandlerFor(Block::Type type) {
 
 void Chunk::SetBlock(const Vector3u& position, const Block& block) {
     blocks.at(PositionToIndex(position)) = block;
-    node->UseMesh(std::bind(&Chunk::RegenerateMeshAt, this, std::placeholders::_1, position));
+    node->UseMesh([&](auto& mesh) {
+        mesh.triangles.clear();
+        mesh.uvTriangles.clear();
+        GenerateMesh(mesh);
+    });
 }
 
 void Chunk::Update() {
@@ -42,7 +46,6 @@ void Chunk::Update() {
 }
 
 bool Chunk::GenerateFaceMesh(const Vector3i& direction, Block::Face face, const EntityReference<BlockHandler> blockHandler, Mesh& chunkMesh, const Vector3u& position, const Block& block) {
-    auto& blockMesh = blockMeshes.at(PositionToIndex(position));
     auto checkPosition = (Vector3i)position + direction;
     if (checkPosition.x >= 0 && checkPosition.y >= 0 && checkPosition.z >= 0 && checkPosition.x < Bounds && checkPosition.y < Bounds && checkPosition.z < Bounds) {
 
@@ -51,12 +54,12 @@ bool Chunk::GenerateFaceMesh(const Vector3i& direction, Block::Face face, const 
         const auto checkBlockHandler = BlockHandlerFor(checkBlock.type);
 
         if (checkBlockHandler->IsTransparent(checkBlock, block)) {
-            blockHandler->GenerateFaceMesh(chunkMesh, blockMesh, position, block, face);
+            blockHandler->GenerateFaceMesh(chunkMesh, position, block, face);
             return true;
         }
         return false;
     } else {
-        blockHandler->GenerateFaceMesh(chunkMesh, blockMesh, position, block, face);
+        blockHandler->GenerateFaceMesh(chunkMesh, position, block, face);
         return true;
     }
 }
@@ -77,8 +80,4 @@ void Chunk::GenerateMesh(Mesh& mesh) {
 
         index++;
     }
-}
-
-void Chunk::RegenerateMeshAt(Mesh& mesh, const Vector3u& position) {
-    
 }

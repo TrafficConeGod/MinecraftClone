@@ -13,5 +13,5 @@ class BlockHandler : public virtual Entity {
 
         virtual bool IsTransparent(const Block& block, const Block& neighborBlock) const;
         virtual void GenerateMesh(ChunkGraphicsNode::Mesh& mesh, const Vector3u& position, const Block& block) const {}
-        virtual void GenerateFaceMesh(ChunkGraphicsNode::Mesh& chunkMesh, Block::Mesh& blockMesh, const Vector3u& position, const Block& block, Block::Face face) const {}
+        virtual void GenerateFaceMesh(ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, const Block& block, Block::Face face) const {}
 };

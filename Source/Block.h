@@ -46,22 +46,5 @@ struct Block {
         FaceMesh(const std::vector<FaceTriangle>& triangles);
     };
 
-    class Mesh {
-        public:
-            struct FaceReference {
-                using TriangleReference = ChunkGraphicsNode::Mesh::TriangleReference;
-
-                TriangleReference triangleReference;
-                std::size_t trianglesCount;
-            };
-        private:
-            std::array<std::shared_ptr<FaceReference>, Faces> faceReferences;
-
-            void FaceReferenceFor(Face face, std::shared_ptr<FaceReference> faceReference);
-            FaceReference FaceReferenceFor(Face face);
-        public:
-            void CreateFace(Face face, ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, const FaceMesh& faceMesh, TextureId textureId);
-            void DeleteFace(Face face, ChunkGraphicsNode::Mesh& chunkMesh);
-            bool HasFace(Face face) const;
-    };
+    static void CreateFace(ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, const FaceMesh& faceMesh, TextureId textureId);
 };
