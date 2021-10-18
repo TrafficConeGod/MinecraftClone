@@ -58,10 +58,10 @@ struct Block {
             std::array<std::shared_ptr<FaceReference>, Faces> faceReferences;
 
             void FaceReferenceFor(Face face, std::shared_ptr<FaceReference> faceReference);
-            FaceReference FaceReferenceFor(Face face) const;
+            FaceReference FaceReferenceFor(Face face);
         public:
-            void AddTrianglesTo(ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, Face face, const FaceMesh& faceMesh, TextureId textureId);
-
+            void CreateFace(Face face, ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, const FaceMesh& faceMesh, TextureId textureId);
+            void DeleteFace(Face face, ChunkGraphicsNode::Mesh& chunkMesh);
             bool HasFace(Face face) const;
     };
 };

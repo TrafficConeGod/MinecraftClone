@@ -175,22 +175,22 @@ void TexturedCubeBlockHandler::GenerateFaceMesh(ChunkGraphicsNode::Mesh& chunkMe
     auto textureId = TextureIdFor(face);
     switch (face) {
         case Block::Face::Front: {
-            blockMesh.AddTrianglesTo(chunkMesh, position, face, frontFaceMesh, textureId);
+            blockMesh.CreateFace(face, chunkMesh, position, frontFaceMesh, textureId);
         } break;
         case Block::Face::Back: {
-            blockMesh.AddTrianglesTo(chunkMesh, position, face, backFaceMesh, textureId);
+            blockMesh.CreateFace(face, chunkMesh, position, backFaceMesh, textureId);
         } break;
         case Block::Face::Top: {
-            blockMesh.AddTrianglesTo(chunkMesh, position, face, topFaceMesh, textureId);
+            blockMesh.CreateFace(face, chunkMesh, position, topFaceMesh, textureId);
         } break;
         case Block::Face::Bottom: {
-            blockMesh.AddTrianglesTo(chunkMesh, position, face, bottomFaceMesh, textureId);
+            blockMesh.CreateFace(face, chunkMesh, position, bottomFaceMesh, textureId);
         } break;
         case Block::Face::Left: {
-            blockMesh.AddTrianglesTo(chunkMesh, position, face, leftFaceMesh, textureId);
+            blockMesh.CreateFace(face, chunkMesh, position, leftFaceMesh, textureId);
         } break;
         case Block::Face::Right: {
-            blockMesh.AddTrianglesTo(chunkMesh, position, face, rightFaceMesh, textureId);
+            blockMesh.CreateFace(face, chunkMesh, position, rightFaceMesh, textureId);
         } break;
         default: break;
     }

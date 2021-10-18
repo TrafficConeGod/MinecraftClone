@@ -31,6 +31,7 @@ EntityReference<BlockHandler> Chunk::BlockHandlerFor(Block::Type type) {
 }
 
 void Chunk::SetBlock(const Vector3u& position, const Block& block) {
+    blocks.at(PositionToIndex(position)) = block;
     node->UseMesh(std::bind(&Chunk::RegenerateMeshAt, this, std::placeholders::_1, position));
 }
 
