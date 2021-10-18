@@ -84,7 +84,7 @@ void RenderThread::Start() {
     glfwSetInputMode(win, GLFW_STICKY_KEYS, GL_TRUE);
 
 	glEnable(GL_DEPTH_TEST);
-	// glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glDepthFunc(GL_LESS); 
 
     glClearColor(44.f/256.f, 157.f/256.f, 222.f/256.f, 0.0f);
