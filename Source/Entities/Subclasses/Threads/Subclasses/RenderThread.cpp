@@ -27,6 +27,7 @@ bool RenderThread::IsKeyPressed(KeyCode key) {
 	std::lock_guard lock(keysMutex);
 	if (!pressedKeys.count(key)) {
 		pressedKeys[key] = false;
+		heldKeys[key] = false;
 	}
 	return pressedKeys.at(key);
 }
@@ -35,6 +36,7 @@ bool RenderThread::IsKeyReleased(KeyCode key) {
 	std::lock_guard lock(keysMutex);
 	if (!releasedKeys.count(key)) {
 		releasedKeys[key] = false;
+		heldKeys[key] = false;
 	}
 	return releasedKeys.at(key);
 }
@@ -131,7 +133,7 @@ void RenderThread::Update(float delta) {
 			auto oldStatus = status;
 			status = (glfwGetKey(win, key) == GLFW_PRESS) || (glfwGetMouseButton(win, key) == GLFW_PRESS);
 			if (status && !oldStatus) {
-				pressedKeys[key] = false;
+				pressedKeys[key] = true;
 			} else if (status && oldStatus) {
 				pressedKeys[key] = false;
 			} else if (!status && oldStatus) {

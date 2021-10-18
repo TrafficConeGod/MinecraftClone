@@ -121,5 +121,5 @@ void ChunksThread::BlockAt(const Vector3i& position, const Block& block) {
 }
 
 void ChunksThread::Raycast(const Vector3f& origin, const Vector3f& direction, const std::function<bool(const Vector3i&)>& continueCheck, const std::function<void(const Vector3i&)>& callback) const {
-    // raycast
+    std::cout << origin << " " << direction << "\n";
 }
