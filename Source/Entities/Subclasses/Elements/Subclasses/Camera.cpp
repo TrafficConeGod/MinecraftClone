@@ -24,28 +24,26 @@ void Camera::LookVector(const Vector3f& vLookVector) {
 void Camera::Update(const UpdateInfo& updateInfo) {
     const auto& userInput = updateInfo.userInput;
     Vector2i cursorPosition = userInput.CursorPosition();
-    if (userInput.IsKeyHeld(GLFW_MOUSE_BUTTON_2)) {
-        if (cursorPosition.x >= 0 && cursorPosition.y >= 0 && cursorPosition.x < WindowSizeX && cursorPosition.y < WindowSizeY) {
-            Vector2f inputVector = lastCursorPosition - cursorPosition;
-            inputVector /= Vector2f(WindowSizeX, WindowSizeY);
+    if (cursorPosition.x >= 0 && cursorPosition.y >= 0 && cursorPosition.x < WindowSizeX && cursorPosition.y < WindowSizeY) {
+        Vector2f inputVector = lastCursorPosition - cursorPosition;
+        inputVector /= Vector2f(WindowSizeX, WindowSizeY);
 
-            if (lookVector.Magnitude() > 0) {
-                Vector2f moveVector = inputVector * RotateSpeed;
+        if (lookVector.Magnitude() > 0) {
+            Vector2f moveVector = inputVector * RotateSpeed;
 
-                // https://stackoverflow.com/questions/2782647/how-to-get-yaw-pitch-and-roll-from-a-3d-vector
-                // https://stackoverflow.com/questions/10569659/camera-pitch-yaw-to-direction-vector
+            // https://stackoverflow.com/questions/2782647/how-to-get-yaw-pitch-and-roll-from-a-3d-vector
+            // https://stackoverflow.com/questions/10569659/camera-pitch-yaw-to-direction-vector
 
-                double pitch = -(std::asin(-lookVector.y));
-                double yaw = M_PI - std::atan2(lookVector.x, lookVector.z);
+            double pitch = -(std::asin(-lookVector.y));
+            double yaw = M_PI - std::atan2(lookVector.x, lookVector.z);
 
-                pitch -= moveVector.y;
-                yaw += moveVector.x;
+            pitch -= moveVector.y;
+            yaw += moveVector.x;
 
-                double xzLength = std::cos(pitch);
-                Vector3f newLookVector(xzLength * std::cos(yaw), std::sin(pitch), xzLength * std::sin(-yaw));
-    
-                LookVector(newLookVector);
-            }
+            double xzLength = std::cos(pitch);
+            Vector3f newLookVector(xzLength * std::cos(yaw), std::sin(pitch), xzLength * std::sin(-yaw));
+
+            LookVector(newLookVector);
         }
     }
     lastCursorPosition = cursorPosition;

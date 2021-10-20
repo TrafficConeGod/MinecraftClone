@@ -84,6 +84,7 @@ void RenderThread::Start() {
     }
 
     glfwSetInputMode(win, GLFW_STICKY_KEYS, GL_TRUE);
+	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
