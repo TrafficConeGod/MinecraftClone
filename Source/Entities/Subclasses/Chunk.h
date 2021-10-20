@@ -29,6 +29,7 @@ class Chunk : public virtual Entity {
         EntityReference<BlockHandler> BlockHandlerFor(Block::Type type);
 
         bool GenerateFaceMesh(const Vector3i& direction, Block::Face face, const EntityReference<BlockHandler> blockHandler, Mesh& chunkMesh, const Vector3u& position, const Block& block);
+
     public:
         GIVE_TYPE_ID_1(6, Entity)
 
@@ -42,9 +43,10 @@ class Chunk : public virtual Entity {
 
         void Update();
 
+        static Vector3i FreePositionToGridPosition(const Vector3f& freePosition);
         static Vector3i LocalChunkPositionToWorldPosition(const Vector3i& chunkPosition, const Vector3u& localPosition);
-        static Vector3i WorldPositionToChunkPosition(const Vector3i& worldPosition);
-        static Vector3u WorldPositionToLocalChunkPosition(const Vector3i& worldPosition);
+        static Vector3i WorldPositionToChunkPosition(const Vector3f& worldPosition);
+        static Vector3u WorldPositionToLocalChunkPosition(const Vector3f& worldPosition);
         static std::size_t PositionToIndex(const Vector3i& position);
         static Vector3u IndexToPosition(std::size_t index);
 };

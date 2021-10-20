@@ -8,16 +8,21 @@ Chunk::Chunk(const Vector3i& vPosition, const std::array<Block, Blocks>& vBlocks
     node->UseMesh(std::bind(&Chunk::GenerateMesh, this, std::placeholders::_1));
 }
 
+Vector3i Chunk::FreePositionToGridPosition(const Vector3f& freePosition) {
+    return Vector3i(std::floor(freePosition.x), std::floor(freePosition.y), std::floor(freePosition.z));
+}
+
 Vector3i Chunk::LocalChunkPositionToWorldPosition(const Vector3i& chunkPosition, const Vector3u& localPosition) {
     return ((chunkPosition * Bounds) + (Vector3i)localPosition);
 }
 
-Vector3i Chunk::WorldPositionToChunkPosition(const Vector3i& worldPosition) {
-    return worldPosition / Bounds;
+Vector3i Chunk::WorldPositionToChunkPosition(const Vector3f& worldPosition) {
+    return FreePositionToGridPosition((Vector3f)FreePositionToGridPosition(worldPosition) / (float)Bounds);
 }
 
-Vector3u Chunk::WorldPositionToLocalChunkPosition(const Vector3i& worldPosition) {
-    return Vector3u(Mod(worldPosition.x, Bounds), Mod(worldPosition.y, Bounds), Mod(worldPosition.z, Bounds));
+Vector3u Chunk::WorldPositionToLocalChunkPosition(const Vector3f& worldPosition) {
+    Vector3f roundedWorldPosition = FreePositionToGridPosition(worldPosition);
+    return FreePositionToGridPosition(Vector3f(Mod(roundedWorldPosition.x, Bounds), Mod(roundedWorldPosition.y, Bounds), Mod(roundedWorldPosition.z, Bounds)));
 }
 
 std::size_t Chunk::PositionToIndex(const Vector3i& position) {
@@ -47,6 +52,7 @@ const Block& Chunk::BlockAt(std::size_t index) const {
 }
 
 void Chunk::BlockAt(const Vector3u& position, const Block& block) {
+    std::cout << position << "\n";
     blocks.at(PositionToIndex(position)) = block;
     blockUpdated = true;
 }
