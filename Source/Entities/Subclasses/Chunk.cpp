@@ -1,9 +1,9 @@
 #include "Chunk.h"
+#include "Mod.h"
 
 Chunk::Chunk(const Vector3i& vPosition, const std::array<Block, Blocks>& vBlocks, const std::array<EntityReference<BlockHandler>, Block::Types>& vBlockHandlers, EntityReference<ChunkGraphicsNode> vNode) : node{vNode}, position{vPosition}, blocks{vBlocks}, blockHandlers{vBlockHandlers} {
     Vector3f nodePosition = position;
     nodePosition *= Bounds;
-    nodePosition = Vector3f(nodePosition.x - OffsetToCenter, nodePosition.y - OffsetToCenter, nodePosition.z - OffsetToCenter);
     node->Position(nodePosition);
     node->UseMesh(std::bind(&Chunk::GenerateMesh, this, std::placeholders::_1));
 }
@@ -17,7 +17,7 @@ Vector3i Chunk::WorldPositionToChunkPosition(const Vector3i& worldPosition) {
 }
 
 Vector3u Chunk::WorldPositionToLocalChunkPosition(const Vector3i& worldPosition) {
-    return worldPosition % Bounds;
+    return Vector3u(Mod(worldPosition.x, Bounds), Mod(worldPosition.y, Bounds), Mod(worldPosition.z, Bounds));
 }
 
 std::size_t Chunk::PositionToIndex(const Vector3i& position) {

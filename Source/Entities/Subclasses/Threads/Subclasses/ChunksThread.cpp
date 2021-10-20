@@ -45,7 +45,7 @@ void ChunksThread::Update(float delta) {
         if (mouseClicked) {
             mouseClicked = false;
             Raycast(mouseClickOrigin, mouseClickDirection, [&](const auto& position) {
-                return BlockAt(position).type != Block::Type::Air;
+                return HasBlockAt(position) && BlockAt(position).type != Block::Type::Air;
             }, [&](const auto& position) {
                 BlockAt(position, {Block::Type::Air});
             });
@@ -120,6 +120,17 @@ void ChunksThread::BlockAt(const Vector3i& position, const Block& block) {
     chunk->BlockAt(Chunk::WorldPositionToLocalChunkPosition(position), block);
 }
 
-void ChunksThread::Raycast(const Vector3f& origin, const Vector3f& direction, const std::function<bool(const Vector3i&)>& continueCheck, const std::function<void(const Vector3i&)>& callback) const {
-    std::cout << origin << " " << direction << "\n";
+void ChunksThread::Raycast(const Vector3f& origin, const Vector3f& direction, const std::function<bool(const Vector3i&)>& canContinue, const std::function<void(const Vector3i&)>& hitCallback) const {
+    if (direction.Magnitude() == 0) {
+        return;
+    }
+    Vector3f position = origin;
+    for (;;) {
+        if (canContinue(position)) {
+            position += direction;
+        } else {
+            hitCallback(position);
+            return;
+        }
+    }
 }
