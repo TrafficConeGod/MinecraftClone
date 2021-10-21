@@ -96,12 +96,17 @@ void Chunk::GenerateMesh(Mesh& mesh) {
         const auto blockHandler = BlockHandlerFor(block.type);
         Vector3u position = IndexToPosition(index);
         
-        GenerateFaceMesh(Vector3i(1, 0, 0), Block::Face::Front, blockHandler, mesh, position, block);
-        GenerateFaceMesh(Vector3i(-1, 0, 0), Block::Face::Back, blockHandler, mesh, position, block);
-        GenerateFaceMesh(Vector3i(0, 1, 0), Block::Face::Top, blockHandler, mesh, position, block);
-        GenerateFaceMesh(Vector3i(0, -1, 0), Block::Face::Bottom, blockHandler, mesh, position, block);
-        GenerateFaceMesh(Vector3i(0, 0, 1), Block::Face::Right, blockHandler, mesh, position, block);
-        GenerateFaceMesh(Vector3i(0, 0, -1), Block::Face::Left, blockHandler, mesh, position, block);
+        bool faceGenerated = false;
+        faceGenerated |= GenerateFaceMesh(Vector3i(1, 0, 0), Block::Face::Front, blockHandler, mesh, position, block);
+        faceGenerated |= GenerateFaceMesh(Vector3i(-1, 0, 0), Block::Face::Back, blockHandler, mesh, position, block);
+        faceGenerated |= GenerateFaceMesh(Vector3i(0, 1, 0), Block::Face::Top, blockHandler, mesh, position, block);
+        faceGenerated |= GenerateFaceMesh(Vector3i(0, -1, 0), Block::Face::Bottom, blockHandler, mesh, position, block);
+        faceGenerated |= GenerateFaceMesh(Vector3i(0, 0, 1), Block::Face::Right, blockHandler, mesh, position, block);
+        faceGenerated |= GenerateFaceMesh(Vector3i(0, 0, -1), Block::Face::Left, blockHandler, mesh, position, block);
+
+        if (faceGenerated) {
+            blockHandler->GenerateFaceMesh(mesh, position, block, Block::Face::None);
+        }
 
         index++;
     }
