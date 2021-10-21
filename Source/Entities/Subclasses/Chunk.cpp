@@ -52,7 +52,6 @@ const Block& Chunk::BlockAt(std::size_t index) const {
 }
 
 void Chunk::BlockAt(const Vector3u& position, const Block& block) {
-    std::cout << position << "\n";
     blocks.at(PositionToIndex(position)) = block;
     blockUpdated = true;
 }

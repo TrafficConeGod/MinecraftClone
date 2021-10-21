@@ -41,7 +41,7 @@ class ChunksThread : public virtual Thread {
         void CreateChunk(const Vector3i& position, const std::array<Block, Chunk::Blocks>& blocks);
         void RemoveChunk(const Vector3i& position);
         
-        void Raycast(const Vector3f& origin, const Vector3f& direction, const std::function<bool(const Vector3i&)>& canContinue, const std::function<void(const Vector3i&)>& hitCallback) const;
+        void Raycast(const Vector3f& origin, const Vector3f& direction, const std::function<bool(const Vector3i&)>& canContinue, const std::function<bool(const Vector3i&)>& shouldStop, const std::function<void(const Vector3i&)>& hitCallback) const;
         bool HasBlockAt(const Vector3i& position) const;
         const Block& BlockAt(const Vector3i& position) const;
         void BlockAt(const Vector3i& position, const Block& block);

@@ -45,9 +45,13 @@ void ChunksThread::Update(float delta) {
         if (mouseClicked) {
             mouseClicked = false;
             Raycast(mouseClickOrigin, mouseClickDirection, [&](const auto& position) {
-                return HasBlockAt(position) && BlockAt(position).type != Block::Type::Air;
+                return BlockAt(position).type == Block::Type::Air;
             }, [&](const auto& position) {
-                BlockAt(position, {Block::Type::Air});
+                return !HasBlockAt(position) || (position - Chunk::FreePositionToGridPosition(mouseClickOrigin)).Magnitude() > 10;
+            }, [&](const auto& position) {
+                if (HasBlockAt(position)) {
+                    BlockAt(position, {Block::Type::Air});
+                }
             });
         }
     }
@@ -71,10 +75,12 @@ bool ChunksThread::HasChunkAt(const Vector3i& position) const {
 }
 
 EntityReference<Chunk> ChunksThread::ChunkAt(const Vector3i& position) {
+    std::lock_guard lock(chunksMutex);
     return chunks.at(position.x).at(position.y).at(position.z);
 }
 
 const EntityReference<Chunk> ChunksThread::ChunkAt(const Vector3i& position) const {
+    std::lock_guard lock(chunksMutex);
     return chunks.at(position.x).at(position.y).at(position.z);
 }
 
@@ -120,16 +126,20 @@ void ChunksThread::BlockAt(const Vector3i& position, const Block& block) {
     chunk->BlockAt(Chunk::WorldPositionToLocalChunkPosition(position), block);
 }
 
-void ChunksThread::Raycast(const Vector3f& origin, const Vector3f& direction, const std::function<bool(const Vector3i&)>& canContinue, const std::function<void(const Vector3i&)>& hitCallback) const {
+void ChunksThread::Raycast(const Vector3f& origin, const Vector3f& direction, const std::function<bool(const Vector3i&)>& canContinue, const std::function<bool(const Vector3i&)>& shouldEnd, const std::function<void(const Vector3i&)>& hitCallback) const {
     if (direction.Magnitude() == 0) {
         return;
     }
     Vector3f position = origin;
     for (;;) {
-        if (canContinue(position)) {
+        auto gridPosition = Chunk::FreePositionToGridPosition(position);
+        if (shouldEnd(gridPosition)) {
+            return;
+        }
+        if (canContinue(gridPosition)) {
             position += direction;
         } else {
-            hitCallback(position);
+            hitCallback(gridPosition);
             return;
         }
     }
