@@ -9,6 +9,7 @@ ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNo
     new BlankBlockHandler(),
     new GrassBlockHandler(),
     new MonoTexturedCubeBlockHandler(1),
+    new MonoTexturedCubeBlockHandler(2)
 }} {}
 
 void ChunksThread::Update(float delta) {

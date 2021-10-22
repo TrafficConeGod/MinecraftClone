@@ -27,11 +27,12 @@ struct Block {
     }
 
 
-    static constexpr uint Types = 3;
+    static constexpr uint Types = 4;
     enum class Type : u_char {
         Air,
         Grass,
-        Stone
+        Stone,
+        Dirt
     };
     Type type = Type::Air;
 

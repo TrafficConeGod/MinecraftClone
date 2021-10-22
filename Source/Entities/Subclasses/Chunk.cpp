@@ -23,7 +23,11 @@ void Chunk::GenerateBlocks(Seed seed) {
                 if (worldPosition.y == yPos) {
                     BlockAt(localPosition, { Block::Type::Grass });
                 } else if (worldPosition.y < yPos) {
-                    BlockAt(localPosition, { Block::Type::Stone });
+                    if ((worldPosition.y - yPos) > -3) {
+                        BlockAt(localPosition, { Block::Type::Dirt });
+                    } else {
+                        BlockAt(localPosition, { Block::Type::Stone });
+                    }
                 }
             }
         }
