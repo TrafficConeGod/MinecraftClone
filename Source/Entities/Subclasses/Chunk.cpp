@@ -1,10 +1,34 @@
 #include "Chunk.h"
 #include "Mod.h"
+#include "PerlinNoise.hpp"
 
-Chunk::Chunk(const Vector3i& vPosition, const std::array<Block, Blocks>& vBlocks, const std::array<EntityReference<BlockHandler>, Block::Types>& vBlockHandlers, EntityReference<ChunkGraphicsNode> vNode) : node{vNode}, position{vPosition}, blocks{vBlocks}, blockHandlers{vBlockHandlers} {
+Chunk::Chunk(const std::array<EntityReference<BlockHandler>, Block::Types>& vBlockHandlers, EntityReference<ChunkGraphicsNode> vNode, const Vector3i& vPosition) : blockHandlers{vBlockHandlers}, node{vNode}, position{vPosition} {
     Vector3f nodePosition = position;
     nodePosition *= Bounds;
     node->Position(nodePosition);
+}
+
+void Chunk::GenerateBlocks(Seed seed) {
+    const siv::PerlinNoise perlin(seed);
+    std::array<Block, Chunk::Blocks> blocks;
+    for (uint x = 0; x < Chunk::Bounds; x++) {
+        for (uint y = 0; y < Chunk::Bounds; y++) {
+            for (uint z = 0; z < Chunk::Bounds; z++) {
+                Vector3u localPosition(x, y, z);
+                auto worldPosition = Chunk::LocalChunkPositionToWorldPosition(position, localPosition);
+                auto height = perlin.accumulatedOctaveNoise2D_0_1(worldPosition.x / 16.f, worldPosition.z / 16.f, 8);
+
+                int yPos = height * MaxGenerationHeight;
+
+                if (worldPosition.y == yPos) {
+                    BlockAt(localPosition, { Block::Type::Grass });
+                } else if (worldPosition.y < yPos) {
+                    BlockAt(localPosition, { Block::Type::Stone });
+                }
+            }
+        }
+    }
+    meshNeedsGeneration = false;
 }
 
 Vector3i Chunk::FreePositionToGridPosition(const Vector3f& freePosition) {

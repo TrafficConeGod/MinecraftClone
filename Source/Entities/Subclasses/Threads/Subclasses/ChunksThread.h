@@ -32,7 +32,7 @@ class ChunksThread : public virtual Thread {
         EntityReference<Chunk> ChunkAt(const Vector3i& position);
         const EntityReference<Chunk> ChunkAt(const Vector3i& position) const;
         bool HasQueuedOrActualChunkAt(const Vector3i& position) const;
-        void CreateChunk(const Vector3i& position, const std::array<Block, Chunk::Blocks>& blocks);
+        void CreateChunk(const Vector3i& position, Chunk::Seed seed);
         void RemoveChunk(const Vector3i& position);
         
         void Raycast(const Vector3f& origin, const Vector3f& direction, const std::function<bool(const Vector3i&)>& canContinue, const std::function<bool(const Vector3i&)>& shouldStop, const std::function<void(const Vector3i&)>& hitCallback) const;
@@ -48,7 +48,7 @@ class ChunksThread : public virtual Thread {
         GIVE_TYPE_ID_1(3, Thread)
 
         DELETE_ILLEGAL_CONSTRUCTORS(ChunksThread)
-        explicit ChunksThread(const CreateChunkGraphicsNode& createChunkGraphicsNode, ChunksGeneratorThread::Seed seed);
+        explicit ChunksThread(const CreateChunkGraphicsNode& createChunkGraphicsNode, Chunk::Seed seed);
         virtual ~ChunksThread() {}
 
         void UpdateCamera(const Vector3f& position);

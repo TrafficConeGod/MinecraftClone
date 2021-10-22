@@ -5,7 +5,7 @@
 #include "GrassBlockHandler.h"
 #include "MonoTexturedCubeBlockHandler.h"
 
-ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNode, ChunksGeneratorThread::Seed seed) : createChunkGraphicsNode{vCreateChunkGraphicsNode},chunksGeneratorThread{new ChunksGeneratorThread(std::bind(&ChunksThread::HasChunkAt, this, std::placeholders::_1), std::bind(&ChunksThread::CreateChunk, this, std::placeholders::_1, std::placeholders::_2), std::bind(&ChunksThread::RemoveChunk, this, std::placeholders::_1), std::bind(&ChunksThread::GenerateChunkMeshes, this), seed)}, blockHandlers{{
+ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNode, Chunk::Seed seed) : createChunkGraphicsNode{vCreateChunkGraphicsNode},chunksGeneratorThread{new ChunksGeneratorThread(std::bind(&ChunksThread::HasChunkAt, this, std::placeholders::_1), std::bind(&ChunksThread::CreateChunk, this, std::placeholders::_1, std::placeholders::_2), std::bind(&ChunksThread::RemoveChunk, this, std::placeholders::_1), std::bind(&ChunksThread::GenerateChunkMeshes, this), seed)}, blockHandlers{{
     new BlankBlockHandler(),
     new GrassBlockHandler(),
     new MonoTexturedCubeBlockHandler(1),
@@ -72,7 +72,7 @@ const EntityReference<Chunk> ChunksThread::ChunkAt(const Vector3i& position) con
     return chunks.at(position.x).at(position.y).at(position.z);
 }
 
-void ChunksThread::CreateChunk(const Vector3i& position, const std::array<Block, Chunk::Blocks>& blocks) {
+void ChunksThread::CreateChunk(const Vector3i& position, Chunk::Seed seed) {
     std::lock_guard lock(chunksMutex);
     if (!chunks.count(position.x)) {
         chunks[position.x] = {};
@@ -81,7 +81,8 @@ void ChunksThread::CreateChunk(const Vector3i& position, const std::array<Block,
         chunks.at(position.x)[position.y] = {};
     }
     auto node = createChunkGraphicsNode();
-    EntityReference<Chunk> chunk = new Chunk(position, blocks, blockHandlers, node);
+    EntityReference<Chunk> chunk = new Chunk(blockHandlers, node, position);
+    chunk->GenerateBlocks(seed);
     chunks.at(position.x).at(position.y).insert(std::pair<uint, EntityReference<Chunk>>(position.z, chunk));
     chunksToGenerateMeshesFor.push_back(chunk);
 }
