@@ -2,7 +2,7 @@
 #include <random>
 #include "PerlinNoise.hpp"
 
-ChunksGeneratorThread::ChunksGeneratorThread(const HasChunk& vHasChunk, const CreateChunk& vCreateChunk, const RemoveChunk& vRemoveChunk, Seed vSeed) : hasChunk{vHasChunk}, createChunk{vCreateChunk}, removeChunk{vRemoveChunk}, seed{vSeed} {}
+ChunksGeneratorThread::ChunksGeneratorThread(const HasChunk& vHasChunk, const CreateChunk& vCreateChunk, const RemoveChunk& vRemoveChunk, const GenerateChunkMeshes& vGenerateChunkMeshes, Seed vSeed) : hasChunk{vHasChunk}, createChunk{vCreateChunk}, removeChunk{vRemoveChunk}, generateChunkMeshes{vGenerateChunkMeshes}, seed{vSeed} {}
 
 void ChunksGeneratorThread::Start() {
     
@@ -23,6 +23,7 @@ void ChunksGeneratorThread::Update(float delta) {
             }
         }
     }
+    generateChunkMeshes();
 }
 
 void ChunksGeneratorThread::GenerateChunk(const Vector3i& position) {

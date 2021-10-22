@@ -5,7 +5,6 @@ Chunk::Chunk(const Vector3i& vPosition, const std::array<Block, Blocks>& vBlocks
     Vector3f nodePosition = position;
     nodePosition *= Bounds;
     node->Position(nodePosition);
-    node->UseMesh(std::bind(&Chunk::GenerateMesh, this, std::placeholders::_1));
 }
 
 Vector3i Chunk::FreePositionToGridPosition(const Vector3f& freePosition) {
@@ -53,19 +52,28 @@ const Block& Chunk::BlockAt(std::size_t index) const {
 
 void Chunk::BlockAt(const Vector3u& position, const Block& block) {
     blocks.at(PositionToIndex(position)) = block;
-    blockUpdated = true;
+    meshNeedsGeneration = true;
 }
 
-void Chunk::Update() {
-    if (blockUpdated) {
-        blockUpdated = false;
+void Chunk::MakeMeshGenerate() {
+    meshNeedsGeneration = true;
+}
+
+bool Chunk::UpdateMeshIfNeedsGeneration() {
+    if (meshNeedsGeneration) {
+        meshNeedsGeneration = false;
         node->UseMesh([&](auto& mesh) {
             mesh.triangles.clear();
             mesh.uvTriangles.clear();
             GenerateMesh(mesh);
         });
+        return true;
     }
-    for (auto& blockEntity : blockEntities) {
+    return false;
+}
+
+void Chunk::Update() {
+    for (auto blockEntity : blockEntities) {
         blockEntity->Update();
     }
 }

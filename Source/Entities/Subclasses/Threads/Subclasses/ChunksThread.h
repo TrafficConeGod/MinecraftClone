@@ -17,6 +17,7 @@ class ChunksThread : public virtual Thread {
 
         mutable std::mutex chunksMutex;
         std::map<int, std::map<int, std::map<int, EntityReference<Chunk>>>> chunks;
+        std::vector<EntityReference<Chunk>> chunksToGenerateMeshesFor;
 
         struct QueuedChunk {
             Vector3i position;
@@ -45,6 +46,7 @@ class ChunksThread : public virtual Thread {
         bool HasBlockAt(const Vector3i& position) const;
         const Block& BlockAt(const Vector3i& position) const;
         void BlockAt(const Vector3i& position, const Block& block);
+        void GenerateChunkMeshes();
     protected:
         virtual void Update(float delta) override;
         virtual void JoinSubThreads() override;
