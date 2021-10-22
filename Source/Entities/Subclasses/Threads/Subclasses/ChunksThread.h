@@ -19,13 +19,6 @@ class ChunksThread : public virtual Thread {
         std::map<int, std::map<int, std::map<int, EntityReference<Chunk>>>> chunks;
         std::vector<EntityReference<Chunk>> chunksToGenerateMeshesFor;
 
-        struct QueuedChunk {
-            Vector3i position;
-            std::array<Block, Chunk::Blocks> blocks;
-        };
-        mutable std::mutex queuedChunksMutex;
-        std::map<int, std::map<int, std::map<int, QueuedChunk>>> queuedChunks;
-
         EntityReference<ChunksGeneratorThread> chunksGeneratorThread;
 
         std::array<EntityReference<BlockHandler>, Block::Types> blockHandlers;

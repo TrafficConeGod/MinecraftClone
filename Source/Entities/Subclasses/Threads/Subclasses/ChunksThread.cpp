@@ -5,34 +5,13 @@
 #include "GrassBlockHandler.h"
 #include "MonoTexturedCubeBlockHandler.h"
 
-ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNode, ChunksGeneratorThread::Seed seed) : createChunkGraphicsNode{vCreateChunkGraphicsNode},chunksGeneratorThread{new ChunksGeneratorThread(std::bind(&ChunksThread::HasQueuedOrActualChunkAt, this, std::placeholders::_1), std::bind(&ChunksThread::CreateChunk, this, std::placeholders::_1, std::placeholders::_2), std::bind(&ChunksThread::RemoveChunk, this, std::placeholders::_1), std::bind(&ChunksThread::GenerateChunkMeshes, this), seed)}, blockHandlers{{
+ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNode, ChunksGeneratorThread::Seed seed) : createChunkGraphicsNode{vCreateChunkGraphicsNode},chunksGeneratorThread{new ChunksGeneratorThread(std::bind(&ChunksThread::HasChunkAt, this, std::placeholders::_1), std::bind(&ChunksThread::CreateChunk, this, std::placeholders::_1, std::placeholders::_2), std::bind(&ChunksThread::RemoveChunk, this, std::placeholders::_1), std::bind(&ChunksThread::GenerateChunkMeshes, this), seed)}, blockHandlers{{
     new BlankBlockHandler(),
     new GrassBlockHandler(),
     new MonoTexturedCubeBlockHandler(1),
 }} {}
 
 void ChunksThread::Update(float delta) {
-    {
-        std::lock_guard lock(queuedChunksMutex);
-        std::lock_guard lock2(chunksMutex);
-        for (auto& [x, map] : queuedChunks) {
-            for (auto& [y, map2] : map) {
-                for (auto [z, queuedChunk] : map2) {
-                    auto node = createChunkGraphicsNode();
-                    if (!chunks.count(queuedChunk.position.x)) {
-                        chunks[queuedChunk.position.x] = {};
-                    }
-                    if (!chunks.at(queuedChunk.position.x).count(queuedChunk.position.y)) {
-                        chunks.at(queuedChunk.position.x)[queuedChunk.position.y] = {};
-                    }
-                    EntityReference<Chunk> chunk = new Chunk(queuedChunk.position, queuedChunk.blocks, blockHandlers, node);
-                    chunks.at(queuedChunk.position.x).at(queuedChunk.position.y).insert(std::pair<uint, EntityReference<Chunk>>(queuedChunk.position.z, chunk));
-                    chunksToGenerateMeshesFor.push_back(chunk);
-                }
-            }
-        }
-        queuedChunks.clear();
-    }
     {
         bool generatedMesh = false;
         std::lock_guard lock(chunksMutex);
@@ -93,20 +72,18 @@ const EntityReference<Chunk> ChunksThread::ChunkAt(const Vector3i& position) con
     return chunks.at(position.x).at(position.y).at(position.z);
 }
 
-bool ChunksThread::HasQueuedOrActualChunkAt(const Vector3i& position) const {
-    std::lock_guard lock(queuedChunksMutex);
-    return HasChunkAt(position) || (queuedChunks.count(position.x) && queuedChunks.at(position.x).count(position.y) && queuedChunks.at(position.x).at(position.y).count(position.z));
-}
-
 void ChunksThread::CreateChunk(const Vector3i& position, const std::array<Block, Chunk::Blocks>& blocks) {
-    std::lock_guard lock(queuedChunksMutex);
-    if (!queuedChunks.count(position.x)) {
-        queuedChunks[position.x] = {};
+    std::lock_guard lock(chunksMutex);
+    if (!chunks.count(position.x)) {
+        chunks[position.x] = {};
     }
-    if (!queuedChunks.at(position.x).count(position.y)) {
-        queuedChunks.at(position.x)[position.y] = {};
+    if (!chunks.at(position.x).count(position.y)) {
+        chunks.at(position.x)[position.y] = {};
     }
-    queuedChunks.at(position.x).at(position.y).insert(std::pair<uint, QueuedChunk>(position.z, QueuedChunk{ position, blocks }));
+    auto node = createChunkGraphicsNode();
+    EntityReference<Chunk> chunk = new Chunk(position, blocks, blockHandlers, node);
+    chunks.at(position.x).at(position.y).insert(std::pair<uint, EntityReference<Chunk>>(position.z, chunk));
+    chunksToGenerateMeshesFor.push_back(chunk);
 }
 
 void ChunksThread::RemoveChunk(const Vector3i& position) {
