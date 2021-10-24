@@ -2,7 +2,7 @@
 #include "Mod.h"
 #include "PerlinNoise.hpp"
 
-Chunk::Chunk(const IsBlockAtWorldPositionTransparent& vIsBlockWorldAtPositionTransparent, const std::array<EntityReference<BlockHandler>, Block::Types>& vBlockHandlers, EntityReference<ChunkGraphicsNode> vNode, const Vector3i& vPosition) : isBlockWorldAtPositionTransparent{vIsBlockWorldAtPositionTransparent}, blockHandlers{vBlockHandlers}, node{vNode}, position{vPosition} {
+Chunk::Chunk(const IsBlockAtWorldPositionTransparent& vIsBlockAtWorldPositionTransparent, const std::array<EntityReference<BlockHandler>, Block::Types>& vBlockHandlers, EntityReference<ChunkGraphicsNode> vNode, const Vector3i& vPosition) : isBlockAtWorldPositionTransparent{vIsBlockAtWorldPositionTransparent}, blockHandlers{vBlockHandlers}, node{vNode}, position{vPosition} {
     Vector3f nodePosition = position;
     nodePosition *= Bounds;
     node->Position(nodePosition);
@@ -120,7 +120,7 @@ bool Chunk::GenerateFaceMesh(const Vector3i& direction, Block::Face face, const 
             return true;
         }
         return false;
-    } else if (isBlockWorldAtPositionTransparent(checkPosition, block)) {
+    } else if (isBlockAtWorldPositionTransparent(LocalChunkPositionToWorldPosition(this->position, checkPosition), block)) {
         blockHandler->GenerateFaceMesh(chunkMesh, position, block, face);
         return true;
     }

@@ -18,7 +18,7 @@ class Chunk : public virtual Entity {
         static constexpr float OffsetToCenter = 8.5;
         static constexpr std::size_t Blocks = 4096;
     private:
-        const IsBlockAtWorldPositionTransparent& isBlockWorldAtPositionTransparent;
+        const IsBlockAtWorldPositionTransparent& isBlockAtWorldPositionTransparent;
         const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers;
         EntityReference<ChunkGraphicsNode> node;
         Vector3i position;
@@ -37,8 +37,8 @@ class Chunk : public virtual Entity {
         GIVE_TYPE_ID_1(6, Entity)
 
         DELETE_ILLEGAL_CONSTRUCTORS(Chunk)
-        explicit Chunk(const IsBlockAtWorldPositionTransparent& isBlockWorldAtPositionTransparent, const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers, EntityReference<ChunkGraphicsNode> node, const Vector3i& position);
-        explicit Chunk(const IsBlockAtWorldPositionTransparent& isBlockWorldAtPositionTransparent, const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers, EntityReference<ChunkGraphicsNode> node, const Vector3i& position, const std::array<Block, Blocks>& blocks);
+        explicit Chunk(const IsBlockAtWorldPositionTransparent& isBlockAtWorldPositionTransparent, const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers, EntityReference<ChunkGraphicsNode> node, const Vector3i& position);
+        explicit Chunk(const IsBlockAtWorldPositionTransparent& isBlockAtWorldPositionTransparent, const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers, EntityReference<ChunkGraphicsNode> node, const Vector3i& position, const std::array<Block, Blocks>& blocks);
         virtual ~Chunk() {}
 
         void GenerateBlocks(Seed seed);
