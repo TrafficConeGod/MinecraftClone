@@ -13,20 +13,21 @@ ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNo
 }} {}
 
 void ChunksThread::Update(float delta) {
+    std::vector<EntityReference<Chunk>> currentChunks;
     {
-        bool generatedMesh = false;
         std::lock_guard lock(chunksMutex);
         for (auto& [x, map] : chunks) {
             for (auto& [y, map2] : map) {
                 for (auto [z, chunk] : map2) {
-                    if (!generatedMesh) {
-                        if (chunk->UpdateMeshIfNeedsGeneration()) {
-                            generatedMesh = true;
-                        }
-                    }
+                    currentChunks.push_back(chunk);
                     chunk->Update();
                 }
             }
+        }
+    }
+    for (auto chunk : currentChunks) {
+        if (chunk->UpdateMeshIfNeedsGeneration()) {
+            break;
         }
     }
     {

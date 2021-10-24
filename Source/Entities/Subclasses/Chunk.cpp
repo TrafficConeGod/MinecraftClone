@@ -120,7 +120,7 @@ bool Chunk::GenerateFaceMesh(const Vector3i& direction, Block::Face face, const 
             return true;
         }
         return false;
-    } else /*if (isBlockWorldAtPositionTransparent(checkPosition, block))*/ {
+    } else if (isBlockWorldAtPositionTransparent(checkPosition, block)) {
         blockHandler->GenerateFaceMesh(chunkMesh, position, block, face);
         return true;
     }
