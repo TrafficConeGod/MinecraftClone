@@ -128,7 +128,6 @@ bool Chunk::GenerateFaceMesh(const Vector3i& direction, Block::Face face, const 
 }
 
 void Chunk::GenerateMesh(Mesh& mesh) {
-    // temporary code
     std::size_t index = 0;
     for (const auto& block : blocks) {
         const auto blockHandler = block.BlockHandlerFor(blockHandlers);

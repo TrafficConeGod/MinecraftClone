@@ -1,10 +1,6 @@
 #include "TexturedCubeBlockHandler.h"
 #include <exception>
 
-Block::TextureId TexturedCubeBlockHandler::TextureIdFor(Block::Face face) const {
-    throw std::runtime_error("Cannot call non described virtual function TextureIdFor");
-}
-
 bool TexturedCubeBlockHandler::IsTransparent(const Block&, const Block&) const {
     return false;
 }
