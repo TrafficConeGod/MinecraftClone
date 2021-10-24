@@ -13,7 +13,16 @@ Vector2f Block::TextureIdToTexturePosition(TextureId textureId) {
     return Vector2f(textureId, 0);
 }
 
-Block::FaceMesh::FaceMesh(const std::vector<FaceTriangle>& vTriangles) : triangles{vTriangles} {}
+static constexpr float Shift = 0.009f;
+
+Block::FaceMesh::FaceMesh(const std::vector<FaceTriangle>& vTriangles) : triangles{vTriangles} {
+    for (auto& triangle : triangles) {
+        for (auto& uvVertex : triangle.uvVertices) {
+            uvVertex.x = uvVertex.x == 1 ? (1.f - Shift) : Shift;
+            uvVertex.y = uvVertex.y == 1 ? (1.f - Shift) : Shift;
+        }
+    }
+}
 
 void Block::CreateFace(ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, const FaceMesh& faceMesh, TextureId textureId) {
     auto floatPosition = (Vector3f)position;
