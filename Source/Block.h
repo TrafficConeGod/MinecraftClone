@@ -2,7 +2,10 @@
 #include <iostream>
 #include "ChunkGraphicsNode.h"
 #include "Vector3.h"
+#include "EntityReference.h"
 #include <array>
+
+class BlockHandler;
 
 struct Block {
     using TextureId = uint;
@@ -48,4 +51,5 @@ struct Block {
     };
 
     static void CreateFace(ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, const FaceMesh& faceMesh, TextureId textureId);
+    const EntityReference<BlockHandler> BlockHandlerFor(const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers) const;
 };

@@ -12,11 +12,13 @@ class Chunk : public virtual Entity {
     public:
         using Seed = uint;
         using Mesh = ChunkGraphicsNode::Mesh;
+        using IsBlockAtWorldPositionTransparent = std::function<bool(const Vector3i&, const Block&)>;
         
         static constexpr int Bounds = 16;
         static constexpr float OffsetToCenter = 8.5;
         static constexpr std::size_t Blocks = 4096;
     private:
+        IsBlockAtWorldPositionTransparent isBlockWorldAtPositionTransparent;
         const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers;
         EntityReference<ChunkGraphicsNode> node;
         Vector3i position;
@@ -27,24 +29,23 @@ class Chunk : public virtual Entity {
 
         void GenerateMesh(Mesh& mesh);
 
-        EntityReference<BlockHandler> BlockHandlerFor(Block::Type type);
-
         bool GenerateFaceMesh(const Vector3i& direction, Block::Face face, const EntityReference<BlockHandler> blockHandler, Mesh& chunkMesh, const Vector3u& position, const Block& block);
 
 
-        static constexpr std::size_t MaxGenerationHeight = 10;
+        static constexpr std::size_t MaxGenerationHeight = 16;
     public:
         GIVE_TYPE_ID_1(6, Entity)
 
         DELETE_ILLEGAL_CONSTRUCTORS(Chunk)
-        explicit Chunk(const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers, EntityReference<ChunkGraphicsNode> node, const Vector3i& position);
-        explicit Chunk(const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers, EntityReference<ChunkGraphicsNode> node, const Vector3i& position, const std::array<Block, Blocks>& blocks);
+        explicit Chunk(const IsBlockAtWorldPositionTransparent& isBlockWorldAtPositionTransparent, const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers, EntityReference<ChunkGraphicsNode> node, const Vector3i& position);
+        explicit Chunk(const IsBlockAtWorldPositionTransparent& isBlockWorldAtPositionTransparent, const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers, EntityReference<ChunkGraphicsNode> node, const Vector3i& position, const std::array<Block, Blocks>& blocks);
         virtual ~Chunk() {}
 
         void GenerateBlocks(Seed seed);
 
         const Block& BlockAt(const Vector3u& position) const;
         const Block& BlockAt(std::size_t index) const;
+        bool IsBlockAtLocalPositionTransparent(const Vector3u& position, const Block& neighborBlock) const;
         void BlockAt(const Vector3u& position, const Block& block);
         void MakeMeshGenerate();
 

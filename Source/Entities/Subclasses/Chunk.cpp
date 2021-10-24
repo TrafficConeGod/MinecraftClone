@@ -2,7 +2,7 @@
 #include "Mod.h"
 #include "PerlinNoise.hpp"
 
-Chunk::Chunk(const std::array<EntityReference<BlockHandler>, Block::Types>& vBlockHandlers, EntityReference<ChunkGraphicsNode> vNode, const Vector3i& vPosition) : blockHandlers{vBlockHandlers}, node{vNode}, position{vPosition} {
+Chunk::Chunk(const IsBlockAtWorldPositionTransparent& vIsBlockWorldAtPositionTransparent, const std::array<EntityReference<BlockHandler>, Block::Types>& vBlockHandlers, EntityReference<ChunkGraphicsNode> vNode, const Vector3i& vPosition) : isBlockWorldAtPositionTransparent{vIsBlockWorldAtPositionTransparent}, blockHandlers{vBlockHandlers}, node{vNode}, position{vPosition} {
     Vector3f nodePosition = position;
     nodePosition *= Bounds;
     node->Position(nodePosition);
@@ -65,11 +65,6 @@ Vector3u Chunk::IndexToPosition(std::size_t index) {
     return Vector3u(x, y, z);
 }
 
-EntityReference<BlockHandler> Chunk::BlockHandlerFor(Block::Type type) {
-    auto index = (uint)type;
-    return blockHandlers.at(index);
-}
-
 const Block& Chunk::BlockAt(const Vector3u& position) const {
     return blocks.at(PositionToIndex(position));
 }
@@ -81,6 +76,12 @@ const Block& Chunk::BlockAt(std::size_t index) const {
 void Chunk::BlockAt(const Vector3u& position, const Block& block) {
     blocks.at(PositionToIndex(position)) = block;
     meshNeedsGeneration = true;
+}
+
+bool Chunk::IsBlockAtLocalPositionTransparent(const Vector3u& position, const Block& neighborBlock) const {
+    const auto& block = BlockAt(position);
+    auto blockHandler = block.BlockHandlerFor(blockHandlers);
+    return blockHandler->IsTransparent(block, neighborBlock);
 }
 
 void Chunk::MakeMeshGenerate() {
@@ -112,24 +113,25 @@ bool Chunk::GenerateFaceMesh(const Vector3i& direction, Block::Face face, const 
 
         int checkIndex = PositionToIndex(checkPosition);
         const auto& checkBlock = BlockAt(checkIndex);
-        const auto checkBlockHandler = BlockHandlerFor(checkBlock.type);
+        const auto checkBlockHandler = checkBlock.BlockHandlerFor(blockHandlers);
 
         if (checkBlockHandler->IsTransparent(checkBlock, block)) {
             blockHandler->GenerateFaceMesh(chunkMesh, position, block, face);
             return true;
         }
         return false;
-    } else {
+    } else /*if (isBlockWorldAtPositionTransparent(checkPosition, block))*/ {
         blockHandler->GenerateFaceMesh(chunkMesh, position, block, face);
         return true;
     }
+    return false;
 }
 
 void Chunk::GenerateMesh(Mesh& mesh) {
     // temporary code
     std::size_t index = 0;
     for (const auto& block : blocks) {
-        const auto blockHandler = BlockHandlerFor(block.type);
+        const auto blockHandler = block.BlockHandlerFor(blockHandlers);
         Vector3u position = IndexToPosition(index);
         
         bool faceGenerated = false;

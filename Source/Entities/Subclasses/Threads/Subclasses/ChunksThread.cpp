@@ -82,7 +82,7 @@ void ChunksThread::CreateChunk(const Vector3i& position, Chunk::Seed seed) {
         chunks.at(position.x)[position.y] = {};
     }
     auto node = createChunkGraphicsNode();
-    EntityReference<Chunk> chunk = new Chunk(blockHandlers, node, position);
+    EntityReference<Chunk> chunk = new Chunk(std::bind(&ChunksThread::IsBlockAtWorldPositionTransparent, this, std::placeholders::_1, std::placeholders::_2), blockHandlers, node, position);
     chunk->GenerateBlocks(seed);
     chunks.at(position.x).at(position.y).insert(std::pair<uint, EntityReference<Chunk>>(position.z, chunk));
     chunksToGenerateMeshesFor.push_back(chunk);
@@ -112,6 +112,15 @@ const Block& ChunksThread::BlockAt(const Vector3i& position) const {
 void ChunksThread::BlockAt(const Vector3i& position, const Block& block) {
     auto chunk = ChunkAt(Chunk::WorldPositionToChunkPosition(position));
     chunk->BlockAt(Chunk::WorldPositionToLocalChunkPosition(position), block);
+}
+
+bool ChunksThread::IsBlockAtWorldPositionTransparent(const Vector3i& worldPosition, const Block& neighborBlock) const {
+    if (HasChunkAt(worldPosition)) {
+        const auto chunk = ChunkAt(worldPosition);
+        auto localPosition = Chunk::WorldPositionToLocalChunkPosition(worldPosition);
+        return chunk->IsBlockAtLocalPositionTransparent(localPosition, neighborBlock);
+    }
+    return true;
 }
 
 void ChunksThread::GenerateChunkMeshes() {

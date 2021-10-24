@@ -1,4 +1,5 @@
 #include "Block.h"
+#include "BlockHandler.h"
 
 Vector2f Block::TexturePositionToUVCoordinate(const Vector2f& texturePosition) {
     Vector2f pixel = texturePosition;
@@ -30,4 +31,8 @@ void Block::CreateFace(ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& posit
             TexturePositionToUVCoordinate(texturePosition + triangle.uvVertices.at(2)),
         }});
     }
+}
+
+const EntityReference<BlockHandler> Block::BlockHandlerFor(const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers) const {
+    return blockHandlers.at((uint)type);
 }
