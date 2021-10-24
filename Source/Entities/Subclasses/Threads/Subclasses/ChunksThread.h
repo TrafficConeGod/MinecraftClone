@@ -14,6 +14,7 @@ class ChunksThread : public virtual Thread {
         using CreateChunkGraphicsNode = std::function<EntityReference<ChunkGraphicsNode>()>;
     private:
         CreateChunkGraphicsNode createChunkGraphicsNode;
+        Chunk::IsBlockAtWorldPositionTransparent isBlockAtWorldPositionTransparentBind;
 
         mutable std::mutex chunksMutex;
         std::map<int, std::map<int, std::map<int, EntityReference<Chunk>>>> chunks;

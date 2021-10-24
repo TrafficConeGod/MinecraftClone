@@ -18,7 +18,7 @@ class Chunk : public virtual Entity {
         static constexpr float OffsetToCenter = 8.5;
         static constexpr std::size_t Blocks = 4096;
     private:
-        IsBlockAtWorldPositionTransparent isBlockWorldAtPositionTransparent;
+        const IsBlockAtWorldPositionTransparent& isBlockWorldAtPositionTransparent;
         const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers;
         EntityReference<ChunkGraphicsNode> node;
         Vector3i position;

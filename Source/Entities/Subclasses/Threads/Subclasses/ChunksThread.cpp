@@ -5,7 +5,7 @@
 #include "GrassBlockHandler.h"
 #include "MonoTexturedCubeBlockHandler.h"
 
-ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNode, Chunk::Seed seed) : createChunkGraphicsNode{vCreateChunkGraphicsNode},chunksGeneratorThread{new ChunksGeneratorThread(std::bind(&ChunksThread::HasChunkAt, this, std::placeholders::_1), std::bind(&ChunksThread::CreateChunk, this, std::placeholders::_1, std::placeholders::_2), std::bind(&ChunksThread::RemoveChunk, this, std::placeholders::_1), std::bind(&ChunksThread::GenerateChunkMeshes, this), seed)}, blockHandlers{{
+ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNode, Chunk::Seed seed) : createChunkGraphicsNode{vCreateChunkGraphicsNode}, isBlockAtWorldPositionTransparentBind{std::bind(&ChunksThread::IsBlockAtWorldPositionTransparent, this, std::placeholders::_1, std::placeholders::_2)}, chunksGeneratorThread{new ChunksGeneratorThread(std::bind(&ChunksThread::HasChunkAt, this, std::placeholders::_1), std::bind(&ChunksThread::CreateChunk, this, std::placeholders::_1, std::placeholders::_2), std::bind(&ChunksThread::RemoveChunk, this, std::placeholders::_1), std::bind(&ChunksThread::GenerateChunkMeshes, this), seed)}, blockHandlers{{
     new BlankBlockHandler(),
     new GrassBlockHandler(),
     new MonoTexturedCubeBlockHandler(1),
@@ -83,7 +83,7 @@ void ChunksThread::CreateChunk(const Vector3i& position, Chunk::Seed seed) {
         chunks.at(position.x)[position.y] = {};
     }
     auto node = createChunkGraphicsNode();
-    EntityReference<Chunk> chunk = new Chunk(std::bind(&ChunksThread::IsBlockAtWorldPositionTransparent, this, std::placeholders::_1, std::placeholders::_2), blockHandlers, node, position);
+    EntityReference<Chunk> chunk = new Chunk(isBlockAtWorldPositionTransparentBind, blockHandlers, node, position);
     chunk->GenerateBlocks(seed);
     chunks.at(position.x).at(position.y).insert(std::pair<uint, EntityReference<Chunk>>(position.z, chunk));
     chunksToGenerateMeshesFor.push_back(chunk);
@@ -116,8 +116,8 @@ void ChunksThread::BlockAt(const Vector3i& position, const Block& block) {
 }
 
 bool ChunksThread::IsBlockAtWorldPositionTransparent(const Vector3i& worldPosition, const Block& neighborBlock) const {
-    if (HasChunkAt(worldPosition)) {
-        const auto chunk = ChunkAt(worldPosition);
+    if (HasBlockAt(worldPosition)) {
+        const auto chunk = ChunkAt(Chunk::WorldPositionToChunkPosition(worldPosition));
         auto localPosition = Chunk::WorldPositionToLocalChunkPosition(worldPosition);
         return chunk->IsBlockAtLocalPositionTransparent(localPosition, neighborBlock);
     }
