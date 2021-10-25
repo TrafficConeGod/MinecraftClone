@@ -1,6 +1,7 @@
 #include "Chunk.h"
 #include "Mod.h"
 #include "PerlinNoise.hpp"
+#include "EntityReference.h"
 
 Chunk::Chunk(const IsBlockAtWorldPositionTransparent& vIsBlockAtWorldPositionTransparent, const std::array<EntityReference<BlockHandler>, Block::Types>& vBlockHandlers, EntityReference<ChunkGraphicsNode> vNode, const Vector3i& vPosition) : isBlockAtWorldPositionTransparent{vIsBlockAtWorldPositionTransparent}, blockHandlers{vBlockHandlers}, node{vNode}, position{vPosition} {
     Vector3f nodePosition = position;
@@ -103,9 +104,7 @@ void Chunk::Update() {
 bool Chunk::GenerateFaceMesh(const Vector3i& direction, Block::Face face, const EntityReference<BlockHandler> blockHandler, Mesh& chunkMesh, const Vector3u& position, const Block& block) {
     auto checkPosition = (Vector3i)position + direction;
     if (checkPosition.x >= 0 && checkPosition.y >= 0 && checkPosition.z >= 0 && checkPosition.x < Bounds && checkPosition.y < Bounds && checkPosition.z < Bounds) {
-
-        int checkIndex = PositionToIndex(checkPosition);
-        const auto& checkBlock = BlockAt(checkIndex);
+        const auto& checkBlock = BlockAt(checkPosition);
         const auto checkBlockHandler = checkBlock.BlockHandlerFor(blockHandlers);
 
         if (checkBlockHandler->IsTransparent(checkBlock, block)) {
