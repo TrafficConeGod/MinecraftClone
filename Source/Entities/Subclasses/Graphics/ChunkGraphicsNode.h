@@ -21,7 +21,7 @@ class ChunkGraphicsNode : public virtual GraphicsNode {
         GLuint vertexBuffer;
         GLuint uvBuffer;
 
-        std::mutex meshMutex;
+        mutable std::mutex meshMutex;
         Mesh mesh;
     public:
         static void Initialize();
