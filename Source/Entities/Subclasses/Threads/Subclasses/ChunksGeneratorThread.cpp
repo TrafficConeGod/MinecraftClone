@@ -14,15 +14,20 @@ void ChunksGeneratorThread::Update(float delta) {
         currentGeneratorPosition = cameraPosition;
     }
     currentGeneratorPosition /= Chunk::Bounds;
+
+    bool generated = false;
     for (int x = (currentGeneratorPosition.x - chunkGenerationRadius); x < (currentGeneratorPosition.x + chunkGenerationRadius); x++) {
         for (int z = (currentGeneratorPosition.z - chunkGenerationRadius); z < (currentGeneratorPosition.z + chunkGenerationRadius); z++) {
             Vector3i generatingPosition(x, currentGeneratorPosition.y, z);
             if (!hasChunk(generatingPosition)) {
+                generated = true;
                 GenerateChunk(generatingPosition);
             }
         }
     }
-    generateChunkMeshes();
+    if (generated) {
+        generateChunkMeshes();
+    }
 }
 
 void ChunksGeneratorThread::GenerateChunk(const Vector3i& position) {

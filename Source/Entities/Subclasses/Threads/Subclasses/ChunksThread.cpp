@@ -134,6 +134,7 @@ void ChunksThread::BlockAt(const Vector3i& position, const Block& block) {
     chunk->BlockAt(Chunk::WorldPositionToLocalChunkPosition(position), block);
     std::lock_guard lock(chunkMeshGenerationBatchQueueMutex);
     chunkMeshGenerationBatchQueue.push_back(chunk);
+    GenerateChunkMeshes();
 }
 
 bool ChunksThread::IsBlockAtWorldPositionTransparent(const Vector3i& worldPosition, const Block& neighborBlock) const {
