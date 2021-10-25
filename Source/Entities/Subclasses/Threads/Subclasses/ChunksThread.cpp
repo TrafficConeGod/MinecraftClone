@@ -35,7 +35,7 @@ void ChunksThread::Update(float delta) {
     if (chunksToGenerateMeshesFor.size() > 0) {
         auto chunk = chunksToGenerateMeshesFor.at(0);
         chunk->UpdateMesh();
-        
+
         chunksToGenerateMeshesFor.erase(chunksToGenerateMeshesFor.begin());
         if (chunksToGenerateMeshesFor.size() == 0) {
             chunkMeshGenerationBatch.clear();
@@ -125,6 +125,8 @@ const Block& ChunksThread::BlockAt(const Vector3i& position) const {
 void ChunksThread::BlockAt(const Vector3i& position, const Block& block) {
     auto chunk = ChunkAt(Chunk::WorldPositionToChunkPosition(position));
     chunk->BlockAt(Chunk::WorldPositionToLocalChunkPosition(position), block);
+    std::lock_guard lock(chunkMeshGenerationBatchQueueMutex);
+    chunkMeshGenerationBatchQueue.push_back(chunk);
 }
 
 bool ChunksThread::IsBlockAtWorldPositionTransparent(const Vector3i& worldPosition, const Block& neighborBlock) const {
