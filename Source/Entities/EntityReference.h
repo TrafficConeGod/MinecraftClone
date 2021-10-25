@@ -27,4 +27,6 @@ class EntityReference {
         std::shared_ptr<E> Pointer() { return pointer; }
         const std::shared_ptr<E> Pointer() const { return pointer; }
         std::size_t Usages() const { return pointer.use_count(); }
+
+        bool operator==(EntityReference<E> reference) const { return pointer.get() == reference.pointer.get(); }
 };

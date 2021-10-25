@@ -44,6 +44,7 @@ class Chunk : public virtual Entity {
         const Block& BlockAt(const Vector3u& position) const;
         const Block& BlockAt(std::size_t index) const;
         bool IsBlockAtLocalPositionTransparent(const Vector3u& position, const Block& neighborBlock) const;
+        Vector3i Position() const;
         void BlockAt(const Vector3u& position, const Block& block);
         void MakeMeshGenerate();
 

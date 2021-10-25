@@ -34,6 +34,13 @@ void ChunksThread::Update(float delta) {
     }
     if (chunksToGenerateMeshesFor.size() > 0) {
         auto chunk = chunksToGenerateMeshesFor.at(0);
+        auto position = chunk->Position();
+        GenerateChunkMeshAtIfNotInBatch(position + Vector3i(1, 0, 0));
+        GenerateChunkMeshAtIfNotInBatch(position - Vector3i(1, 0, 0));
+        GenerateChunkMeshAtIfNotInBatch(position + Vector3i(0, 1, 0));
+        GenerateChunkMeshAtIfNotInBatch(position - Vector3i(0, 1, 0));
+        GenerateChunkMeshAtIfNotInBatch(position + Vector3i(0, 0, 1));
+        GenerateChunkMeshAtIfNotInBatch(position - Vector3i(0, 0, 1));
         chunk->UpdateMesh();
 
         chunksToGenerateMeshesFor.erase(chunksToGenerateMeshesFor.begin());
@@ -157,6 +164,22 @@ void ChunksThread::Raycast(const Vector3f& origin, const Vector3f& direction, co
         } else {
             hitCallback(gridPosition);
             return;
+        }
+    }
+}
+
+void ChunksThread::GenerateChunkMeshAtIfNotInBatch(const Vector3i& position) {
+    if (HasChunkAt(position)) {
+        auto chunk = ChunkAt(position);
+        bool canGenerate = true;
+        for (auto checkChunk : chunkMeshGenerationBatch) {
+            if (checkChunk == chunk) {
+                canGenerate = false;
+                break;
+            }
+        }
+        if (canGenerate) {
+            chunk->UpdateMesh();
         }
     }
 }

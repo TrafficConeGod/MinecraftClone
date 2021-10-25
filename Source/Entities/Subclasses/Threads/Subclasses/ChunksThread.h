@@ -49,6 +49,7 @@ class ChunksThread : public virtual Thread {
         void BlockAt(const Vector3i& position, const Block& block);
         void GenerateChunkMeshes();
         bool IsBlockAtWorldPositionTransparent(const Vector3i& position, const Block& neighborBlock) const;
+        void GenerateChunkMeshAtIfNotInBatch(const Vector3i& position);
     protected:
         virtual void Update(float delta) override;
         virtual void JoinSubThreads() override;
