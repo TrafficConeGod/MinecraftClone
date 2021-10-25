@@ -18,7 +18,14 @@ class ChunksThread : public virtual Thread {
 
         mutable std::mutex chunksMutex;
         std::map<int, std::map<int, std::map<int, EntityReference<Chunk>>>> chunks;
+
+        mutable std::mutex chunkMeshGenerationBatchQueueMutex;
+        std::vector<EntityReference<Chunk>> chunkMeshGenerationBatchQueue;
+
+        std::atomic<bool> shouldBeginChunkMeshGenerationBatch = false;
+        std::vector<EntityReference<Chunk>> chunkMeshGenerationBatch;
         std::vector<EntityReference<Chunk>> chunksToGenerateMeshesFor;
+        std::vector<EntityReference<Chunk>> alreadyMeshGeneratedChunks;
 
         EntityReference<ChunksGeneratorThread> chunksGeneratorThread;
 

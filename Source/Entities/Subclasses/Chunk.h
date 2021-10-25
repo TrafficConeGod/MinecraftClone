@@ -25,8 +25,6 @@ class Chunk : public virtual Entity {
         std::array<Block, Blocks> blocks;
         std::vector<EntityReference<BlockEntity>> blockEntities;
 
-        std::atomic<bool> meshNeedsGeneration = false;
-
         void GenerateMesh(Mesh& mesh);
 
         bool GenerateFaceMesh(const Vector3i& direction, Block::Face face, const EntityReference<BlockHandler> blockHandler, Mesh& chunkMesh, const Vector3u& position, const Block& block);
@@ -49,7 +47,7 @@ class Chunk : public virtual Entity {
         void BlockAt(const Vector3u& position, const Block& block);
         void MakeMeshGenerate();
 
-        bool UpdateMeshIfNeedsGeneration();
+        void UpdateMesh();
         void Update();
 
         static Vector3i FreePositionToGridPosition(const Vector3f& freePosition);

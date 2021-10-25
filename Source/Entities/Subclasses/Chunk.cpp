@@ -32,7 +32,6 @@ void Chunk::GenerateBlocks(Seed seed) {
             }
         }
     }
-    meshNeedsGeneration = false;
 }
 
 Vector3i Chunk::FreePositionToGridPosition(const Vector3f& freePosition) {
@@ -75,7 +74,6 @@ const Block& Chunk::BlockAt(std::size_t index) const {
 
 void Chunk::BlockAt(const Vector3u& position, const Block& block) {
     blocks.at(PositionToIndex(position)) = block;
-    meshNeedsGeneration = true;
 }
 
 bool Chunk::IsBlockAtLocalPositionTransparent(const Vector3u& position, const Block& neighborBlock) const {
@@ -84,21 +82,12 @@ bool Chunk::IsBlockAtLocalPositionTransparent(const Vector3u& position, const Bl
     return blockHandler->IsTransparent(block, neighborBlock);
 }
 
-void Chunk::MakeMeshGenerate() {
-    meshNeedsGeneration = true;
-}
-
-bool Chunk::UpdateMeshIfNeedsGeneration() {
-    if (meshNeedsGeneration) {
-        meshNeedsGeneration = false;
-        node->UseMesh([&](auto& mesh) {
-            mesh.triangles.clear();
-            mesh.uvTriangles.clear();
-            GenerateMesh(mesh);
-        });
-        return true;
-    }
-    return false;
+void Chunk::UpdateMesh() {
+    node->UseMesh([&](auto& mesh) {
+        mesh.triangles.clear();
+        mesh.uvTriangles.clear();
+        GenerateMesh(mesh);
+    });
 }
 
 void Chunk::Update() {

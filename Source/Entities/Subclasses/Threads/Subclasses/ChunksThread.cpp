@@ -13,21 +13,32 @@ ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNo
 }} {}
 
 void ChunksThread::Update(float delta) {
-    std::vector<EntityReference<Chunk>> currentChunks;
     {
         std::lock_guard lock(chunksMutex);
         for (auto& [x, map] : chunks) {
             for (auto& [y, map2] : map) {
                 for (auto [z, chunk] : map2) {
-                    currentChunks.push_back(chunk);
                     chunk->Update();
                 }
             }
         }
     }
-    for (auto chunk : currentChunks) {
-        if (chunk->UpdateMeshIfNeedsGeneration()) {
-            break;
+    if ((chunkMeshGenerationBatch.size() == 0) && shouldBeginChunkMeshGenerationBatch) {
+        shouldBeginChunkMeshGenerationBatch = false;
+        {
+            std::lock_guard lock(chunkMeshGenerationBatchQueueMutex);
+            chunkMeshGenerationBatch = chunkMeshGenerationBatchQueue;
+            chunkMeshGenerationBatchQueue.clear();
+        }
+        chunksToGenerateMeshesFor = chunkMeshGenerationBatch;
+    }
+    if (chunksToGenerateMeshesFor.size() > 0) {
+        auto chunk = chunksToGenerateMeshesFor.at(0);
+        chunk->UpdateMesh();
+        
+        chunksToGenerateMeshesFor.erase(chunksToGenerateMeshesFor.begin());
+        if (chunksToGenerateMeshesFor.size() == 0) {
+            chunkMeshGenerationBatch.clear();
         }
     }
     {
@@ -86,7 +97,8 @@ void ChunksThread::CreateChunk(const Vector3i& position, Chunk::Seed seed) {
     EntityReference<Chunk> chunk = new Chunk(isBlockAtWorldPositionTransparentBind, blockHandlers, node, position);
     chunk->GenerateBlocks(seed);
     chunks.at(position.x).at(position.y).insert(std::pair<uint, EntityReference<Chunk>>(position.z, chunk));
-    chunksToGenerateMeshesFor.push_back(chunk);
+    std::lock_guard lock2(chunkMeshGenerationBatchQueueMutex);
+    chunkMeshGenerationBatchQueue.push_back(chunk);
 }
 
 void ChunksThread::RemoveChunk(const Vector3i& position) {
@@ -125,11 +137,7 @@ bool ChunksThread::IsBlockAtWorldPositionTransparent(const Vector3i& worldPositi
 }
 
 void ChunksThread::GenerateChunkMeshes() {
-    std::lock_guard lock(chunksMutex);
-    for (auto chunk : chunksToGenerateMeshesFor) {
-        chunk->MakeMeshGenerate();
-    }
-    chunksToGenerateMeshesFor.clear();
+    shouldBeginChunkMeshGenerationBatch = true;
 }
 
 void ChunksThread::Raycast(const Vector3f& origin, const Vector3f& direction, const std::function<bool(const Vector3i&)>& canContinue, const std::function<bool(const Vector3i&)>& shouldEnd, const std::function<void(const Vector3i&)>& hitCallback) const {
