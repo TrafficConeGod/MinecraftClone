@@ -22,8 +22,8 @@ void ChunkGraphicsNode::Render(const glm::mat4& viewProjection) {
     // generate buffers
     if (!buffersGenerated) {
         buffersGenerated = true;
-        glGenBuffers(1, &(GLuint&)vertexBuffer);
-        glGenBuffers(1, &(GLuint&)uvBuffer);
+        glGenBuffers(1, &vertexBuffer);
+        glGenBuffers(1, &uvBuffer);
     }
 
     std::lock_guard lock(positionMutex);
