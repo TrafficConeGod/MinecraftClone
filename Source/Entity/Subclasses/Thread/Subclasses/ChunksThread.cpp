@@ -13,8 +13,7 @@ ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNo
 }} {}
 
 void ChunksThread::Update(float delta) {
-    {
-        std::lock_guard lock(chunksMutex);
+    chunks.Use([&](auto& chunks) {
         for (auto& [x, map] : chunks) {
             for (auto& [y, map2] : map) {
                 for (auto [z, chunk] : map2) {
@@ -22,14 +21,13 @@ void ChunksThread::Update(float delta) {
                 }
             }
         }
-    }
+    });
     if ((chunkMeshGenerationBatch.size() == 0) && shouldBeginChunkMeshGenerationBatch) {
         shouldBeginChunkMeshGenerationBatch = false;
-        {
-            std::lock_guard lock(chunkMeshGenerationBatchQueueMutex);
+        chunkMeshGenerationBatchQueue.Use([&](auto& chunkMeshGenerationBatchQueue) {
             chunkMeshGenerationBatch = chunkMeshGenerationBatchQueue;
             chunkMeshGenerationBatchQueue.clear();
-        }
+        });
         chunksToGenerateMeshesFor = chunkMeshGenerationBatch;
     }
     if (chunksToGenerateMeshesFor.size() > 0) {
@@ -53,14 +51,15 @@ void ChunksThread::Update(float delta) {
         }
     }
     {
-        std::lock_guard lock(mouseClickMutex);
         if (mouseClicked) {
             mouseClicked = false;
-            Raycast(mouseClickOrigin, mouseClickDirection, [&](const auto& position) {
+            auto currentMouseClickOrigin = mouseClickOrigin.Value();
+            auto currentMouseClickDirection = mouseClickDirection.Value();
+            Raycast(currentMouseClickOrigin, currentMouseClickDirection, [&](auto& position) {
                 return BlockAt(position).type == Block::Type::Air;
-            }, [&](const auto& position) {
-                return !HasBlockAt(position) || (position - Chunk::FreePositionToGridPosition(mouseClickOrigin)).Magnitude() > 10;
-            }, [&](const auto& position) {
+            }, [&](auto& position) {
+                return !HasBlockAt(position) || (position - Chunk::FreePositionToGridPosition(currentMouseClickOrigin)).Magnitude() > 10;
+            }, [&](auto& position) {
                 if (HasBlockAt(position)) {
                     BlockAt(position, {Block::Type::Air});
                 }
@@ -82,46 +81,51 @@ void ChunksThread::UpdateCamera(const Vector3f& position) {
 }
 
 bool ChunksThread::HasChunkAt(const Vector3i& position) const {
-    std::lock_guard lock(chunksMutex);
-    return (chunks.count(position.x) && chunks.at(position.x).count(position.y) && chunks.at(position.x).at(position.y).count(position.z));
+    return chunks.UseConstForGet<bool>([position](auto& chunks) {
+        return (chunks.count(position.x) && chunks.at(position.x).count(position.y) && chunks.at(position.x).at(position.y).count(position.z));
+    }); 
 }
 
 EntityReference<Chunk> ChunksThread::ChunkAt(const Vector3i& position) {
-    std::lock_guard lock(chunksMutex);
-    return chunks.at(position.x).at(position.y).at(position.z);
+    return chunks.UseForGet<EntityReference<Chunk>>([position](auto& chunks) {
+        return chunks.at(position.x).at(position.y).at(position.z);
+    });
 }
 
 const EntityReference<Chunk> ChunksThread::ChunkAt(const Vector3i& position) const {
-    std::lock_guard lock(chunksMutex);
-    return chunks.at(position.x).at(position.y).at(position.z);
+    return chunks.UseConstForGet<const EntityReference<Chunk>>([position](auto& chunks) {
+        return chunks.at(position.x).at(position.y).at(position.z);
+    }); 
 }
 
 void ChunksThread::CreateChunk(const Vector3i& position, Chunk::Seed seed) {
-    std::lock_guard lock(chunksMutex);
-    if (!chunks.count(position.x)) {
-        chunks[position.x] = {};
-    }
-    if (!chunks.at(position.x).count(position.y)) {
-        chunks.at(position.x)[position.y] = {};
-    }
-    auto node = createChunkGraphicsNode();
-    EntityReference<Chunk> chunk = new Chunk(isBlockAtWorldPositionTransparentBind, blockHandlers, node, position);
-    chunk->GenerateBlocks(seed);
-    chunks.at(position.x).at(position.y).insert(std::pair<uint, EntityReference<Chunk>>(position.z, chunk));
-    std::lock_guard lock2(chunkMeshGenerationBatchQueueMutex);
-    chunkMeshGenerationBatchQueue.push_back(chunk);
+    chunks.Use([&](auto& chunks) {
+        if (!chunks.count(position.x)) {
+            chunks[position.x] = {};
+        }
+        if (!chunks.at(position.x).count(position.y)) {
+            chunks.at(position.x)[position.y] = {};
+        }
+        auto node = createChunkGraphicsNode();
+        EntityReference<Chunk> chunk = new Chunk(isBlockAtWorldPositionTransparentBind, blockHandlers, node, position);
+        chunk->GenerateBlocks(seed);
+        chunks.at(position.x).at(position.y).insert(std::pair<uint, EntityReference<Chunk>>(position.z, chunk));
+        chunkMeshGenerationBatchQueue.Use([&](auto& chunkMeshGenerationBatchQueue) {
+            chunkMeshGenerationBatchQueue.push_back(chunk);
+        });
+    });
 }
 
 void ChunksThread::RemoveChunk(const Vector3i& position) {
-    std::lock_guard lock(chunksMutex);
-    chunks.at(position.x).at(position.y).erase(position.z);
+    chunks.Use([position](auto& chunks) {
+        chunks.at(position.x).at(position.y).erase(position.z);
+    });
 }
 
 void ChunksThread::SignalMouseClick(const Vector3f& origin, const Vector3f& direction) {
-    std::lock_guard lock(mouseClickMutex);
     mouseClicked = true;
-    mouseClickOrigin = origin;
-    mouseClickDirection = direction;
+    mouseClickOrigin.Value(origin);
+    mouseClickDirection.Value(direction);
 }
 
 bool ChunksThread::HasBlockAt(const Vector3i& position) const {
@@ -136,8 +140,9 @@ const Block& ChunksThread::BlockAt(const Vector3i& position) const {
 void ChunksThread::BlockAt(const Vector3i& position, const Block& block) {
     auto chunk = ChunkAt(Chunk::WorldPositionToChunkPosition(position));
     chunk->BlockAt(Chunk::WorldPositionToLocalChunkPosition(position), block);
-    std::lock_guard lock(chunkMeshGenerationBatchQueueMutex);
-    chunkMeshGenerationBatchQueue.push_back(chunk);
+    chunkMeshGenerationBatchQueue.Use([chunk](auto& chunkMeshGenerationBatchQueue) {
+        chunkMeshGenerationBatchQueue.push_back(chunk);
+    });
     GenerateChunkMeshes();
 }
 

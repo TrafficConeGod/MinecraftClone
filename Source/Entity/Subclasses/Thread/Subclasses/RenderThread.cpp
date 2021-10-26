@@ -11,53 +11,54 @@
 #include <exception>
 
 void RenderThread::AddNode(EntityReference<GraphicsNode> node) {
-    {
-		std::lock_guard lock(nodesMutex);
+    nodes.Use([node](auto& nodes) {
     	nodes.push_back(node);
-	}
-	{
-		std::lock_guard lock(bufferIdMutex);
-		currentBufferId++;
-	}
+	});
+	currentBufferId++;
 }
 
 GLuint RenderThread::BufferId() const { return currentBufferId; }
 
 bool RenderThread::IsKeyPressed(KeyCode key) {
-	std::lock_guard lock(keysMutex);
-	if (!pressedKeys.count(key)) {
-		pressedKeys[key] = false;
-		heldKeys[key] = false;
-	}
-	return pressedKeys.at(key);
+	return pressedKeys.UseForGet<bool>([&](auto& pressedKeys) {
+		if (!pressedKeys.count(key)) {
+			pressedKeys[key] = false;
+			heldKeys.Use([key](auto& heldKeys) {
+				heldKeys[key] = false;
+			});
+		}
+		return pressedKeys.at(key);
+	});
 }
 
 bool RenderThread::IsKeyReleased(KeyCode key) {
-	std::lock_guard lock(keysMutex);
-	if (!releasedKeys.count(key)) {
-		releasedKeys[key] = false;
-		heldKeys[key] = false;
-	}
-	return releasedKeys.at(key);
+	return releasedKeys.UseForGet<bool>([&](auto& releasedKeys) {
+		if (!releasedKeys.count(key)) {
+			releasedKeys[key] = false;
+			heldKeys.Use([key](auto& heldKeys) {
+				heldKeys[key] = false;
+			});
+		}
+		return releasedKeys.at(key);
+	});
 }
 
 bool RenderThread::IsKeyHeld(KeyCode key) {
-	std::lock_guard lock(keysMutex);
-	if (!heldKeys.count(key)) {
-		heldKeys[key] = false;
-	}
-	return heldKeys.at(key);
+	return heldKeys.UseForGet<bool>([key](auto& heldKeys) {
+		if (!heldKeys.count(key)) {
+			heldKeys[key] = false;
+		}
+		return heldKeys.at(key);
+	});
 }
 
 Vector2i RenderThread::CursorPosition() const {
-	std::lock_guard lock(keysMutex);
-	return cursorPosition;
+	return cursorPosition.Value();
 }
 
 void RenderThread::UpdateCamera(const Vector3f& position, const Vector3f& lookVector) {
-	std::lock_guard lock(cameraCoordMutex);
-	cameraPosition = position;
-	cameraLookVector = lookVector;
+	cameraPosition.Value(position);
+	cameraLookVector.Value(lookVector);
 }
 
 RenderThread::RenderThread(const StopApplication& vStopApplication, const std::vector<EntityReference<GraphicsNode>>& vNodes) : stopApplication{vStopApplication}, nodes{vNodes} {}
@@ -104,13 +105,8 @@ void RenderThread::Update(float delta) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	glm::mat4 proj = glm::perspective(glm::radians(70.0f), 16.0f / 9.0f, 0.1f, 100.0f);
-	Vector3f currentCameraPosition;
-	Vector3f currentCameraLookVector;
-	{
-		std::lock_guard lock(cameraCoordMutex);
-		currentCameraPosition = cameraPosition;
-		currentCameraLookVector = cameraLookVector;
-	}
+	Vector3f currentCameraPosition = cameraPosition.Value();
+	Vector3f currentCameraLookVector = cameraLookVector.Value();
 	glm::mat4 view = glm::lookAt(
 		currentCameraPosition.GLM(),
 		(currentCameraPosition + currentCameraLookVector).GLM(),
@@ -118,34 +114,34 @@ void RenderThread::Update(float delta) {
 	);
 	glm::mat4 viewProjection = proj * view;
 
-	{
-        std::lock_guard lock(nodesMutex);
+	nodes.Use([viewProjection](auto& nodes) {
         for (auto& node : nodes) {
 			node->Render(viewProjection);
         }
-    }
+    });
 
 	glfwSwapBuffers(win);
 	glfwPollEvents();
 
 	{
-		std::lock_guard lock(keysMutex);
-		for (auto& [key, status] : heldKeys) {
-			auto oldStatus = status;
-			status = (glfwGetKey(win, key) == GLFW_PRESS) || (glfwGetMouseButton(win, key) == GLFW_PRESS);
-			if (status && !oldStatus) {
-				pressedKeys[key] = true;
-			} else if (status && oldStatus) {
-				pressedKeys[key] = false;
-			} else if (!status && oldStatus) {
-				releasedKeys[key] = true;
-			} else if (!status && !oldStatus) {
-				releasedKeys[key] = false;
+		heldKeys.Use([&](auto& heldKeys) {
+			for (auto& [key, status] : heldKeys) {
+				auto oldStatus = status;
+				status = (glfwGetKey(win, key) == GLFW_PRESS) || (glfwGetMouseButton(win, key) == GLFW_PRESS);
+				if (status && !oldStatus) {
+					pressedKeys.Use([key](auto& pressedKeys) { pressedKeys[key] = true; });
+				} else if (status && oldStatus) {
+					pressedKeys.Use([key](auto& pressedKeys) { pressedKeys[key] = false; });
+				} else if (!status && oldStatus) {
+					releasedKeys.Use([key](auto& releasedKeys) { releasedKeys[key] = true; });
+				} else if (!status && !oldStatus) {
+					releasedKeys.Use([key](auto& releasedKeys) { releasedKeys[key] = false; });
+				}
 			}
-		}
+		});
 		Vector2<double> position;
 		glfwGetCursorPos(win, &position.x, &position.y);
-		cursorPosition = position;
+		cursorPosition.Value(position);
 	}
 
 	if (glfwWindowShouldClose(win)) {

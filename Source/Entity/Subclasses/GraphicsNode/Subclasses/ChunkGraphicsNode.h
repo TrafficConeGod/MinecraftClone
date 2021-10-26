@@ -21,8 +21,7 @@ class ChunkGraphicsNode : public virtual GraphicsNode {
         GLuint vertexBuffer;
         GLuint uvBuffer;
 
-        mutable std::mutex meshMutex;
-        Mesh mesh;
+        SingleUsage<Mesh> mesh;
     public:
         static void Initialize();
 
@@ -32,8 +31,8 @@ class ChunkGraphicsNode : public virtual GraphicsNode {
         explicit ChunkGraphicsNode(const Vector3f& position, GLuint vertexBuffer, GLuint uvBuffer, const Mesh& mesh);
         virtual ~ChunkGraphicsNode() {}
 
-        void UseMesh(std::function<void(Mesh&)> context);
-        void UseMeshConst(std::function<void(const Mesh&)> context) const;
+        SingleUsage<Mesh>& ChunkMesh();
+        const SingleUsage<Mesh>& ChunkMesh() const;
 
         virtual void Render(const glm::mat4& viewProjection) override;
 };

@@ -88,7 +88,7 @@ bool Chunk::IsBlockAtLocalPositionTransparent(const Vector3u& position, const Bl
 }
 
 void Chunk::UpdateMesh() {
-    node->UseMesh([&](auto& mesh) {
+    node->ChunkMesh().Use([&](auto& mesh) {
         mesh.triangles.clear();
         mesh.uvTriangles.clear();
         GenerateMesh(mesh);

@@ -22,10 +22,10 @@ AppController::AppController() : Entity() {
 		std::bind(&RenderThread::IsKeyHeld, (RenderThread*)renderThread, std::placeholders::_1),
 		std::bind(&RenderThread::CursorPosition, (RenderThread*)renderThread)
 	);
-	EntityReference<UserInterfaceThread> userInterfaceThread = new UserInterfaceThread(userInput, [&](const auto& position, const auto& lookVector) {
+	EntityReference<UserInterfaceThread> userInterfaceThread = new UserInterfaceThread(userInput, [&](auto& position, auto& lookVector) {
 		renderThread->UpdateCamera(position, lookVector);
 		chunksThread->UpdateCamera(position);
-	}, [&](const auto& position, const auto& lookVector) {
+	}, [&]( auto& position, auto& lookVector) {
 		// TODO: Use actors here
 		chunksThread->SignalMouseClick(position, lookVector);
 	});

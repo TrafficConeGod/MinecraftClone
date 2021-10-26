@@ -8,11 +8,7 @@ void ChunksGeneratorThread::Start() {
 }
 
 void ChunksGeneratorThread::Update(float delta) {
-    Vector3i currentGeneratorPosition;
-    {
-        std::lock_guard lock(cameraPositionMutex);
-        currentGeneratorPosition = cameraPosition;
-    }
+    Vector3i currentGeneratorPosition = cameraPosition.Value();
     currentGeneratorPosition /= Chunk::Bounds;
 
     bool generated = false;
@@ -35,6 +31,5 @@ void ChunksGeneratorThread::GenerateChunk(const Vector3i& position) {
 }
 
 void ChunksGeneratorThread::UpdateCamera(const Vector3f& position) {
-    std::lock_guard lock(cameraPositionMutex);
-    cameraPosition = position;
+    cameraPosition.Value(position);
 }

@@ -6,7 +6,7 @@
 #include "ChunksGeneratorThread.h"
 #include <map>
 #include <array>
-#include <mutex>
+#include "SingleUsage.h"
 #include "BlockHandler.h"
 
 class ChunksThread : public virtual Thread {
@@ -16,11 +16,8 @@ class ChunksThread : public virtual Thread {
         CreateChunkGraphicsNode createChunkGraphicsNode;
         Chunk::IsBlockAtWorldPositionTransparent isBlockAtWorldPositionTransparentBind;
 
-        mutable std::mutex chunksMutex;
-        std::map<int, std::map<int, std::map<int, EntityReference<Chunk>>>> chunks;
-
-        mutable std::mutex chunkMeshGenerationBatchQueueMutex;
-        std::vector<EntityReference<Chunk>> chunkMeshGenerationBatchQueue;
+        SingleUsage<std::map<int, std::map<int, std::map<int, EntityReference<Chunk>>>>> chunks;
+        SingleUsage<std::vector<EntityReference<Chunk>>> chunkMeshGenerationBatchQueue;
 
         std::atomic<bool> shouldBeginChunkMeshGenerationBatch = false;
         std::vector<EntityReference<Chunk>> chunkMeshGenerationBatch;
@@ -31,10 +28,9 @@ class ChunksThread : public virtual Thread {
 
         std::array<EntityReference<BlockHandler>, Block::Types> blockHandlers;
 
-        std::mutex mouseClickMutex;
-        bool mouseClicked = false;
-        Vector3f mouseClickOrigin;
-        Vector3f mouseClickDirection;
+        std::atomic<bool> mouseClicked = false;
+        SingleUsage<Vector3f> mouseClickOrigin;
+        SingleUsage<Vector3f> mouseClickDirection;
 
         bool HasChunkAt(const Vector3i& position) const;
         EntityReference<Chunk> ChunkAt(const Vector3i& position);

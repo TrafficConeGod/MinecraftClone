@@ -2,7 +2,8 @@
 #include "Thread.h"
 #include "EntityReference.h"
 #include "GraphicsNode.h"
-#include <mutex>
+#include "SingleUsage.h"
+#include <atomic>
 #include <chrono>
 #include <GLFW/glfw3.h>
 #include "UserInput.h"
@@ -16,23 +17,19 @@ class RenderThread : public virtual Thread {
 
         StopApplication stopApplication;
     
-        std::mutex nodesMutex;
-        std::vector<EntityReference<GraphicsNode>> nodes;
+        SingleUsage<std::vector<EntityReference<GraphicsNode>>> nodes;
 
-        mutable std::mutex keysMutex;
-        std::map<KeyCode, bool> pressedKeys;
-        std::map<KeyCode, bool> releasedKeys;
-        std::map<KeyCode, bool> heldKeys;
-        Vector2i cursorPosition;
+        SingleUsage<std::map<KeyCode, bool>> pressedKeys;
+        SingleUsage<std::map<KeyCode, bool>> releasedKeys;
+        SingleUsage<std::map<KeyCode, bool>> heldKeys;
+        SingleUsage<Vector2i> cursorPosition;
 
         GLFWwindow* win;
 
-        std::mutex bufferIdMutex;
-        GLuint currentBufferId = 0;
+        std::atomic<GLuint> currentBufferId = 0;
 
-        std::mutex cameraCoordMutex;
-        Vector3f cameraPosition;
-        Vector3f cameraLookVector;
+        SingleUsage<Vector3f> cameraPosition;
+        SingleUsage<Vector3f> cameraLookVector;
     protected:
         virtual void Start() override;
         virtual void Update(float delta) override;

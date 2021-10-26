@@ -7,8 +7,6 @@
 
 static constexpr float Delta = 1.f/60.f;
 
-std::mutex clockMutex;
-
 Thread::Thread() : worker{
     [&]() {
         auto clock = std::chrono::high_resolution_clock::now();
