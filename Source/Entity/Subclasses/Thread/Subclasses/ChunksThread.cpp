@@ -38,11 +38,11 @@ void ChunksThread::Update(float delta) {
             GenerateChunkMeshAtIfNotInBatch(position + direction);
         };
         generateChunkMeshHelper(Vector3i(1, 0, 0));
-        generateChunkMeshHelper(Vector3i(1, 0, 0));
+        generateChunkMeshHelper(Vector3i(-1, 0, 0));
         generateChunkMeshHelper(Vector3i(0, 1, 0));
-        generateChunkMeshHelper(Vector3i(0, 1, 0));
+        generateChunkMeshHelper(Vector3i(0, -1, 0));
         generateChunkMeshHelper(Vector3i(0, 0, 1));
-        generateChunkMeshHelper(Vector3i(0, 0, 1));
+        generateChunkMeshHelper(Vector3i(0, 0, -1));
         chunk->UpdateMesh();
 
         chunksToGenerateMeshesFor.erase(chunksToGenerateMeshesFor.begin());
