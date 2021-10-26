@@ -71,9 +71,8 @@ void Camera::Update(const UpdateInfo& updateInfo) {
     if (inputVector.Magnitude() != 0) {
         inputVector = inputVector.Unit();
 
-        Vector3f regularLookVector = lookVector;
         Vector3f perpendicularLookVector(-lookVector.z, 0, lookVector.x);
-        Vector3f verticalLookVector(0, -regularLookVector.y, 0);
+        Vector3f verticalLookVector(0, 1, 0);
 
         Vector3f moveVector = (lookVector * inputVector.z) + (perpendicularLookVector * inputVector.x) + (verticalLookVector * inputVector.y);
         moveVector = moveVector.Unit();
