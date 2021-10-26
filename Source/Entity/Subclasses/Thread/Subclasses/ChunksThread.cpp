@@ -136,7 +136,7 @@ bool ChunksThread::IsBlockAtWorldPositionTransparent(const Vector3i& worldPositi
         auto localPosition = Chunk::WorldPositionToLocalChunkPosition(worldPosition);
         return chunk->IsBlockAtLocalPositionTransparent(localPosition, neighborBlock);
     }
-    return true;
+    return false;
 }
 
 void ChunksThread::Raycast(const Vector3f& origin, const Vector3f& direction, const std::function<bool(const Vector3i&)>& canContinue, const std::function<bool(const Vector3i&)>& shouldEnd, const std::function<void(const Vector3i&)>& hitCallback) const {
