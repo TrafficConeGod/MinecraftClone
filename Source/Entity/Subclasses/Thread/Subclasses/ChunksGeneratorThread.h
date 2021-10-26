@@ -1,7 +1,7 @@
 #pragma once
 #include <functional>
 #include "Thread.h"
-#include "SingleUsage.h"
+#include "Mono.h"
 #include "Vector3.h"
 #include "Chunk.h"
 
@@ -12,7 +12,7 @@ class ChunksGeneratorThread : public virtual Thread {
         using RemoveChunk = std::function<void(const Vector3i&)>;
         using GenerateChunkMeshes = std::function<void()>;
     private:
-        SingleUsage<Vector3f> cameraPosition;
+        Mono<Vector3f> cameraPosition;
 
         Vector3f CameraPosition();
 

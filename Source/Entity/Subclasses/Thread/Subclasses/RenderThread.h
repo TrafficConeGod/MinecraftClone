@@ -2,7 +2,7 @@
 #include "Thread.h"
 #include "EntityReference.h"
 #include "GraphicsNode.h"
-#include "SingleUsage.h"
+#include "Mono.h"
 #include <atomic>
 #include <chrono>
 #include <GLFW/glfw3.h>
@@ -17,19 +17,19 @@ class RenderThread : public virtual Thread {
 
         StopApplication stopApplication;
     
-        SingleUsage<std::vector<EntityReference<GraphicsNode>>> nodes;
+        Mono<std::vector<EntityReference<GraphicsNode>>> nodes;
 
-        SingleUsage<std::map<KeyCode, bool>> pressedKeys;
-        SingleUsage<std::map<KeyCode, bool>> releasedKeys;
-        SingleUsage<std::map<KeyCode, bool>> heldKeys;
-        SingleUsage<Vector2i> cursorPosition;
+        Mono<std::map<KeyCode, bool>> pressedKeys;
+        Mono<std::map<KeyCode, bool>> releasedKeys;
+        Mono<std::map<KeyCode, bool>> heldKeys;
+        Mono<Vector2i> cursorPosition;
 
         GLFWwindow* win;
 
         std::atomic<GLuint> currentBufferId = 0;
 
-        SingleUsage<Vector3f> cameraPosition;
-        SingleUsage<Vector3f> cameraLookVector;
+        Mono<Vector3f> cameraPosition;
+        Mono<Vector3f> cameraLookVector;
     protected:
         virtual void Start() override;
         virtual void Update(float delta) override;

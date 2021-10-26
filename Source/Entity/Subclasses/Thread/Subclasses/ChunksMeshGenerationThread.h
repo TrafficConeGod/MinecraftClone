@@ -3,7 +3,7 @@
 #include <functional>
 #include "Chunk.h"
 #include "Vector3.h"
-#include "SingleUsage.h"
+#include "Mono.h"
 #include "ChunksGeneratorThread.h"
 
 class ChunksMeshGenerationThread : public virtual Thread {
@@ -15,7 +15,7 @@ class ChunksMeshGenerationThread : public virtual Thread {
         ChunkAt chunkAt;
 
         std::atomic<bool> shouldBeginGenerating = false;
-        SingleUsage<std::vector<EntityReference<Chunk>>> chunks;
+        Mono<std::vector<EntityReference<Chunk>>> chunks;
         std::vector<EntityReference<Chunk>> currentChunks;
 
         void GenerateChunkMeshAtIfNotInBatch(const Vector3i& position);

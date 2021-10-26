@@ -15,7 +15,7 @@ void ChunkGraphicsNode::Initialize() {
 
 ChunkGraphicsNode::ChunkGraphicsNode(const Vector3f& vPosition, GLuint vVertexBuffer, GLuint vUvBuffer, const Mesh& vMesh) : GraphicsNode(vPosition), vertexBuffer{vVertexBuffer}, uvBuffer{vUvBuffer}, mesh{vMesh} {}
 
-SingleUsage<ChunkGraphicsNode::Mesh>& ChunkGraphicsNode::ChunkMesh() {
+Mono<ChunkGraphicsNode::Mesh>& ChunkGraphicsNode::ChunkMesh() {
     return mesh;
 }
 

@@ -7,7 +7,7 @@
 #include "ChunksMeshGenerationThread.h"
 #include <map>
 #include <array>
-#include "SingleUsage.h"
+#include "Mono.h"
 #include "BlockHandler.h"
 
 class ChunksThread : public virtual Thread {
@@ -17,7 +17,7 @@ class ChunksThread : public virtual Thread {
         CreateChunkGraphicsNode createChunkGraphicsNode;
         Chunk::IsBlockAtWorldPositionTransparent isBlockAtWorldPositionTransparentBind;
 
-        SingleUsage<std::map<int, std::map<int, std::map<int, EntityReference<Chunk>>>>> chunks;
+        Mono<std::map<int, std::map<int, std::map<int, EntityReference<Chunk>>>>> chunks;
 
         EntityReference<ChunksMeshGenerationThread> chunksMeshGenerationThread;
         EntityReference<ChunksGeneratorThread> chunksGeneratorThread;
@@ -25,13 +25,12 @@ class ChunksThread : public virtual Thread {
         std::array<EntityReference<BlockHandler>, Block::Types> blockHandlers;
 
         std::atomic<bool> mouseClicked = false;
-        SingleUsage<Vector3f> mouseClickOrigin;
-        SingleUsage<Vector3f> mouseClickDirection;
+        Mono<Vector3f> mouseClickOrigin;
+        Mono<Vector3f> mouseClickDirection;
 
         bool HasChunkAt(const Vector3i& position) const;
         EntityReference<Chunk> ChunkAt(const Vector3i& position);
         const EntityReference<Chunk> ChunkAt(const Vector3i& position) const;
-        const EntityReference<Chunk> ChunkAtConst(const Vector3i& position) const;
         bool HasQueuedOrActualChunkAt(const Vector3i& position) const;
         void CreateChunk(const Vector3i& position, Chunk::Seed seed);
         void RemoveChunk(const Vector3i& position);

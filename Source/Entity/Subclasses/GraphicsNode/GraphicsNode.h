@@ -6,11 +6,11 @@
 #include <array>
 #include <GL/glew.h>
 #include <atomic>
-#include "SingleUsage.h"
+#include "Mono.h"
 
 class GraphicsNode : public virtual Entity {
     protected:
-        SingleUsage<Vector3f> position;
+        Mono<Vector3f> position;
     public:
         GIVE_TYPE_ID_1(5, Entity)
         
