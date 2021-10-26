@@ -12,5 +12,6 @@ class BlockHandler : public virtual Entity {
         virtual ~BlockHandler() {}
 
         virtual bool IsTransparent(const Block& block, const Block& neighborBlock) const = 0;
+        virtual bool HasMesh(const Block& block) const = 0;
         virtual void GenerateFaceMesh(ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, const Block& block, Block::Face face) const {};
 };

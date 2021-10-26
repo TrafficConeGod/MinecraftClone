@@ -121,21 +121,23 @@ void Chunk::GenerateMesh(Mesh& mesh) {
     std::size_t index = 0;
     for (const auto& block : blocks) {
         const auto blockHandler = block.BlockHandlerFor(blockHandlers);
-        Vector3u position = IndexToPosition(index);
-        
-        bool faceGenerated = false;
-        auto generateFaceMeshHelper = [&](const Vector3i& direction, Block::Face face) {
-            faceGenerated |= GenerateFaceMesh(direction, face, blockHandler, mesh, position, block);
-        };
-        generateFaceMeshHelper(Vector3i(1, 0, 0), Block::Face::Front);
-        generateFaceMeshHelper(Vector3i(-1, 0, 0), Block::Face::Back);
-        generateFaceMeshHelper(Vector3i(0, 1, 0), Block::Face::Top);
-        generateFaceMeshHelper(Vector3i(0, -1, 0), Block::Face::Bottom);
-        generateFaceMeshHelper(Vector3i(0, 0, 1), Block::Face::Right);
-        generateFaceMeshHelper(Vector3i(0, 0, -1), Block::Face::Left);
+        if (blockHandler->HasMesh(block)) {
+            Vector3u position = IndexToPosition(index);
 
-        if (faceGenerated) {
-            blockHandler->GenerateFaceMesh(mesh, position, block, Block::Face::None);
+            bool faceGenerated = false;
+            auto generateFaceMeshHelper = [&](const Vector3i& direction, Block::Face face) {
+                faceGenerated |= GenerateFaceMesh(direction, face, blockHandler, mesh, position, block);
+            };
+            generateFaceMeshHelper(Vector3i(1, 0, 0), Block::Face::Front);
+            generateFaceMeshHelper(Vector3i(-1, 0, 0), Block::Face::Back);
+            generateFaceMeshHelper(Vector3i(0, 1, 0), Block::Face::Top);
+            generateFaceMeshHelper(Vector3i(0, -1, 0), Block::Face::Bottom);
+            generateFaceMeshHelper(Vector3i(0, 0, 1), Block::Face::Right);
+            generateFaceMeshHelper(Vector3i(0, 0, -1), Block::Face::Left);
+
+            if (faceGenerated) {
+                blockHandler->GenerateFaceMesh(mesh, position, block, Block::Face::None);
+            }
         }
 
         index++;

@@ -1,6 +1,10 @@
 #include "TexturedCubeBlockHandler.h"
 #include <exception>
 
+bool TexturedCubeBlockHandler::HasMesh(const Block&) const {
+    return true;
+}
+
 bool TexturedCubeBlockHandler::IsTransparent(const Block&, const Block&) const {
     return false;
 }
