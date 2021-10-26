@@ -4,6 +4,7 @@
 #include "Chunk.h"
 #include <functional>
 #include "ChunksGeneratorThread.h"
+#include "ChunksMeshGenerationThread.h"
 #include <map>
 #include <array>
 #include "SingleUsage.h"
@@ -17,13 +18,8 @@ class ChunksThread : public virtual Thread {
         Chunk::IsBlockAtWorldPositionTransparent isBlockAtWorldPositionTransparentBind;
 
         SingleUsage<std::map<int, std::map<int, std::map<int, EntityReference<Chunk>>>>> chunks;
-        SingleUsage<std::vector<EntityReference<Chunk>>> chunkMeshGenerationBatchQueue;
 
-        std::atomic<bool> shouldBeginChunkMeshGenerationBatch = false;
-        std::vector<EntityReference<Chunk>> chunkMeshGenerationBatch;
-        std::vector<EntityReference<Chunk>> chunksToGenerateMeshesFor;
-        std::vector<EntityReference<Chunk>> alreadyMeshGeneratedChunks;
-
+        EntityReference<ChunksMeshGenerationThread> chunksMeshGenerationThread;
         EntityReference<ChunksGeneratorThread> chunksGeneratorThread;
 
         std::array<EntityReference<BlockHandler>, Block::Types> blockHandlers;
@@ -35,6 +31,7 @@ class ChunksThread : public virtual Thread {
         bool HasChunkAt(const Vector3i& position) const;
         EntityReference<Chunk> ChunkAt(const Vector3i& position);
         const EntityReference<Chunk> ChunkAt(const Vector3i& position) const;
+        const EntityReference<Chunk> ChunkAtConst(const Vector3i& position) const;
         bool HasQueuedOrActualChunkAt(const Vector3i& position) const;
         void CreateChunk(const Vector3i& position, Chunk::Seed seed);
         void RemoveChunk(const Vector3i& position);
@@ -43,9 +40,9 @@ class ChunksThread : public virtual Thread {
         bool HasBlockAt(const Vector3i& position) const;
         const Block& BlockAt(const Vector3i& position) const;
         void BlockAt(const Vector3i& position, const Block& block);
-        void GenerateChunkMeshes();
         bool IsBlockAtWorldPositionTransparent(const Vector3i& position, const Block& neighborBlock) const;
-        void GenerateChunkMeshAtIfNotInBatch(const Vector3i& position);
+
+        void ChunksMeshGenerationThreadGenerate();
     protected:
         virtual void Update(float delta) override;
         virtual void JoinSubThreads() override;

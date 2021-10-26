@@ -5,12 +5,28 @@
 #include "GrassBlockHandler.h"
 #include "MonoTexturedCubeBlockHandler.h"
 
-ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNode, Chunk::Seed seed) : createChunkGraphicsNode{vCreateChunkGraphicsNode}, isBlockAtWorldPositionTransparentBind{std::bind(&ChunksThread::IsBlockAtWorldPositionTransparent, this, std::placeholders::_1, std::placeholders::_2)}, chunksGeneratorThread{new ChunksGeneratorThread(std::bind(&ChunksThread::HasChunkAt, this, std::placeholders::_1), std::bind(&ChunksThread::CreateChunk, this, std::placeholders::_1, std::placeholders::_2), std::bind(&ChunksThread::RemoveChunk, this, std::placeholders::_1), std::bind(&ChunksThread::GenerateChunkMeshes, this), seed)}, blockHandlers{{
-    new BlankBlockHandler(),
-    new GrassBlockHandler(),
-    new MonoTexturedCubeBlockHandler(1),
-    new MonoTexturedCubeBlockHandler(2)
-}} {}
+ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNode, Chunk::Seed seed) :
+    createChunkGraphicsNode{vCreateChunkGraphicsNode},
+    isBlockAtWorldPositionTransparentBind{std::bind(&ChunksThread::IsBlockAtWorldPositionTransparent, this, std::placeholders::_1, std::placeholders::_2)},
+    chunksMeshGenerationThread{new ChunksMeshGenerationThread(
+        std::bind(&ChunksThread::HasChunkAt, this, std::placeholders::_1),
+        [&](const Vector3i& position) {
+            return ChunkAt(position);
+        }
+    )},
+    chunksGeneratorThread{new ChunksGeneratorThread(
+        std::bind(&ChunksThread::HasChunkAt, this, std::placeholders::_1),
+        std::bind(&ChunksThread::CreateChunk, this, std::placeholders::_1, std::placeholders::_2),
+        std::bind(&ChunksThread::RemoveChunk, this, std::placeholders::_1),
+        std::bind(&ChunksThread::ChunksMeshGenerationThreadGenerate, this),
+        seed
+    )},
+    blockHandlers{{
+        new BlankBlockHandler(),
+        new GrassBlockHandler(),
+        new MonoTexturedCubeBlockHandler(1),
+        new MonoTexturedCubeBlockHandler(2)
+    }} {}
 
 void ChunksThread::Update(float delta) {
     chunks.Use([&](auto& chunks) {
@@ -22,34 +38,6 @@ void ChunksThread::Update(float delta) {
             }
         }
     });
-    if ((chunkMeshGenerationBatch.size() == 0) && shouldBeginChunkMeshGenerationBatch) {
-        shouldBeginChunkMeshGenerationBatch = false;
-        chunkMeshGenerationBatchQueue.Use([&](auto& chunkMeshGenerationBatchQueue) {
-            chunkMeshGenerationBatch = chunkMeshGenerationBatchQueue;
-            chunkMeshGenerationBatchQueue.clear();
-        });
-        chunksToGenerateMeshesFor = chunkMeshGenerationBatch;
-    }
-    if (chunksToGenerateMeshesFor.size() > 0) {
-        auto chunk = chunksToGenerateMeshesFor.at(0);
-        auto position = chunk->Position();
-
-        auto generateChunkMeshHelper = [&](const Vector3i& direction) {
-            GenerateChunkMeshAtIfNotInBatch(position + direction);
-        };
-        generateChunkMeshHelper(Vector3i(1, 0, 0));
-        generateChunkMeshHelper(Vector3i(-1, 0, 0));
-        generateChunkMeshHelper(Vector3i(0, 1, 0));
-        generateChunkMeshHelper(Vector3i(0, -1, 0));
-        generateChunkMeshHelper(Vector3i(0, 0, 1));
-        generateChunkMeshHelper(Vector3i(0, 0, -1));
-        chunk->UpdateMesh();
-
-        chunksToGenerateMeshesFor.erase(chunksToGenerateMeshesFor.begin());
-        if (chunksToGenerateMeshesFor.size() == 0) {
-            chunkMeshGenerationBatch.clear();
-        }
-    }
     {
         if (mouseClicked) {
             mouseClicked = false;
@@ -110,9 +98,7 @@ void ChunksThread::CreateChunk(const Vector3i& position, Chunk::Seed seed) {
         EntityReference<Chunk> chunk = new Chunk(isBlockAtWorldPositionTransparentBind, blockHandlers, node, position);
         chunk->GenerateBlocks(seed);
         chunks.at(position.x).at(position.y).insert(std::pair<uint, EntityReference<Chunk>>(position.z, chunk));
-        chunkMeshGenerationBatchQueue.Use([&](auto& chunkMeshGenerationBatchQueue) {
-            chunkMeshGenerationBatchQueue.push_back(chunk);
-        });
+        chunksMeshGenerationThread->AddChunk(chunk);
     });
 }
 
@@ -140,10 +126,8 @@ const Block& ChunksThread::BlockAt(const Vector3i& position) const {
 void ChunksThread::BlockAt(const Vector3i& position, const Block& block) {
     auto chunk = ChunkAt(Chunk::WorldPositionToChunkPosition(position));
     chunk->BlockAt(Chunk::WorldPositionToLocalChunkPosition(position), block);
-    chunkMeshGenerationBatchQueue.Use([chunk](auto& chunkMeshGenerationBatchQueue) {
-        chunkMeshGenerationBatchQueue.push_back(chunk);
-    });
-    GenerateChunkMeshes();
+    chunksMeshGenerationThread->AddChunk(chunk);
+    chunksMeshGenerationThread->Generate();
 }
 
 bool ChunksThread::IsBlockAtWorldPositionTransparent(const Vector3i& worldPosition, const Block& neighborBlock) const {
@@ -153,10 +137,6 @@ bool ChunksThread::IsBlockAtWorldPositionTransparent(const Vector3i& worldPositi
         return chunk->IsBlockAtLocalPositionTransparent(localPosition, neighborBlock);
     }
     return true;
-}
-
-void ChunksThread::GenerateChunkMeshes() {
-    shouldBeginChunkMeshGenerationBatch = true;
 }
 
 void ChunksThread::Raycast(const Vector3f& origin, const Vector3f& direction, const std::function<bool(const Vector3i&)>& canContinue, const std::function<bool(const Vector3i&)>& shouldEnd, const std::function<void(const Vector3i&)>& hitCallback) const {
@@ -178,18 +158,6 @@ void ChunksThread::Raycast(const Vector3f& origin, const Vector3f& direction, co
     }
 }
 
-void ChunksThread::GenerateChunkMeshAtIfNotInBatch(const Vector3i& position) {
-    if (HasChunkAt(position)) {
-        auto chunk = ChunkAt(position);
-        bool canGenerate = true;
-        for (auto checkChunk : chunkMeshGenerationBatch) {
-            if (checkChunk == chunk) {
-                canGenerate = false;
-                break;
-            }
-        }
-        if (canGenerate) {
-            chunk->UpdateMesh();
-        }
-    }
+void ChunksThread::ChunksMeshGenerationThreadGenerate() {
+    chunksMeshGenerationThread->Generate();
 }

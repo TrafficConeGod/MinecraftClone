@@ -27,7 +27,6 @@ class ChunksGeneratorThread : public virtual Thread {
 
         void GenerateChunk(const Vector3i& position);
     protected:
-        virtual void Start() override;
         virtual void Update(float delta) override;
     public:
         GIVE_TYPE_ID_1(8, Thread)

@@ -3,10 +3,6 @@
 
 ChunksGeneratorThread::ChunksGeneratorThread(const HasChunk& vHasChunk, const CreateChunk& vCreateChunk, const RemoveChunk& vRemoveChunk, const GenerateChunkMeshes& vGenerateChunkMeshes, Chunk::Seed vSeed) : hasChunk{vHasChunk}, createChunk{vCreateChunk}, removeChunk{vRemoveChunk}, generateChunkMeshes{vGenerateChunkMeshes}, seed{vSeed} {}
 
-void ChunksGeneratorThread::Start() {
-    
-}
-
 void ChunksGeneratorThread::Update(float delta) {
     Vector3i currentGeneratorPosition = cameraPosition.Value();
     currentGeneratorPosition /= Chunk::Bounds;
