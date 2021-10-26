@@ -35,12 +35,16 @@ void ChunksThread::Update(float delta) {
     if (chunksToGenerateMeshesFor.size() > 0) {
         auto chunk = chunksToGenerateMeshesFor.at(0);
         auto position = chunk->Position();
-        GenerateChunkMeshAtIfNotInBatch(position + Vector3i(1, 0, 0));
-        GenerateChunkMeshAtIfNotInBatch(position - Vector3i(1, 0, 0));
-        GenerateChunkMeshAtIfNotInBatch(position + Vector3i(0, 1, 0));
-        GenerateChunkMeshAtIfNotInBatch(position - Vector3i(0, 1, 0));
-        GenerateChunkMeshAtIfNotInBatch(position + Vector3i(0, 0, 1));
-        GenerateChunkMeshAtIfNotInBatch(position - Vector3i(0, 0, 1));
+
+        auto generateChunkMeshHelper = [&](const Vector3i& direction) {
+            GenerateChunkMeshAtIfNotInBatch(position + direction);
+        };
+        generateChunkMeshHelper(Vector3i(1, 0, 0));
+        generateChunkMeshHelper(Vector3i(1, 0, 0));
+        generateChunkMeshHelper(Vector3i(0, 1, 0));
+        generateChunkMeshHelper(Vector3i(0, 1, 0));
+        generateChunkMeshHelper(Vector3i(0, 0, 1));
+        generateChunkMeshHelper(Vector3i(0, 0, 1));
         chunk->UpdateMesh();
 
         chunksToGenerateMeshesFor.erase(chunksToGenerateMeshesFor.begin());
