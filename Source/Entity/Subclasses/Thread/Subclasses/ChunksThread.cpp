@@ -57,10 +57,12 @@ void ChunksThread::Update(float delta) {
 }
 
 void ChunksThread::JoinSubThreads() {
+    chunksMeshGenerationThread->Join();
     chunksGeneratorThread->Join();
 }
 
 void ChunksThread::RequestSubThreadsStop() {
+    chunksMeshGenerationThread->RequestStop();
     chunksGeneratorThread->RequestStop();
 }
 
