@@ -7,8 +7,12 @@
 #include <GL/glew.h>
 #include <atomic>
 #include "Mono.h"
+#include <functional>
+#include "EntityReference.h"
 
 class GraphicsNode : public virtual Entity {
+    public:
+        using Remove = std::function<void(EntityReference<GraphicsNode>)>;
     protected:
         Mono<Vector3f> position;
     public:

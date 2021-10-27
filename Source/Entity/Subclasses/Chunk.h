@@ -13,11 +13,12 @@ class Chunk : public virtual Entity {
         using Seed = uint;
         using Mesh = ChunkGraphicsNode::Mesh;
         using IsBlockAtWorldPositionTransparent = std::function<bool(const Vector3i&, const Block&)>;
-        
+
         static constexpr int Bounds = 16;
         static constexpr float OffsetToCenter = 8.5;
         static constexpr std::size_t Blocks = 4096;
     private:
+        const GraphicsNode::Remove& removeGraphicsNode;
         const IsBlockAtWorldPositionTransparent& isBlockAtWorldPositionTransparent;
         const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers;
         EntityReference<ChunkGraphicsNode> node;
@@ -35,9 +36,9 @@ class Chunk : public virtual Entity {
         GIVE_TYPE_ID_1(6, Entity)
 
         DELETE_ILLEGAL_CONSTRUCTORS(Chunk)
-        explicit Chunk(const IsBlockAtWorldPositionTransparent& isBlockAtWorldPositionTransparent, const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers, EntityReference<ChunkGraphicsNode> node, const Vector3i& position);
-        explicit Chunk(const IsBlockAtWorldPositionTransparent& isBlockAtWorldPositionTransparent, const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers, EntityReference<ChunkGraphicsNode> node, const Vector3i& position, const std::array<Block, Blocks>& blocks);
-        virtual ~Chunk() {}
+        explicit Chunk(const GraphicsNode::Remove& removeGraphicsNode, const IsBlockAtWorldPositionTransparent& isBlockAtWorldPositionTransparent, const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers, EntityReference<ChunkGraphicsNode> node, const Vector3i& position);
+        explicit Chunk(const GraphicsNode::Remove& removeGraphicsNode, const IsBlockAtWorldPositionTransparent& isBlockAtWorldPositionTransparent, const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers, EntityReference<ChunkGraphicsNode> node, const Vector3i& position, const std::array<Block, Blocks>& blocks);
+        virtual ~Chunk();
 
         void GenerateBlocks(Seed seed);
 

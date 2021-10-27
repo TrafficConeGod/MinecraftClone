@@ -41,7 +41,7 @@ class RenderThread : public virtual Thread {
         virtual ~RenderThread() {}
 
         void AddNode(EntityReference<GraphicsNode> node);
-        EntityReference<GraphicsNode> RemoveNode(std::size_t index);
+        void RemoveNode(EntityReference<GraphicsNode> node);
 
         void UpdateCamera(const Vector3f& position, const Vector3f& lookVector);
 

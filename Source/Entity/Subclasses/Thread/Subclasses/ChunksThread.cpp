@@ -5,8 +5,9 @@
 #include "GrassBlockHandler.h"
 #include "MonoTexturedCubeBlockHandler.h"
 
-ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNode, Chunk::Seed seed) :
+ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNode, const GraphicsNode::Remove& vRemoveGraphicsNode, Chunk::Seed seed) :
     createChunkGraphicsNode{vCreateChunkGraphicsNode},
+    removeGraphicsNode{vRemoveGraphicsNode},
     isBlockAtWorldPositionTransparentBind{std::bind(&ChunksThread::IsBlockAtWorldPositionTransparent, this, std::placeholders::_1, std::placeholders::_2)},
     chunksMeshGenerationThread{new ChunksMeshGenerationThread(
         std::bind(&ChunksThread::HasChunkAt, this, std::placeholders::_1),
@@ -97,7 +98,7 @@ void ChunksThread::CreateChunk(const Vector3i& position, Chunk::Seed seed) {
             chunks.at(position.x)[position.y] = {};
         }
         auto node = createChunkGraphicsNode();
-        EntityReference<Chunk> chunk = new Chunk(isBlockAtWorldPositionTransparentBind, blockHandlers, node, position);
+        EntityReference<Chunk> chunk = new Chunk(removeGraphicsNode, isBlockAtWorldPositionTransparentBind, blockHandlers, node, position);
         chunk->GenerateBlocks(seed);
         chunks.at(position.x).at(position.y).insert(std::pair<uint, EntityReference<Chunk>>(position.z, chunk));
         chunksMeshGenerationThread->AddChunk(chunk);

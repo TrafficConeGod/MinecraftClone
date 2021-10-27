@@ -3,10 +3,20 @@
 #include "PerlinNoise.hpp"
 #include "EntityReference.h"
 
-Chunk::Chunk(const IsBlockAtWorldPositionTransparent& vIsBlockAtWorldPositionTransparent, const std::array<EntityReference<BlockHandler>, Block::Types>& vBlockHandlers, EntityReference<ChunkGraphicsNode> vNode, const Vector3i& vPosition) : isBlockAtWorldPositionTransparent{vIsBlockAtWorldPositionTransparent}, blockHandlers{vBlockHandlers}, node{vNode}, position{vPosition} {
+Chunk::Chunk(const GraphicsNode::Remove& vRemoveGraphicsNode, const IsBlockAtWorldPositionTransparent& vIsBlockAtWorldPositionTransparent, const std::array<EntityReference<BlockHandler>, Block::Types>& vBlockHandlers, EntityReference<ChunkGraphicsNode> vNode, const Vector3i& vPosition) :
+    removeGraphicsNode{vRemoveGraphicsNode},
+    isBlockAtWorldPositionTransparent{vIsBlockAtWorldPositionTransparent},
+    blockHandlers{vBlockHandlers},
+    node{vNode},
+    position{vPosition} 
+{
     Vector3f nodePosition = position;
     nodePosition *= Bounds;
     node->Position(nodePosition);
+}
+
+Chunk::~Chunk() {
+    removeGraphicsNode(node);
 }
 
 void Chunk::GenerateBlocks(Seed seed) {

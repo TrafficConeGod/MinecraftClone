@@ -15,6 +15,7 @@ class ChunksThread : public virtual Thread {
         using CreateChunkGraphicsNode = std::function<EntityReference<ChunkGraphicsNode>()>;
     private:
         CreateChunkGraphicsNode createChunkGraphicsNode;
+        GraphicsNode::Remove removeGraphicsNode;
         Chunk::IsBlockAtWorldPositionTransparent isBlockAtWorldPositionTransparentBind;
 
         Mono<std::map<int, std::map<int, std::map<int, EntityReference<Chunk>>>>> chunks;
@@ -50,7 +51,7 @@ class ChunksThread : public virtual Thread {
         GIVE_TYPE_ID_1(3, Thread)
 
         DELETE_ILLEGAL_CONSTRUCTORS(ChunksThread)
-        explicit ChunksThread(const CreateChunkGraphicsNode& createChunkGraphicsNode, Chunk::Seed seed);
+        explicit ChunksThread(const CreateChunkGraphicsNode& createChunkGraphicsNode, const GraphicsNode::Remove& removeGraphicsNode, Chunk::Seed seed);
         virtual ~ChunksThread() {}
 
         void UpdateCamera(const Vector3f& position);

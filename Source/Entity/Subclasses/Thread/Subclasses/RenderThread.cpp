@@ -17,6 +17,12 @@ void RenderThread::AddNode(EntityReference<GraphicsNode> node) {
 	currentBufferId++;
 }
 
+void RenderThread::RemoveNode(EntityReference<GraphicsNode> node) {
+	nodes.Use([node](auto& nodes) {
+		nodes.erase(std::remove(nodes.begin(), nodes.end(), node), nodes.end());
+	});
+}
+
 GLuint RenderThread::BufferId() const { return currentBufferId; }
 
 bool RenderThread::IsKeyPressed(KeyCode key) {
