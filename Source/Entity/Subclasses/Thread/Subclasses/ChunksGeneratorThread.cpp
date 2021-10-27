@@ -8,12 +8,14 @@ void ChunksGeneratorThread::Update(float delta) {
     currentGeneratorPosition /= Chunk::Bounds;
 
     bool generated = false;
-    for (int x = (currentGeneratorPosition.x - chunkGenerationRadius); x < (currentGeneratorPosition.x + chunkGenerationRadius); x++) {
-        for (int z = (currentGeneratorPosition.z - chunkGenerationRadius); z < (currentGeneratorPosition.z + chunkGenerationRadius); z++) {
-            Vector3i generatingPosition(x, currentGeneratorPosition.y, z);
-            if (!hasChunk(generatingPosition)) {
-                generated = true;
-                GenerateChunk(generatingPosition);
+    for (int x = (currentGeneratorPosition.x - chunkGenerationRadius.x); x < (currentGeneratorPosition.x + chunkGenerationRadius.x); x++) {
+        for (int y = (currentGeneratorPosition.y - chunkGenerationRadius.y); y < (currentGeneratorPosition.y + chunkGenerationRadius.y); y++) {
+            for (int z = (currentGeneratorPosition.z - chunkGenerationRadius.z); z < (currentGeneratorPosition.z + chunkGenerationRadius.z); z++) {
+                Vector3i position = Vector3i(x, y, z);
+                if (!hasChunk(position)) {
+                    createChunk(position, seed);
+                    generated = true;
+                }
             }
         }
     }

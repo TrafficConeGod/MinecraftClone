@@ -30,7 +30,7 @@ class Chunk : public virtual Entity {
         bool GenerateFaceMesh(const Vector3i& direction, Block::Face face, const EntityReference<BlockHandler> blockHandler, Mesh& chunkMesh, const Vector3u& position, const Block& block);
 
 
-        static constexpr std::size_t MaxGenerationHeight = 16;
+        static constexpr std::size_t MaxGenerationHeight = 32;
     public:
         GIVE_TYPE_ID_1(6, Entity)
 

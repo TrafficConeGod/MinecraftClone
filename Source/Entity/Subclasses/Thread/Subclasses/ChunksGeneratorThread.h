@@ -23,7 +23,7 @@ class ChunksGeneratorThread : public virtual Thread {
 
         Chunk::Seed seed;
 
-        int chunkGenerationRadius = 10;
+        Vector3i chunkGenerationRadius = Vector3i(10, 2, 10);
 
         void GenerateChunk(const Vector3i& position);
     protected:
