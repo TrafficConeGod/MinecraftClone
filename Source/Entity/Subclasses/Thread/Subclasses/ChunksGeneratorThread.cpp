@@ -8,16 +8,25 @@ void ChunksGeneratorThread::Update(float delta) {
     currentGeneratorPosition /= Chunk::Bounds;
 
     bool generated = false;
-    for (int x = (currentGeneratorPosition.x - chunkGenerationRadius.x); x < (currentGeneratorPosition.x + chunkGenerationRadius.x); x++) {
-        for (int y = (currentGeneratorPosition.y - chunkGenerationRadius.y); y < (currentGeneratorPosition.y + chunkGenerationRadius.y); y++) {
-            for (int z = (currentGeneratorPosition.z - chunkGenerationRadius.z); z < (currentGeneratorPosition.z + chunkGenerationRadius.z); z++) {
+    for (int x = (currentGeneratorPosition.x - chunkGenerationRadius); x < (currentGeneratorPosition.x + chunkGenerationRadius); x++) {
+        for (int y = (currentGeneratorPosition.y - chunkGenerationRadius); y < (currentGeneratorPosition.y + chunkGenerationRadius); y++) {
+            for (int z = (currentGeneratorPosition.z - chunkGenerationRadius); z < (currentGeneratorPosition.z + chunkGenerationRadius); z++) {
                 Vector3i position = Vector3i(x, y, z);
                 if (!hasChunk(position)) {
-                    createChunk(position, seed);
+                    GenerateChunk(position);
                     generated = true;
                 }
             }
         }
+    }
+    std::size_t index = 0;
+    for (const auto& position : generatedChunkPositions) {
+        if ((position - currentGeneratorPosition).SquareMagnitude() > chunkGenerationRadius) {
+            removeChunk(position);
+            generatedChunkPositions.erase(generatedChunkPositions.begin() + index);
+            break;
+        }
+        index++;
     }
     if (generated) {
         generateChunkMeshes();
@@ -25,6 +34,7 @@ void ChunksGeneratorThread::Update(float delta) {
 }
 
 void ChunksGeneratorThread::GenerateChunk(const Vector3i& position) {
+    generatedChunkPositions.push_back(position);
     createChunk(position, seed);
 }
 

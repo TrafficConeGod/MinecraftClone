@@ -12,18 +12,19 @@ class ChunksGeneratorThread : public virtual Thread {
         using RemoveChunk = std::function<void(const Vector3i&)>;
         using GenerateChunkMeshes = std::function<void()>;
     private:
-        Mono<Vector3f> cameraPosition;
-
-        Vector3f CameraPosition();
-
         HasChunk hasChunk;
         CreateChunk createChunk;
         RemoveChunk removeChunk;
         GenerateChunkMeshes generateChunkMeshes;
 
+
+        Mono<Vector3f> cameraPosition;
+
         Chunk::Seed seed;
 
-        Vector3i chunkGenerationRadius = Vector3i(10, 2, 10);
+        int chunkGenerationRadius = 3;
+
+        std::vector<Vector3i> generatedChunkPositions;
 
         void GenerateChunk(const Vector3i& position);
     protected:

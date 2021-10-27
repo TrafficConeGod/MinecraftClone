@@ -1,5 +1,5 @@
 #include "Chunk.h"
-#include "Mod.h"
+#include "Math.h"
 #include "PerlinNoise.hpp"
 #include "EntityReference.h"
 
@@ -49,7 +49,7 @@ Vector3i Chunk::WorldPositionToChunkPosition(const Vector3f& worldPosition) {
 
 Vector3u Chunk::WorldPositionToLocalChunkPosition(const Vector3f& worldPosition) {
     Vector3f roundedWorldPosition = FreePositionToGridPosition(worldPosition);
-    return FreePositionToGridPosition(Vector3f(Mod(roundedWorldPosition.x, Bounds), Mod(roundedWorldPosition.y, Bounds), Mod(roundedWorldPosition.z, Bounds)));
+    return FreePositionToGridPosition(Vector3f(Mod<int>(roundedWorldPosition.x, Bounds), Mod<int>(roundedWorldPosition.y, Bounds), Mod<int>(roundedWorldPosition.z, Bounds)));
 }
 
 std::size_t Chunk::PositionToIndex(const Vector3i& position) {

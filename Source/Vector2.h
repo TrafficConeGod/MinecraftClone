@@ -41,10 +41,10 @@ struct Vector2 {
     MK_ACROSS_OP_2D(/)
     MK_SCALAR_OP_2D(*)
     MK_SCALAR_OP_2D(/)
-    T Magnitude() const {
+    double Magnitude() const {
         T a = x * x;
         T b = y * y;
-        T d = (T)sqrt((double)(a + b));
+        double d = sqrt((double)(a + b));
         return d;
     }
     Vector2<T> Unit() const {

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <math.h>
 #include <glm/glm.hpp>
+#include "Math.h"
 
 #define MK_ACROSS_OP(op) Vector3<T>& operator op##=(const Vector3<T>& vec) { \
     this->x op##= vec.x; \
@@ -44,15 +45,15 @@ struct Vector3 {
     MK_ACROSS_OP(/)
     MK_SCALAR_OP(*)
     MK_SCALAR_OP(/)
-    T Magnitude() const {
+    double Magnitude() const {
         T a = x * x;
         T b = y * y;
         T c = z * z;
-        T d = (T)sqrt((double)(a + b + c));
+        double d = sqrt((double)(a + b + c));
         return d;
     }
-    T ApproximateMagnitude() const {
-        return abs((x + y + z) / 3);
+    double SquareMagnitude() const {
+        return Max(std::abs(x), std::abs(y), std::abs(z));
     }
     Vector3<T> Unit() const {
         Vector3<T> vec(x, y, z);
