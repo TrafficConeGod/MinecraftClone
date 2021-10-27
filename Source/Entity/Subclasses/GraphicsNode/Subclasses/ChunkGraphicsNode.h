@@ -23,7 +23,7 @@ class ChunkGraphicsNode : public virtual GraphicsNode {
             std::vector<UVTriangle> uvTriangles;
         };
     private:
-        Mono<Mesh> mesh;
+        Mono<Mesh> mainMesh;
 
         void GenerateBuffersForMeshIfNotGenerated(Mono<Mesh>& mesh);
         void RenderMesh(const Mono<Mesh>& mesh, const glm::mat4& viewProjection) const;
@@ -36,8 +36,8 @@ class ChunkGraphicsNode : public virtual GraphicsNode {
         explicit ChunkGraphicsNode(const Vector3f& position, const Mesh& mesh);
         virtual ~ChunkGraphicsNode() {}
 
-        Mono<Mesh>& ChunkMesh();
-        const Mono<Mesh>& ChunkMesh() const;
+        Mono<Mesh>& MainMesh();
+        const Mono<Mesh>& MainMesh() const;
 
         virtual void Render(const glm::mat4& viewProjection) override;
 };

@@ -16,10 +16,10 @@ void ChunkGraphicsNode::Initialize() {
 ChunkGraphicsNode::Mesh::Mesh() {}
 ChunkGraphicsNode::Mesh::Mesh(GLuint vVertexBuffer, GLuint vUvBuffer) : vertexBuffer{vVertexBuffer}, uvBuffer{vUvBuffer} {}
 
-ChunkGraphicsNode::ChunkGraphicsNode(const Vector3f& vPosition, const Mesh& vMesh) : GraphicsNode(vPosition), mesh{vMesh} {}
+ChunkGraphicsNode::ChunkGraphicsNode(const Vector3f& vPosition, const Mesh& vMesh) : GraphicsNode(vPosition), mainMesh{vMesh} {}
 
-Mono<ChunkGraphicsNode::Mesh>& ChunkGraphicsNode::ChunkMesh() {
-    return mesh;
+Mono<ChunkGraphicsNode::Mesh>& ChunkGraphicsNode::MainMesh() {
+    return mainMesh;
 }
 
 void ChunkGraphicsNode::GenerateBuffersForMeshIfNotGenerated(Mono<Mesh>& mesh) {
@@ -63,6 +63,6 @@ void ChunkGraphicsNode::RenderMesh(const Mono<Mesh>& mesh, const glm::mat4& view
 
 void ChunkGraphicsNode::Render(const glm::mat4& viewProjection) {
     glUseProgram(programId);
-    GenerateBuffersForMeshIfNotGenerated(mesh);
-    RenderMesh(mesh, viewProjection);
+    GenerateBuffersForMeshIfNotGenerated(mainMesh);
+    RenderMesh(mainMesh, viewProjection);
 }
