@@ -15,31 +15,22 @@ Vector2f Block::TextureIdToTexturePosition(TextureId textureId) {
 
 static constexpr float Shift = 0.009f;
 
-Block::FaceMesh::FaceMesh(const std::vector<FaceTriangle>& vTriangles) : triangles{vTriangles} {
-    for (auto& triangle : triangles) {
-        for (auto& uvVertex : triangle.uvVertices) {
-            uvVertex.x = uvVertex.x == 1 ? (1.f - Shift) : Shift;
-            uvVertex.y = uvVertex.y == 1 ? (1.f - Shift) : Shift;
-        }
+Block::FaceMesh::FaceMesh(uint meshId, uint triangleCount) {
+    meshId *= 3;
+    for (uint i = 0; i < triangleCount; i++) {
+        uint triangleId = meshId + (i * 3);
+        triangles.push_back({
+            triangleId,
+            triangleId + 1,
+            triangleId + 2
+        });
     }
 }
 
-void Block::CreateFace(ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, const FaceMesh& faceMesh, TextureId textureId) {
-    auto floatPosition = (Vector3f)position;
+void Block::CreateFace(const FaceMesh& faceMesh, const Vector3u& position, TextureId textureId, ChunkGraphicsNode::Mesh& chunkMesh) {
     auto texturePosition = TextureIdToTexturePosition(textureId);
-    for (const auto& triangle : faceMesh.triangles) {
-        chunkMesh.triangles.push_back({{
-            (triangle.vertices.at(0) + floatPosition),
-            (triangle.vertices.at(1) + floatPosition),
-            (triangle.vertices.at(2) + floatPosition),
-        }});
-
-        chunkMesh.uvTriangles.push_back({{
-            TexturePositionToUVCoordinate(texturePosition + triangle.uvVertices.at(0)),
-            TexturePositionToUVCoordinate(texturePosition + triangle.uvVertices.at(1)),
-            TexturePositionToUVCoordinate(texturePosition + triangle.uvVertices.at(2)),
-        }});
-    }
+    chunkMesh.positionTriangles.push_back({ position, position, position });
+    chunkMesh.vertexIdTriangles.insert(chunkMesh.vertexIdTriangles.end(), faceMesh.triangles.begin(), faceMesh.triangles.end());
 }
 
 const EntityReference<BlockHandler> Block::BlockHandlerFor(const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers) const {

@@ -39,17 +39,12 @@ struct Block {
     };
     Type type = Type::Air;
 
-    struct FaceTriangle {
-        std::array<Vector3f, 3> vertices;
-        std::array<Vector2f, 3> uvVertices;
-    };
-
     struct FaceMesh {
-        std::vector<FaceTriangle> triangles;
+        std::vector<ChunkGraphicsNode::Mesh::VertexIdTriangle> triangles;
 
-        FaceMesh(const std::vector<FaceTriangle>& triangles);
+        FaceMesh(uint meshId, uint triangleCount);
     };
 
-    static void CreateFace(ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, const FaceMesh& faceMesh, TextureId textureId);
+    static void CreateFace(const FaceMesh& faceMesh, const Vector3u& position, TextureId textureId, ChunkGraphicsNode::Mesh& chunkMesh);
     const EntityReference<BlockHandler> BlockHandlerFor(const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers) const;
 };

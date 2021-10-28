@@ -5,22 +5,22 @@ class ChunkGraphicsNode : public virtual GraphicsNode {
     public:
         struct Mesh {
             Mesh();
-            Mesh(GLuint vertexBuffer, GLuint uvBuffer);
+            Mesh(GLuint positionBuffer, GLuint vertexIdBuffer);
 
             bool buffersGenerated = false;
-            GLuint vertexBuffer = 0;
-            GLuint uvBuffer = 0;
+            GLuint positionBuffer = 0;
+            GLuint vertexIdBuffer = 0;
 
-            struct Triangle {
-                std::array<Vector3f, 3> vertices;
+            struct PositionTriangle {
+                std::array<Vector3f, 3> blockPositions;
             };
 
-            struct UVTriangle {
-                std::array<Vector2f, 3> vertices;
+            struct VertexIdTriangle {
+                std::array<uint, 3> vertexIds;
             };
 
-            std::vector<Triangle> triangles;
-            std::vector<UVTriangle> uvTriangles;
+            std::vector<PositionTriangle> positionTriangles;
+            std::vector<VertexIdTriangle> vertexIdTriangles;
         };
     private:
         Mono<Mesh> mainMesh;

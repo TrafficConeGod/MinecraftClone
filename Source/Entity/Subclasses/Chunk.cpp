@@ -101,8 +101,8 @@ void Chunk::UpdateMesh() {
     ChunkGraphicsNode::Mesh mesh;
     GenerateMesh(mesh);
     node->MainMesh().Use([&] (auto& nodeMesh) {
-        nodeMesh.triangles = mesh.triangles;
-        nodeMesh.uvTriangles = mesh.uvTriangles;
+        nodeMesh.positionTriangles = mesh.positionTriangles;
+        nodeMesh.vertexIdTriangles = mesh.vertexIdTriangles;
     });
 }
 
