@@ -51,7 +51,7 @@ void ChunkGraphicsNode::RenderMesh(const Mono<Mesh>& mesh, const glm::mat4& view
         glEnableVertexAttribArray(1);
         glBindBuffer(GL_ARRAY_BUFFER, mesh.vertexIdBuffer);
         glBufferData(GL_ARRAY_BUFFER, mesh.vertexIdTriangles.size()*sizeof(uint) * 3, (uint*)mesh.vertexIdTriangles.data(), GL_STATIC_DRAW);
-        glVertexAttribPointer(1, 1, GL_UNSIGNED_INT, GL_FALSE, 0, (void*)0);
+        glVertexAttribIPointer(1, 1, GL_UNSIGNED_INT, 0, (void*)0);
 
         glDrawArrays(GL_TRIANGLES, 0, mesh.positionTriangles.size() * 3);
 
