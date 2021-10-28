@@ -7,9 +7,9 @@ GLuint texture;
 GLuint textureId;
 
 void ChunkGraphicsNode::Initialize() {
-    programId = LoadShaders("Resources/VertexShader.glsl", "Resources/FragmentShader.glsl");
+    programId = LoadShaders("Resources/Shaders/ChunkVertexShader.glsl", "Resources/Shaders/ChunkFragmentShader.glsl");
     matrixId = glGetUniformLocation(programId, "modelViewProjection");
-    texture = LoadBMP("Resources/Atlas.bmp");
+    texture = LoadBMP("Resources/Textures/Chunk.bmp");
     textureId = glGetUniformLocation(programId, "textureSampler");
 }
 
