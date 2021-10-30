@@ -9,10 +9,6 @@ Vector2f Block::TexturePositionToUVCoordinate(const Vector2f& texturePosition) {
     return Vector2f(pixel.x / 256.f, 1.f - (pixel.y / 256.f));
 }
 
-Vector2u Block::TextureIdToTexturePosition(TextureId textureId) {
-    return Vector2u(textureId, 0);
-}
-
 static constexpr float Shift = 0.009f;
 
 Block::FaceMesh::FaceMesh(uint meshId, uint triangleCount) {
@@ -27,7 +23,11 @@ Block::FaceMesh::FaceMesh(uint meshId, uint triangleCount) {
     }
 }
 
-ChunkGraphicsNode::Mesh::Vertex EncodeToVertex(u_char vertexId, const Vector3u& position, const Vector2u& texturePosition) {
+inline Vector2u TextureIdToTexturePosition(Block::TextureId textureId) {
+    return Vector2u(textureId, 0);
+}
+
+inline ChunkGraphicsNode::Mesh::Vertex EncodeToVertex(u_char vertexId, const Vector3u& position, const Vector2u& texturePosition) {
     return (vertexId << 0x18u) | (position.x << 0x14u) | (position.y << 0x10u) | (position.z << 0xcu) | (texturePosition.x << 0x8u) | (texturePosition.y << 0x4u);
 }
 

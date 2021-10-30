@@ -100,11 +100,15 @@ const vec2 uvTriangles[36] = vec2[36](
 
 void main() {
     uint vertexId = (vertexData >> 0x18u) & 0xffu;
-
-    float x = float((vertexData >> 0x14u) & 0xfu);
-    float y = float((vertexData >> 0x10u) & 0xfu);
-    float z = float((vertexData >> 0xcu) & 0xfu);
     
-    gl_Position = modelViewProjection * vec4((triangles[vertexId] + vec3(x, y, z)), 1);
-    uv = uvTriangles[vertexId];
+    gl_Position = modelViewProjection * vec4((triangles[vertexId] + vec3(
+        float((vertexData >> 0x14u) & 0xfu),
+        float((vertexData >> 0x10u) & 0xfu),
+        float((vertexData >> 0xcu) & 0xfu)
+    )), 1);
+
+    uv = (uvTriangles[vertexId] + vec2(
+        float((vertexData >> 0x8u) & 0xfu),
+        float((vertexData >> 0x4u) & 0xfu)
+    ));
 }
