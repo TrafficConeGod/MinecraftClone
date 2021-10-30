@@ -14,7 +14,7 @@ void ChunkGraphicsNode::Initialize() {
 }
 
 ChunkGraphicsNode::Mesh::Mesh() {}
-ChunkGraphicsNode::Mesh::Mesh(GLuint vVertexBuffer, GLuint vUvBuffer) : vertexBuffer{vVertexBuffer}, uvBuffer{vUvBuffer} {}
+ChunkGraphicsNode::Mesh::Mesh(GLuint vVertexBuffer) : vertexBuffer{vVertexBuffer} {}
 
 ChunkGraphicsNode::ChunkGraphicsNode(const Vector3f& vPosition, const Mesh& vMesh) : GraphicsNode(vPosition), mainMesh{vMesh} {}
 
@@ -27,7 +27,6 @@ void ChunkGraphicsNode::GenerateBuffersForMeshIfNotGenerated(Mono<Mesh>& mesh) {
         if (!mesh.buffersGenerated) {
             mesh.buffersGenerated = true;
             glGenBuffers(1, &mesh.vertexBuffer);
-            glGenBuffers(1, &mesh.uvBuffer);
         }
     });
 }
@@ -44,20 +43,13 @@ void ChunkGraphicsNode::RenderMesh(const Mono<Mesh>& mesh, const glm::mat4& view
         glUniform1i(textureId, 0);
 
         glEnableVertexAttribArray(0);
-
         glBindBuffer(GL_ARRAY_BUFFER, mesh.vertexBuffer);
-        glBufferData(GL_ARRAY_BUFFER, mesh.triangles.size()*sizeof(Vector3f) * 3, (float*)mesh.triangles.data(), GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-        glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.uvBuffer);
-        glBufferData(GL_ARRAY_BUFFER, mesh.triangles.size()*sizeof(float) * 3 * 2, (float*)mesh.uvTriangles.data(), GL_STATIC_DRAW);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        glBufferData(GL_ARRAY_BUFFER, mesh.triangles.size()*sizeof(Mesh::Vertex) * 3, (uint*)mesh.triangles.data(), GL_STATIC_DRAW);
+        glVertexAttribIPointer(0, 1, GL_UNSIGNED_INT, 0, (void*)0);
 
         glDrawArrays(GL_TRIANGLES, 0, mesh.triangles.size() * 3);
 
         glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
     });
 }
 

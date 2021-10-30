@@ -102,7 +102,6 @@ void Chunk::UpdateMesh() {
     GenerateMesh(mesh);
     node->MainMesh().Use([&] (auto& nodeMesh) {
         nodeMesh.triangles = mesh.triangles;
-        nodeMesh.uvTriangles = mesh.uvTriangles;
     });
 }
 

@@ -9,36 +9,36 @@ Vector2f Block::TexturePositionToUVCoordinate(const Vector2f& texturePosition) {
     return Vector2f(pixel.x / 256.f, 1.f - (pixel.y / 256.f));
 }
 
-Vector2f Block::TextureIdToTexturePosition(TextureId textureId) {
-    return Vector2f(textureId, 0);
-}
-
 static constexpr float Shift = 0.009f;
 
-Block::FaceMesh::FaceMesh(const std::vector<FaceTriangle>& vTriangles) : triangles{vTriangles} {
-    for (auto& triangle : triangles) {
-        for (auto& uvVertex : triangle.uvVertices) {
-            uvVertex.x = uvVertex.x == 1 ? (1.f - Shift) : Shift;
-            uvVertex.y = uvVertex.y == 1 ? (1.f - Shift) : Shift;
-        }
+Block::FaceMesh::FaceMesh(uint meshId, uint triangleCount) {
+    meshId *= 3;
+    for (uint i = 0; i < triangleCount; i++) {
+        uint triangleId = meshId + (i * 3);
+        triangles.push_back({
+            (u_char)(triangleId),
+            (u_char)(triangleId + 1),
+            (u_char)(triangleId + 2)
+        });
     }
 }
 
-void Block::CreateFace(ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, const FaceMesh& faceMesh, TextureId textureId) {
-    auto floatPosition = (Vector3f)position;
+inline Vector2u TextureIdToTexturePosition(Block::TextureId textureId) {
+    return Vector2u(textureId, 0);
+}
+
+inline ChunkGraphicsNode::Mesh::Vertex EncodeToVertex(u_char vertexId, const Vector3u& position, const Vector2u& texturePosition) {
+    return (vertexId << 0x18u) | (position.x << 0x14u) | (position.y << 0x10u) | (position.z << 0xcu) | (texturePosition.x << 0x8u) | (texturePosition.y << 0x4u);
+}
+
+void Block::CreateFace(const FaceMesh& faceMesh, const Vector3u& position, TextureId textureId, ChunkGraphicsNode::Mesh& chunkMesh) {
     auto texturePosition = TextureIdToTexturePosition(textureId);
     for (const auto& triangle : faceMesh.triangles) {
-        chunkMesh.triangles.push_back({{
-            (triangle.vertices.at(0) + floatPosition),
-            (triangle.vertices.at(1) + floatPosition),
-            (triangle.vertices.at(2) + floatPosition),
-        }});
-
-        chunkMesh.uvTriangles.push_back({{
-            TexturePositionToUVCoordinate(texturePosition + triangle.uvVertices.at(0)),
-            TexturePositionToUVCoordinate(texturePosition + triangle.uvVertices.at(1)),
-            TexturePositionToUVCoordinate(texturePosition + triangle.uvVertices.at(2)),
-        }});
+        chunkMesh.triangles.push_back({
+            EncodeToVertex(triangle.vertexIds.at(0), position, texturePosition),
+            EncodeToVertex(triangle.vertexIds.at(1), position, texturePosition),
+            EncodeToVertex(triangle.vertexIds.at(2), position, texturePosition)
+        });
     }
 }
 

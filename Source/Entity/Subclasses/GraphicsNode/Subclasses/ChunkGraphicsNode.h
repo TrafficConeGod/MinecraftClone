@@ -5,22 +5,18 @@ class ChunkGraphicsNode : public virtual GraphicsNode {
     public:
         struct Mesh {
             Mesh();
-            Mesh(GLuint vertexBuffer, GLuint uvBuffer);
+            Mesh(GLuint vertexBuffer);
 
             bool buffersGenerated = false;
             GLuint vertexBuffer = 0;
-            GLuint uvBuffer = 0;
+
+            using Vertex = uint;
 
             struct Triangle {
-                std::array<Vector3f, 3> vertices;
-            };
-
-            struct UVTriangle {
-                std::array<Vector2f, 3> vertices;
+                std::array<Vertex, 3> vertices;
             };
 
             std::vector<Triangle> triangles;
-            std::vector<UVTriangle> uvTriangles;
         };
     private:
         Mono<Mesh> mainMesh;
