@@ -15,12 +15,12 @@ struct Block {
     static constexpr uint Faces = 7;
     enum class Face : u_char {
         None,
-        Top,
-        Bottom,
         Front,
         Back,
-        Left,
+        Top,
+        Bottom,
         Right,
+        Left
     };
     
     using FaceId = u_char;
