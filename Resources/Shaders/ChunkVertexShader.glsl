@@ -1,7 +1,6 @@
 #version 330 core
 
-layout(location = 0) in vec3 blockPosition;
-layout(location = 1) in uint vertexId;
+layout(location = 0) in uint vertexData;
 
 out vec2 uv;
 
@@ -100,6 +99,12 @@ const vec2 uvTriangles[36] = vec2[36](
 );
 
 void main() {
-    gl_Position = modelViewProjection * vec4((triangles[vertexId] + blockPosition), 1);
+    uint vertexId = (vertexData >> 0x18u) & 0xffu;
+
+    float x = float((vertexData >> 0x14u) & 0xfu);
+    float y = float((vertexData >> 0x10u) & 0xfu);
+    float z = float((vertexData >> 0xcu) & 0xfu);
+    
+    gl_Position = modelViewProjection * vec4((triangles[vertexId] + vec3(x, y, z)), 1);
     uv = uvTriangles[vertexId];
 }

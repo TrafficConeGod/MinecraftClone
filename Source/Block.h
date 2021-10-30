@@ -11,7 +11,7 @@ struct Block {
     using TextureId = uint;
 
     static Vector2f TexturePositionToUVCoordinate(const Vector2f& texturePosition);
-    static Vector2f TextureIdToTexturePosition(TextureId textureId);
+    static Vector2u TextureIdToTexturePosition(TextureId textureId);
 
     static constexpr uint Faces = 7;
     enum class Face : u_char {
@@ -39,8 +39,12 @@ struct Block {
     };
     Type type = Type::Air;
 
+    struct FaceTriangle {
+        std::array<u_char, 3> vertexIds;
+    };
+
     struct FaceMesh {
-        std::vector<ChunkGraphicsNode::Mesh::VertexIdTriangle> triangles;
+        std::vector<FaceTriangle> triangles;
 
         FaceMesh(uint meshId, uint triangleCount);
     };
