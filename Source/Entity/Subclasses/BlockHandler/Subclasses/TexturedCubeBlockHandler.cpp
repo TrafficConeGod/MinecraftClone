@@ -23,5 +23,5 @@ void TexturedCubeBlockHandler::GenerateFaceMesh(ChunkGraphicsNode::MeshGroup& me
         return;
     }
 
-    Block::CreateFace(faceMeshes.at(((uint)face) - 1), position, TextureIdFor(face), meshes.mainMesh);
+    Block::CreateFace(faceMeshes.at(((uint)face) - 1), position, TexturePositionFor(face), meshes.mainMesh);
 }

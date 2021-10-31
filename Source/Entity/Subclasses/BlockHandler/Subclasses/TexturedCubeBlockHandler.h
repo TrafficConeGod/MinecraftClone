@@ -3,7 +3,7 @@
 
 class TexturedCubeBlockHandler : public virtual BlockHandler {
     protected:
-        virtual Block::TextureId TextureIdFor(Block::Face face) const = 0;
+        virtual Vector2u TexturePositionFor(Block::Face face) const = 0;
     public:
         GIVE_TYPE_ID_1(15, BlockHandler)
 

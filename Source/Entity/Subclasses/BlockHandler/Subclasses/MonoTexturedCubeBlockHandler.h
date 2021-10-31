@@ -3,13 +3,13 @@
 
 class MonoTexturedCubeBlockHandler : public virtual TexturedCubeBlockHandler {
     private:
-        Block::TextureId textureId;
+        Vector2u texturePosition;
     protected:
-        virtual Block::TextureId TextureIdFor(Block::Face) const override;
+        virtual Vector2u TexturePositionFor(Block::Face) const override;
     public:
         GIVE_TYPE_ID_1(16, TexturedCubeBlockHandler)
 
         DELETE_ILLEGAL_CONSTRUCTORS(MonoTexturedCubeBlockHandler)
-        explicit MonoTexturedCubeBlockHandler(Block::TextureId textureId);
+        explicit MonoTexturedCubeBlockHandler(Vector2u texturePosition);
         virtual ~MonoTexturedCubeBlockHandler() {}
 };

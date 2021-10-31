@@ -23,16 +23,11 @@ Block::FaceMesh::FaceMesh(uint meshId, uint triangleCount) {
     }
 }
 
-inline Vector2u TextureIdToTexturePosition(Block::TextureId textureId) {
-    return Vector2u(textureId, 0);
-}
-
 inline ChunkGraphicsNode::Mesh::Vertex EncodeToVertex(u_char vertexId, const Vector3u& position, const Vector2u& texturePosition) {
     return (vertexId << 0x18u) | (position.x << 0x14u) | (position.y << 0x10u) | (position.z << 0xcu) | (texturePosition.x << 0x8u) | (texturePosition.y << 0x4u);
 }
 
-void Block::CreateFace(const FaceMesh& faceMesh, const Vector3u& position, TextureId textureId, ChunkGraphicsNode::Mesh& mesh) {
-    auto texturePosition = TextureIdToTexturePosition(textureId);
+void Block::CreateFace(const FaceMesh& faceMesh, const Vector3u& position, const Vector2u& texturePosition, ChunkGraphicsNode::Mesh& mesh) {
     for (const auto& triangle : faceMesh.triangles) {
         mesh.triangles.push_back({
             EncodeToVertex(triangle.vertexIds.at(0), position, texturePosition),

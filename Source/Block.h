@@ -8,8 +8,6 @@
 class BlockHandler;
 
 struct Block {
-    using TextureId = uint;
-
     static Vector2f TexturePositionToUVCoordinate(const Vector2f& texturePosition);
 
     static constexpr uint Faces = 7;
@@ -48,6 +46,6 @@ struct Block {
         FaceMesh(uint meshId, uint triangleCount);
     };
 
-    static void CreateFace(const FaceMesh& faceMesh, const Vector3u& position, TextureId textureId, ChunkGraphicsNode::Mesh& mesh);
+    static void CreateFace(const FaceMesh& faceMesh, const Vector3u& position, const Vector2u& texturePosition, ChunkGraphicsNode::Mesh& mesh);
     const EntityReference<BlockHandler> BlockHandlerFor(const std::array<EntityReference<BlockHandler>, Block::Types>& blockHandlers) const;
 };

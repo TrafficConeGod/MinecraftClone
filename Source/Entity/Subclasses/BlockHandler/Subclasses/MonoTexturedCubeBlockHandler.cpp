@@ -1,7 +1,7 @@
 #include "MonoTexturedCubeBlockHandler.h"
 
-MonoTexturedCubeBlockHandler::MonoTexturedCubeBlockHandler(Block::TextureId vTextureId) : textureId{vTextureId} {}
+MonoTexturedCubeBlockHandler::MonoTexturedCubeBlockHandler(Vector2u vTexturePosition) : texturePosition{vTexturePosition} {}
 
-Block::TextureId MonoTexturedCubeBlockHandler::TextureIdFor(Block::Face) const {
-    return textureId;
+Vector2u MonoTexturedCubeBlockHandler::TexturePositionFor(Block::Face) const {
+    return texturePosition;
 }

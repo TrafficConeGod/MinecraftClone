@@ -25,8 +25,8 @@ ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNo
     blockHandlers{{
         new BlankBlockHandler(),
         new GrassBlockHandler(),
-        new MonoTexturedCubeBlockHandler(1),
-        new MonoTexturedCubeBlockHandler(2)
+        new MonoTexturedCubeBlockHandler(Vector2u(1, 0)),
+        new MonoTexturedCubeBlockHandler(Vector2u(2, 0))
     }} {}
 
 void ChunksThread::Update(float delta) {
