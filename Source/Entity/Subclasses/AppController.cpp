@@ -12,7 +12,7 @@ AppController::AppController() : Entity() {
 		}
 	}, {});
 	EntityReference<ChunksThread> chunksThread = new ChunksThread([&]() {
-		EntityReference<ChunkGraphicsNode> node = new ChunkGraphicsNode(Vector3f(0, 0, 0), ChunkGraphicsNode::Mesh(renderThread->BufferId()));
+		EntityReference<ChunkGraphicsNode> node = new ChunkGraphicsNode(Vector3f(0, 0, 0), renderThread->BufferId());
 		renderThread->AddNode(node);
 		return node;
 	}, std::bind(&RenderThread::RemoveNode, (RenderThread*)renderThread, std::placeholders::_1), 100);

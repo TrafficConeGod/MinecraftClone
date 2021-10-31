@@ -13,26 +13,14 @@ void ChunkGraphicsNode::Initialize() {
     textureId = glGetUniformLocation(programId, "textureSampler");
 }
 
-ChunkGraphicsNode::Mesh::Mesh() {}
-ChunkGraphicsNode::Mesh::Mesh(GLuint vVertexBuffer) : vertexBuffer{vVertexBuffer} {}
-
-ChunkGraphicsNode::ChunkGraphicsNode(const Vector3f& vPosition, const Mesh& vMesh) : GraphicsNode(vPosition), mainMesh{vMesh} {}
+ChunkGraphicsNode::ChunkGraphicsNode(const Vector3f& vPosition, GLuint vBufferId) : GraphicsNode(vPosition), bufferId{vBufferId} {}
 
 Mono<ChunkGraphicsNode::Mesh>& ChunkGraphicsNode::MainMesh() {
-    return mainMesh;
+    return mainRenderable.mesh;
 }
 
-void ChunkGraphicsNode::GenerateBuffersForMeshIfNotGenerated(Mono<Mesh>& mesh) {
-    mesh.Use([](auto& mesh) {
-        if (!mesh.buffersGenerated) {
-            mesh.buffersGenerated = true;
-            glGenBuffers(1, &mesh.vertexBuffer);
-        }
-    });
-}
-
-void ChunkGraphicsNode::RenderMesh(const Mono<Mesh>& mesh, const glm::mat4& viewProjection) const {
-    mesh.UseConst([&](const auto& mesh) {
+void ChunkGraphicsNode::Render(const Renderable& renderable, const glm::mat4& viewProjection) const {
+    renderable.mesh.UseConst([&](const auto& mesh) {
         glm::mat4 model = glm::translate(glm::mat4(1.0f), position.Value().GLM());
         glm::mat4 modelViewProjection = viewProjection * model;
 
@@ -43,7 +31,7 @@ void ChunkGraphicsNode::RenderMesh(const Mono<Mesh>& mesh, const glm::mat4& view
         glUniform1i(textureId, 0);
 
         glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.vertexBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, bufferId);
         glBufferData(GL_ARRAY_BUFFER, mesh.triangles.size()*sizeof(Mesh::Vertex) * 3, (uint*)mesh.triangles.data(), GL_STATIC_DRAW);
         glVertexAttribIPointer(0, 1, GL_UNSIGNED_INT, 0, (void*)0);
 
@@ -55,6 +43,9 @@ void ChunkGraphicsNode::RenderMesh(const Mono<Mesh>& mesh, const glm::mat4& view
 
 void ChunkGraphicsNode::Render(const glm::mat4& viewProjection) {
     glUseProgram(programId);
-    GenerateBuffersForMeshIfNotGenerated(mainMesh);
-    RenderMesh(mainMesh, viewProjection);
+    if (!bufferGenerated) {
+        bufferGenerated = true;
+        glGenBuffers(1, &bufferId);
+    }
+    Render(mainRenderable, viewProjection);
 }
