@@ -4,6 +4,7 @@
 #include "BlankBlockHandler.h"
 #include "GrassBlockHandler.h"
 #include "MonoTexturedCubeBlockHandler.h"
+#include "WaterBlockHandler.h"
 
 ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNode, const GraphicsNode::Remove& vRemoveGraphicsNode, Chunk::Seed seed) :
     createChunkGraphicsNode{vCreateChunkGraphicsNode},
@@ -26,7 +27,9 @@ ChunksThread::ChunksThread(const CreateChunkGraphicsNode& vCreateChunkGraphicsNo
         new BlankBlockHandler(),
         new GrassBlockHandler(),
         new MonoTexturedCubeBlockHandler(Vector2u(1, 0)),
-        new MonoTexturedCubeBlockHandler(Vector2u(2, 0))
+        new MonoTexturedCubeBlockHandler(Vector2u(2, 0)),
+        new WaterBlockHandler(),
+        new MonoTexturedCubeBlockHandler(Vector2u(2, 1)),
     }} {}
 
 void ChunksThread::Update(float delta) {
