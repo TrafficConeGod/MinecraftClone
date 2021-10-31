@@ -15,30 +15,32 @@ void ChunkGraphicsNode::Initialize() {
 
 ChunkGraphicsNode::ChunkGraphicsNode(const Vector3f& vPosition, GLuint vBufferId) : GraphicsNode(vPosition), bufferId{vBufferId} {}
 
-Mono<ChunkGraphicsNode::Mesh>& ChunkGraphicsNode::MainMesh() {
-    return mainRenderable.mesh;
+Mono<ChunkGraphicsNode::MeshGroup>& ChunkGraphicsNode::Meshes() {
+    return meshes;
 }
 
-void ChunkGraphicsNode::Render(const Renderable& renderable, const glm::mat4& viewProjection) const {
-    renderable.mesh.UseConst([&](const auto& mesh) {
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), position.Value().GLM());
-        glm::mat4 modelViewProjection = viewProjection * model;
+const Mono<ChunkGraphicsNode::MeshGroup>& ChunkGraphicsNode::Meshes() const {
+    return meshes;
+}
 
-        glUniformMatrix4fv(matrixId, 1, GL_FALSE, &modelViewProjection[0][0]);
+void ChunkGraphicsNode::RenderMesh(const Mesh& mesh, const glm::mat4& viewProjection) const {
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), position.Value().GLM());
+    glm::mat4 modelViewProjection = viewProjection * model;
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        glUniform1i(textureId, 0);
+    glUniformMatrix4fv(matrixId, 1, GL_FALSE, &modelViewProjection[0][0]);
 
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, bufferId);
-        glBufferData(GL_ARRAY_BUFFER, mesh.triangles.size()*sizeof(Mesh::Vertex) * 3, (uint*)mesh.triangles.data(), GL_STATIC_DRAW);
-        glVertexAttribIPointer(0, 1, GL_UNSIGNED_INT, 0, (void*)0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glUniform1i(textureId, 0);
 
-        glDrawArrays(GL_TRIANGLES, 0, mesh.triangles.size() * 3);
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, bufferId);
+    glBufferData(GL_ARRAY_BUFFER, mesh.triangles.size()*sizeof(Mesh::Vertex) * 3, (uint*)mesh.triangles.data(), GL_STATIC_DRAW);
+    glVertexAttribIPointer(0, 1, GL_UNSIGNED_INT, 0, (void*)0);
 
-        glDisableVertexAttribArray(0);
-    });
+    glDrawArrays(GL_TRIANGLES, 0, mesh.triangles.size() * 3);
+
+    glDisableVertexAttribArray(0);
 }
 
 void ChunkGraphicsNode::Render(const glm::mat4& viewProjection) {
@@ -47,5 +49,7 @@ void ChunkGraphicsNode::Render(const glm::mat4& viewProjection) {
         bufferGenerated = true;
         glGenBuffers(1, &bufferId);
     }
-    Render(mainRenderable, viewProjection);
+    meshes.UseConst([&](const auto& meshes) {
+        RenderMesh(meshes.mainMesh, viewProjection);
+    });
 }

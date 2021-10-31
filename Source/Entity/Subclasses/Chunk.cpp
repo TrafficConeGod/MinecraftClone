@@ -98,9 +98,9 @@ bool Chunk::IsBlockAtLocalPositionTransparent(const Vector3u& position, const Bl
 }
 
 void Chunk::UpdateMesh() {
-    ChunkGraphicsNode::Mesh mesh;
-    GenerateMesh(mesh);
-    node->MainMesh().Value(mesh);
+    ChunkGraphicsNode::MeshGroup meshes;
+    GenerateMesh(meshes);
+    node->Meshes().Value(meshes);
 }
 
 void Chunk::Update() {
@@ -109,25 +109,25 @@ void Chunk::Update() {
     }
 }
 
-bool Chunk::GenerateFaceMesh(const Vector3i& direction, Block::Face face, const EntityReference<BlockHandler> blockHandler, Mesh& chunkMesh, const Vector3u& position, const Block& block) {
+bool Chunk::GenerateFaceMesh(const Vector3i& direction, Block::Face face, const EntityReference<BlockHandler> blockHandler, MeshGroup& meshes, const Vector3u& position, const Block& block) {
     auto checkPosition = (Vector3i)position + direction;
     if (checkPosition.x >= 0 && checkPosition.y >= 0 && checkPosition.z >= 0 && checkPosition.x < Bounds && checkPosition.y < Bounds && checkPosition.z < Bounds) {
         const auto& checkBlock = BlockAt(checkPosition);
         const auto checkBlockHandler = checkBlock.BlockHandlerFor(blockHandlers);
 
         if (checkBlockHandler->IsTransparent(checkBlock, block)) {
-            blockHandler->GenerateFaceMesh(chunkMesh, position, block, face);
+            blockHandler->GenerateFaceMesh(meshes, position, block, face);
             return true;
         }
         return false;
     } else if (isBlockAtWorldPositionTransparent(LocalChunkPositionToWorldPosition(this->position, checkPosition), block)) {
-        blockHandler->GenerateFaceMesh(chunkMesh, position, block, face);
+        blockHandler->GenerateFaceMesh(meshes, position, block, face);
         return true;
     }
     return false;
 }
 
-void Chunk::GenerateMesh(Mesh& mesh) {
+void Chunk::GenerateMesh(MeshGroup& meshes) {
     std::size_t index = 0;
     for (const auto& block : blocks) {
         const auto blockHandler = block.BlockHandlerFor(blockHandlers);
@@ -136,7 +136,7 @@ void Chunk::GenerateMesh(Mesh& mesh) {
 
             bool faceGenerated = false;
             auto generateFaceMeshHelper = [&](const Vector3i& direction, Block::Face face) {
-                faceGenerated |= GenerateFaceMesh(direction, face, blockHandler, mesh, position, block);
+                faceGenerated |= GenerateFaceMesh(direction, face, blockHandler, meshes, position, block);
             };
             generateFaceMeshHelper(Vector3i(1, 0, 0), Block::Face::Front);
             generateFaceMeshHelper(Vector3i(-1, 0, 0), Block::Face::Back);
@@ -146,7 +146,7 @@ void Chunk::GenerateMesh(Mesh& mesh) {
             generateFaceMeshHelper(Vector3i(0, 0, -1), Block::Face::Left);
 
             if (faceGenerated) {
-                blockHandler->GenerateFaceMesh(mesh, position, block, Block::Face::None);
+                blockHandler->GenerateFaceMesh(meshes, position, block, Block::Face::None);
             }
         }
 

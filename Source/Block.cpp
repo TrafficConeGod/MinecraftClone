@@ -31,10 +31,10 @@ inline ChunkGraphicsNode::Mesh::Vertex EncodeToVertex(u_char vertexId, const Vec
     return (vertexId << 0x18u) | (position.x << 0x14u) | (position.y << 0x10u) | (position.z << 0xcu) | (texturePosition.x << 0x8u) | (texturePosition.y << 0x4u);
 }
 
-void Block::CreateFace(const FaceMesh& faceMesh, const Vector3u& position, TextureId textureId, ChunkGraphicsNode::Mesh& chunkMesh) {
+void Block::CreateFace(const FaceMesh& faceMesh, const Vector3u& position, TextureId textureId, ChunkGraphicsNode::Mesh& mesh) {
     auto texturePosition = TextureIdToTexturePosition(textureId);
     for (const auto& triangle : faceMesh.triangles) {
-        chunkMesh.triangles.push_back({
+        mesh.triangles.push_back({
             EncodeToVertex(triangle.vertexIds.at(0), position, texturePosition),
             EncodeToVertex(triangle.vertexIds.at(1), position, texturePosition),
             EncodeToVertex(triangle.vertexIds.at(2), position, texturePosition)

@@ -12,17 +12,18 @@ class ChunkGraphicsNode : public virtual GraphicsNode {
 
             std::vector<Triangle> triangles;
         };
+
+        struct MeshGroup {
+            Mesh mainMesh;
+        };
     private:
         bool bufferGenerated = false;
         GLuint bufferId = 0;
-        struct Renderable {
-            Mono<Mesh> mesh;
-        };
 
-        Renderable mainRenderable;
+        Mono<MeshGroup> meshes;
 
-        void GenerateBuffersForRenderableIfNotGenerated(Renderable& renderable);
-        void Render(const Renderable& mesh, const glm::mat4& viewProjection) const;
+        void GenerateBuffer();
+        void RenderMesh(const Mesh& mesh, const glm::mat4& viewProjection) const;
     public:
         static void Initialize();
 
@@ -32,8 +33,8 @@ class ChunkGraphicsNode : public virtual GraphicsNode {
         explicit ChunkGraphicsNode(const Vector3f& position, GLuint bufferId);
         virtual ~ChunkGraphicsNode() {}
 
-        Mono<Mesh>& MainMesh();
-        const Mono<Mesh>& MainMesh() const;
-
         virtual void Render(const glm::mat4& viewProjection) override;
+
+        Mono<MeshGroup>& Meshes();
+        const Mono<MeshGroup>& Meshes() const;
 };

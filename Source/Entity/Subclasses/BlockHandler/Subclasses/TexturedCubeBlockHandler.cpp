@@ -18,10 +18,10 @@ const std::array<Block::FaceMesh, 6> faceMeshes = {
     Block::FaceMesh(10, 2)
 };
 
-void TexturedCubeBlockHandler::GenerateFaceMesh(ChunkGraphicsNode::Mesh& chunkMesh, const Vector3u& position, const Block& block, Block::Face face) const {
+void TexturedCubeBlockHandler::GenerateFaceMesh(ChunkGraphicsNode::MeshGroup& meshes, const Vector3u& position, const Block& block, Block::Face face) const {
     if (face == Block::Face::None) {
         return;
     }
 
-    Block::CreateFace(faceMeshes.at(((uint)face) - 1), position, TextureIdFor(face), chunkMesh);
+    Block::CreateFace(faceMeshes.at(((uint)face) - 1), position, TextureIdFor(face), meshes.mainMesh);
 }

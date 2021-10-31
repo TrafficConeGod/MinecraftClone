@@ -11,7 +11,7 @@
 class Chunk : public virtual Entity {
     public:
         using Seed = uint;
-        using Mesh = ChunkGraphicsNode::Mesh;
+        using MeshGroup = ChunkGraphicsNode::MeshGroup;
         using IsBlockAtWorldPositionTransparent = std::function<bool(const Vector3i&, const Block&)>;
 
         static constexpr int Bounds = 16;
@@ -26,9 +26,9 @@ class Chunk : public virtual Entity {
         std::array<Block, Blocks> blocks;
         std::vector<EntityReference<BlockEntity>> blockEntities;
 
-        void GenerateMesh(Mesh& mesh);
+        void GenerateMesh(MeshGroup& meshes);
 
-        bool GenerateFaceMesh(const Vector3i& direction, Block::Face face, const EntityReference<BlockHandler> blockHandler, Mesh& chunkMesh, const Vector3u& position, const Block& block);
+        bool GenerateFaceMesh(const Vector3i& direction, Block::Face face, const EntityReference<BlockHandler> blockHandler, MeshGroup& meshes, const Vector3u& position, const Block& block);
 
 
         static constexpr std::size_t MaxGenerationHeight = 32;
