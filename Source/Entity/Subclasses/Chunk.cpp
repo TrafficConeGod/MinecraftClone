@@ -31,20 +31,29 @@ void Chunk::GenerateBlocks(Seed seed) {
 
                 int yPos = height * MaxGenerationHeight;
 
-                if (worldPosition.y <= yPos && yPos <= 8) {
-                    BlockAt(localPosition, { Block::Type::Sand });
-                } else if (worldPosition.y <= 7) {
-                    BlockAt(localPosition, { Block::Type::Water });
-                } else {
-                    if (worldPosition.y == yPos) {
+                
+                if (worldPosition.y == yPos) {
+                    if (worldPosition.y < 7) {
+                        BlockAt(localPosition, { Block::Type::Sand });
+                    } else {
                         BlockAt(localPosition, { Block::Type::Grass });
-                    } else if (worldPosition.y < yPos) {
-                        if ((worldPosition.y - yPos) > -3) {
+                    }
+                } else if (worldPosition.y < yPos) {
+                    if ((worldPosition.y - yPos) > -3) {
+                        if (worldPosition.y < 7) {
+                            BlockAt(localPosition, { Block::Type::Sand });
+                        } else {
                             BlockAt(localPosition, { Block::Type::Dirt });
+                        }
+                    } else {
+                        if (worldPosition.y >= 0 && worldPosition.y < 7) {
+                            BlockAt(localPosition, { Block::Type::Sand });
                         } else {
                             BlockAt(localPosition, { Block::Type::Stone });
                         }
                     }
+                } else if (worldPosition.y < 7) {
+                    BlockAt(localPosition, { Block::Type::Water });
                 }
             }
         }
