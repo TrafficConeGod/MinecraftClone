@@ -4,6 +4,7 @@
 #include <mutex>
 #include <iostream>
 #include <chrono>
+#include "Debug.h"
 
 static constexpr float Delta = 1.f/60.f;
 
@@ -31,7 +32,7 @@ Thread::Thread() : worker{
 
 Thread::~Thread() {
     if (!joined) {
-        std::cout << "Thread was destructed without being joined\n";
+        Print("Thread was destructed without being joined\n");
         active = false;
         Join();
     }

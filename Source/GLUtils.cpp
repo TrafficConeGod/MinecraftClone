@@ -5,6 +5,7 @@
 #include <vector>
 #include <string.h>
 #include <exception>
+#include "Debug.h"
 
 // https://github.com/opengl-tutorials/ogl
 
@@ -42,7 +43,7 @@ GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path)
 	int info_log_length;
 
 	// Compile Vertex Shader
-	printf("Compiling shader : %s\n", vertex_file_path);
+	Print("Compiling shader:", vertex_file_path);
 	char const* vertex_source_pointer = vertex_shader_code.c_str();
 	glShaderSource(vertex_shader_id, 1, &vertex_source_pointer, NULL);
 	glCompileShader(vertex_shader_id);
@@ -53,11 +54,11 @@ GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path)
 	if (info_log_length > 0) {
 		std::vector<char> vertex_shader_err_msg(info_log_length + 1);
 		glGetShaderInfoLog(vertex_shader_id, info_log_length, NULL, &vertex_shader_err_msg[0]);
-		printf("%s\n", &vertex_shader_err_msg[0]);
+		Print(&vertex_shader_err_msg[0]);
 	}
 
 	// Compile Fragment Shader
-	printf("Compiling shader : %s\n", fragment_file_path);
+	Print("Compiling shader:", fragment_file_path);
 	char const* fragment_source_pointer = fragment_shader_code.c_str();
 	glShaderSource(fragment_shader_id, 1, &fragment_source_pointer, NULL);
 	glCompileShader(fragment_shader_id);
@@ -68,11 +69,11 @@ GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path)
 	if (info_log_length > 0) {
 		std::vector<char> fragment_shader_err_msg(info_log_length + 1);
 		glGetShaderInfoLog(fragment_shader_id, info_log_length, NULL, &fragment_shader_err_msg[0]);
-		printf("%s\n", &fragment_shader_err_msg[0]);
+		Print(&fragment_shader_err_msg[0]);
 	}
 
 	// Link the program
-	printf("Linking program\n");
+	Print("Linking program");
 	GLuint program_id = glCreateProgram();
 	glAttachShader(program_id, vertex_shader_id);
 	glAttachShader(program_id, fragment_shader_id);
@@ -84,7 +85,7 @@ GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path)
 	if (info_log_length > 0) {
 		std::vector<char> program_err_msg(info_log_length + 1);
 		glGetProgramInfoLog(program_id, info_log_length, NULL, &program_err_msg[0]);
-		printf("%s\n", &program_err_msg[0]);
+		Print(&program_err_msg[0]);
 	}
 	
 	glDetachShader(program_id, vertex_shader_id);
@@ -103,7 +104,7 @@ GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path)
 
 GLuint LoadBMP(const char* imagepath){
 
-	printf("Reading image %s\n", imagepath);
+	Print("Reading image", imagepath);
 
 	// Data read from the header of the BMP file
 	unsigned char header[54];
@@ -116,7 +117,7 @@ GLuint LoadBMP(const char* imagepath){
 	// Open the file
 	FILE * file = fopen(imagepath,"rb");
 	if (!file){
-		printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", imagepath);
+		Print(imagepath, "could not be opened.");
 		getchar();
 		return 0;
 	}
@@ -125,31 +126,26 @@ GLuint LoadBMP(const char* imagepath){
 
 	// If less than 54 bytes are read, problem
 	if ( fread(header, 1, 54, file)!=54 ){ 
-		printf("Not a correct BMP file\n");
+		Print("Not a correct BMP file");
 		fclose(file);
 		return 0;
 	}
 	// A BMP files always begins with "BM"
 	if ( header[0]!='B' || header[1]!='M' ){
-		printf("Not a correct BMP file\n");
+		Print("Not a correct BMP file");
 		fclose(file);
 		return 0;
 	}
 	
-	// std::cout << *(int*)&(header[0x1E]) << "\n";
-	// std::cout << (int)(*(char*)&(header[0x1C])) << "\n";
-
 	// Make sure this is a 24bpp file
-	if ( *(int*)&(header[0x1E])!=3  )         {printf("Not a correct BMP file\n");    fclose(file); return 0;}
-	if ( *(char*)&(header[0x1C])!=32 )         {printf("Not a correct BMP file\n");    fclose(file); return 0;}
+	if ( *(int*)&(header[0x1E])!=3  )         {Print("Not a correct BMP file");    fclose(file); return 0;}
+	if ( *(char*)&(header[0x1C])!=32 )         {Print("Not a correct BMP file");    fclose(file); return 0;}
 
 	// Read the information about the image
 	dataPos    = *(int*)&(header[0x0A]);
 	imageSize  = *(int*)&(header[0x22]);
 	width      = *(int*)&(header[0x12]);
 	height     = *(int*)&(header[0x16]);
-
-	// std::cout << dataPos << " " << imageSize << " " << width << " " << height << "\n";
 
 	// Some BMP files are misformatted, guess missing information
 	if (imageSize==0)    imageSize=width*height*3; // 3 : one byte for each Red, Green and Blue component
@@ -289,7 +285,7 @@ GLuint LoadDDS(const char* path){
 void PrintMat4(glm::mat4 mat) {
 	for (uint y = 0; y < 4; y++) {
 		for (uint x = 0; x < 4; x++) {
-			std::cout << mat[x][y] << " ";
+			Print(mat[x][y]);
 		}
 		std::cout << "\n";
 	}
